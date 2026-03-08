@@ -21,10 +21,10 @@ const MediaCard = ({ asset, onClick, onDelete }) => {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
 
-                {/* Delete Button (Appears on Hover) */}
+                {/* Delete Button (Always visible on mobile, hover on desktop) */}
                 <button
                     onClick={(e) => { e.stopPropagation(); onDelete?.(asset.id); }}
-                    className="absolute top-3 right-3 p-2 bg-white/80 hover:bg-white backdrop-blur-md rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    className="absolute top-3 right-3 p-2 bg-white/80 hover:bg-white backdrop-blur-md rounded-full shadow-sm opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity z-10"
                 >
                     <Trash2 className="w-4 h-4 text-red-500" />
                 </button>
