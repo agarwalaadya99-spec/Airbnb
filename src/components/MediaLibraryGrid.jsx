@@ -85,10 +85,10 @@ const AddMoreCard = ({ onAdd }) => (
 const MediaLibraryGrid = ({ assets, onAdd, onSelect, onDelete }) => {
     return (
         <section className="pb-20">
-            <div className="flex items-center justify-between mb-8">
-                <h3 className="text-[22px] font-bold text-gray-900 flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+                <h3 className="text-[18px] sm:text-[22px] font-bold text-gray-900 flex items-center gap-2">
                     Media Library
-                    <span className="text-[#717171] font-medium text-[16px] ml-1">({assets.length} Photos)</span>
+                    <span className="text-[#717171] font-medium text-[14px] sm:text-[16px] ml-1">({assets.length} Photos)</span>
                 </h3>
 
                 <div className="flex items-center gap-1 p-1 flex-row">

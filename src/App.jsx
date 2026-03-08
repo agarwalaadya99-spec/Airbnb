@@ -87,16 +87,16 @@ function App() {
         accept="image/*"
       />
 
-      <main className="max-w-[1440px] mx-auto px-6 lg:px-12 py-12">
+      <main className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12 py-8 sm:py-12">
 
         {/* Hero Section */}
-        <div className="flex items-center justify-between mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 sm:mb-10 gap-4">
           <div>
-            <h1 className="text-[32px] font-[800] text-[#222222] tracking-tight mb-1.5">Listing Media Manager</h1>
-            <p className="text-[#717171] text-[15px]">Secure your listing with Provenance-Stamped media.</p>
+            <h1 className="text-[24px] sm:text-[32px] font-[800] text-[#222222] tracking-tight mb-1.5 leading-tight">Listing Media Manager</h1>
+            <p className="text-[#717171] text-[14px] sm:text-[15px]">Secure your listing with Provenance-Stamped media.</p>
           </div>
 
-          <button className="flex items-center gap-2 px-5 py-2.5 border border-[#dddddd] rounded-xl font-[600] text-[14px] text-[#222222] hover:bg-gray-50 transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <button className="flex items-center justify-center gap-2 px-5 py-2.5 border border-[#dddddd] rounded-xl font-[600] text-[14px] text-[#222222] hover:bg-gray-50 transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.04)] w-full sm:w-auto">
             <History className="w-[18px] h-[18px]" strokeWidth={2} />
             View Audit Log
           </button>

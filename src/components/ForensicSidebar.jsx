@@ -113,11 +113,11 @@ const ForensicSidebar = ({ image, metadata, hash, isMobile = false }) => {
         <div className={containerClasses}>
 
             {/* Header */}
-            <div className={`pb-5 border-b border-gray-100 bg-gray-50/30 ${isMobile ? 'px-0 pt-0 pb-6' : 'px-7 pt-7'}`}>
+            <div className={`border-b border-gray-100 bg-gray-50/30 ${isMobile ? 'p-5 sm:p-7' : 'px-7 pt-7 pb-5'}`}>
                 <div className="flex justify-between items-start">
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900 tracking-tight mb-0.5">Digital Nutrition Label</h2>
-                        <p className="text-xs text-gray-500">Asset Provenance Report</p>
+                        <h2 className="text-[16px] sm:text-lg font-bold text-gray-900 tracking-tight mb-0.5">Digital Nutrition Label</h2>
+                        <p className="text-[11px] sm:text-xs text-gray-500">Asset Provenance Report</p>
                     </div>
                     <div className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide border ${metadata.isRealExif ? 'bg-blue-50 border-blue-100 text-blue-600' : 'bg-gray-100 border-gray-200 text-gray-400'}`}>
                         {metadata.isRealExif ? 'EXIF' : 'No EXIF'}
@@ -129,7 +129,7 @@ const ForensicSidebar = ({ image, metadata, hash, isMobile = false }) => {
             <div className={`flex-1 space-y-0`}>
 
                 {/* AI Analysis Section */}
-                <div className={`${isMobile ? 'px-0 py-6' : 'px-7 py-6'} border-b border-gray-100`}>
+                <div className={`${isMobile ? 'p-5 sm:p-7' : 'px-7 py-6'} border-b border-gray-100`}>
                     <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-4 flex items-center gap-2">
                         <Zap className="w-3 h-3" />
                         AI Attribution Analysis
@@ -138,7 +138,7 @@ const ForensicSidebar = ({ image, metadata, hash, isMobile = false }) => {
                 </div>
 
                 {/* Camera & Identity */}
-                <div className={`${isMobile ? 'px-0 py-6' : 'px-7 py-6'} border-b border-gray-100`}>
+                <div className={`${isMobile ? 'p-5 sm:p-7' : 'px-7 py-6'} border-b border-gray-100`}>
                     <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 flex items-center gap-2">
                         <Camera className="w-3 h-3" />
                         Capture Identity
@@ -157,7 +157,7 @@ const ForensicSidebar = ({ image, metadata, hash, isMobile = false }) => {
                 </div>
 
                 {/* Integrity */}
-                <div className={`${isMobile ? 'px-0 py-6' : 'px-7 py-6'}`}>
+                <div className={`${isMobile ? 'p-5 sm:p-7' : 'px-7 py-6'}`}>
                     <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2 flex items-center gap-2">
                         <ShieldCheck className="w-3 h-3" />
                         Integrity
@@ -173,8 +173,8 @@ const ForensicSidebar = ({ image, metadata, hash, isMobile = false }) => {
             </div>
 
             {/* Footer */}
-            <div className={`bg-gray-50/50 border-t border-gray-100 ${isMobile ? 'px-6 py-6 rounded-2xl' : 'px-7 py-5'}`}>
-                <p className="text-[10px] text-gray-400 leading-relaxed">
+            <div className={`bg-gray-50/50 border-t border-gray-100 ${isMobile ? 'p-5 sm:p-7 mx-5 mb-5 rounded-2xl' : 'px-7 py-5'}`}>
+                <p className="text-[10px] text-gray-400 leading-relaxed text-center sm:text-left">
                     <span className="text-gray-500 font-semibold">Privacy Guarantee · </span>
                     All analysis runs locally in your browser. Zero data transmitted to external servers.
                 </p>
