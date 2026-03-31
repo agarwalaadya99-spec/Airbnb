@@ -93,13 +93,13 @@ const BookingVerification = () => {
     <div className="bg-surface font-inter text-[#1a1c1c] min-h-screen">
       <Navbar />
 
-      <main className="pt-28 pb-20 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+      <main className="pt-20 sm:pt-28 pb-20 px-4 sm:px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Left Column: Property & Details */}
-          <div className="lg:col-span-7 space-y-12">
+          <div className="lg:col-span-7 space-y-8 sm:y-12">
             {/* Property Summary Card */}
-            <section className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
-              <div className="aspect-21/9 w-full relative">
+            <section className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
+              <div className="aspect-video w-full relative">
                 <img 
                    alt={property.title} 
                    className="w-full h-full object-cover" 
@@ -109,10 +109,10 @@ const BookingVerification = () => {
                   <span className="bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest text-airbnb uppercase border border-white/20 shadow-lg">Verified Listing</span>
                 </div>
               </div>
-              <div className="p-8">
-                <div className="flex justify-between items-start">
+              <div className="p-6 sm:p-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                   <div>
-                    <h1 className="text-3xl font-manrope font-black tracking-tight text-[#1a1c1c] mb-2">{property.title}</h1>
+                    <h1 className="text-2xl sm:text-3xl font-manrope font-black tracking-tight text-[#1a1c1c] mb-2">{property.title}</h1>
                     <p className="text-[#5c3f41] flex items-center gap-2 text-[14px] font-medium opacity-70">
                       <MapPin size={16} />
                       {property.location}
@@ -265,8 +265,8 @@ const BookingVerification = () => {
           </div>
 
           <div className="lg:col-span-5">
-            <div className="sticky top-28 space-y-6">
-              <div className="bg-white p-10 rounded-[40px] shadow-ambient border border-gray-100">
+             <div className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-ambient p-2">
+                <div className="relative rounded-t-[20px] sm:rounded-t-[28px] overflow-hidden aspect-video sm:aspect-video">
                 <h3 className="text-[24px] font-manrope font-black mb-8 tracking-tight">Reservation Breakdown</h3>
                 <div className="space-y-4 mb-10">
                   <div className="flex justify-between text-[#5c3f41] font-medium">
@@ -368,12 +368,14 @@ const BookingVerification = () => {
                     </div>
                   </div>
                   <div>
-                    <p className="text-[20px] font-black">Vikram Sharma</p>
-                    <p className="text-[13px] text-slate-400 font-bold uppercase tracking-widest mt-1">Trust Elite Level 4</p>
+                    <p className="text-[20px] font-black">{mockVerifiedUsers[0].name}</p>
+                    <p className="text-[13px] text-slate-400 font-bold uppercase tracking-widest mt-1">{mockVerifiedUsers[0].level}</p>
                   </div>
                   <div className="flex items-center gap-2 bg-white px-5 py-2.5 rounded-full shadow-sm border border-gray-100">
-                    <Shield size={18} className="text-airbnb" fill="currentColor" fillOpacity={0.1} />
-                    <span className="text-[#1a1c1c] font-black text-[14px]">98% HavenScore</span>
+                     <div className="flex items-center gap-1.5 text-airbnb">
+                        <CheckCircle size={14} fill="currentColor" fillOpacity={0.1} />
+                        <span className="text-[12px] font-extrabold uppercase tracking-widest">Verified Provenance Assets</span>
+                     </div>
                   </div>
                 </div>
 

@@ -43,40 +43,40 @@ const OverviewDashboard = ({ allProperties }) => {
   const trustScore = 88;
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-700">
+    <div className="space-y-6 sm:space-y-10 animate-in fade-in duration-700">
       <header className="space-y-2">
-        <h1 className="text-4xl font-manrope font-black tracking-tight">Host Overview</h1>
+        <h1 className="text-2xl sm:text-4xl font-manrope font-black tracking-tight">Host Overview</h1>
         <p className="text-[#5c3f41] font-medium opacity-60">High-level insights into your portfolio performance.</p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm space-y-4">
-          <div className="p-3 bg-airbnb/5 text-airbnb w-fit rounded-2xl"><DollarSign size={24} /></div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+        <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-sm space-y-4">
+          <div className="p-3 bg-airbnb/5 text-airbnb w-fit rounded-2xl"><DollarSign size={20} /></div>
           <div>
-            <p className="text-slate-400 font-bold text-sm uppercase tracking-widest">Est. Monthly Earnings</p>
-            <h3 className="text-3xl font-black">${totalEarnings.toLocaleString()}</h3>
+            <p className="text-slate-400 font-bold text-[10px] sm:text-sm uppercase tracking-widest">Est. Monthly Earnings</p>
+            <h3 className="text-2xl sm:text-3xl font-black">${totalEarnings.toLocaleString()}</h3>
           </div>
         </div>
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm space-y-4">
-          <div className="p-3 bg-blue-50 text-blue-600 w-fit rounded-2xl"><ShieldCheck size={24} /></div>
+        <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-sm space-y-4">
+          <div className="p-3 bg-blue-50 text-blue-600 w-fit rounded-2xl"><ShieldCheck size={20} /></div>
           <div>
-            <p className="text-slate-400 font-bold text-sm uppercase tracking-widest">Trust Index</p>
-            <h3 className="text-3xl font-black">{trustScore}/100</h3>
+            <p className="text-slate-400 font-bold text-[10px] sm:text-sm uppercase tracking-widest">Trust Index</p>
+            <h3 className="text-2xl sm:text-3xl font-black">{trustScore}/100</h3>
           </div>
         </div>
-        <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm space-y-4">
-          <div className="p-3 bg-green-50 text-green-600 w-fit rounded-2xl"><Users size={24} /></div>
+        <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-sm space-y-4">
+          <div className="p-3 bg-green-50 text-green-600 w-fit rounded-2xl"><Users size={20} /></div>
           <div>
-            <p className="text-slate-400 font-bold text-sm uppercase tracking-widest">Active Bookings</p>
-            <h3 className="text-3xl font-black">14</h3>
+            <p className="text-slate-400 font-bold text-[10px] sm:text-sm uppercase tracking-widest">Active Bookings</p>
+            <h3 className="text-2xl sm:text-3xl font-black">14</h3>
           </div>
         </div>
       </div>
 
-      <div className="bg-[#1a1c1c] rounded-[40px] p-10 text-white flex flex-col md:flex-row items-center justify-between gap-8">
+      <div className="bg-[#1a1c1c] rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
          <div className="space-y-4">
-            <h2 className="text-2xl font-black font-manrope">Verification Performance</h2>
-            <p className="text-white/60 max-w-md">Properties with 100% verified ground truth see 3.4x higher booking conversion rates.</p>
+            <h2 className="text-xl sm:text-2xl font-black font-manrope">Verification Performance</h2>
+            <p className="text-white/60 max-w-md text-sm sm:text-base">Properties with 100% verified ground truth see 3.4x higher booking conversion rates.</p>
             <div className="flex items-center gap-4 pt-2">
                <div className="px-4 py-2 bg-white/10 rounded-full text-[12px] font-black border border-white/10 uppercase italic">Experimental</div>
                <span className="text-green-400 font-bold flex items-center gap-1 text-sm">
@@ -99,24 +99,24 @@ const PortfolioSection = ({ allProperties, portfolioView, setPortfolioView, onSe
         <h1 className="text-4xl font-manrope font-black tracking-tight">Your Portfolio</h1>
         <p className="text-[#5c3f41] font-medium opacity-60">Manage all {allProperties.length} listings in one place.</p>
       </div>
-      <div className="flex items-center gap-3">
-        <div className="flex bg-surface-low p-1 rounded-xl border border-gray-100 mr-2">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex bg-surface-low p-1 rounded-xl border border-gray-100">
            <button 
             onClick={() => setPortfolioView('grid')}
             className={`p-2 rounded-lg transition-all ${portfolioView === 'grid' ? 'bg-white shadow-sm text-airbnb' : 'text-slate-400'}`}
            >
-             <LayoutGrid size={20} />
+             <LayoutGrid size={18} />
            </button>
            <button 
             onClick={() => setPortfolioView('list')}
             className={`p-2 rounded-lg transition-all ${portfolioView === 'list' ? 'bg-white shadow-sm text-airbnb' : 'text-slate-400'}`}
            >
-             <Layout size={20} />
+             <Layout size={18} />
            </button>
         </div>
         <button 
           onClick={onAdd}
-          className="bg-airbnb text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-airbnb/20 flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all text-sm"
+          className="flex-1 sm:flex-initial bg-airbnb text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-airbnb/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all text-sm"
         >
           <Plus size={18} /> New Listing
         </button>
@@ -213,10 +213,10 @@ const ReservationsList = () => (
       <h1 className="text-4xl font-manrope font-black tracking-tight">Active Reservations</h1>
       <p className="text-[#5c3f41] font-medium opacity-60">Real-time booking and trust verification stream.</p>
     </header>
-    <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-10 text-center space-y-4">
-       <div className="w-20 h-20 bg-surface-low rounded-full flex items-center justify-center mx-auto text-slate-300"><Clock size={32} /></div>
-       <h3 className="text-xl font-bold">No upcoming guest arrivals</h3>
-       <p className="text-slate-400 text-sm max-w-xs mx-auto">Verified properties typically receive bookings within 48 hours of media authentication.</p>
+    <div className="bg-white rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-sm p-8 sm:p-10 text-center space-y-4">
+       <div className="w-16 h-16 sm:w-20 sm:h-20 bg-surface-low rounded-full flex items-center justify-center mx-auto text-slate-300"><Clock size={28} /></div>
+       <h3 className="text-lg sm:text-xl font-bold">No upcoming guest arrivals</h3>
+       <p className="text-slate-400 text-xs sm:text-sm max-w-xs mx-auto">Verified properties typically receive bookings within 48 hours of media authentication.</p>
     </div>
   </div>
 );
@@ -232,16 +232,16 @@ const GlobalSafetySettings = () => {
         <p className="text-[#5c3f41] font-medium opacity-60">Manage defaults and cross-portfolio trust policies.</p>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8 space-y-8">
+      <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8 space-y-6 sm:space-y-8">
           {/* Main Safety Controls */}
           <section className="bg-white p-10 rounded-[40px] shadow-sm border border-gray-100 space-y-10">
-            <div className="flex items-center justify-between gap-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
               <div className="space-y-1 flex-1">
-                <div className="flex items-center gap-2 text-airbnb mb-2 font-extrabold tracking-widest text-[11px] uppercase">
-                  <Shield size={16} /> Trust Requirements
+                <div className="flex items-center gap-2 text-airbnb mb-2 font-extrabold tracking-widest text-[10px] uppercase">
+                  <Shield size={14} /> Trust Requirements
                 </div>
-                <h3 className="text-[18px] font-extrabold">Allow only verified guests</h3>
+                <h3 className="text-[16px] sm:text-[18px] font-extrabold">Allow only verified guests</h3>
                 <p className="text-[#5c3f41] text-[14px] leading-relaxed opacity-60">
                   Guests must complete government ID verification and phone authentication before booking.
                 </p>
@@ -318,20 +318,20 @@ const GlobalSafetySettings = () => {
 
         {/* Info Sidebar */}
         <div className="lg:col-span-4 space-y-6">
-           <div className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
+           <div className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
               <div className="aspect-video bg-surface-low">
                  <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover" />
               </div>
-              <div className="p-6 space-y-3">
-                 <h4 className="font-black">Protecting Your Haven</h4>
-                 <p className="text-xs text-slate-500 font-medium leading-relaxed">Verification standards build a community of responsible travelers.</p>
+              <div className="p-6 space-y-2">
+                 <h4 className="font-black text-[15px] sm:text-base">Protecting Your Haven</h4>
+                 <p className="text-[11px] sm:text-xs text-slate-500 font-medium leading-relaxed">Verification standards build a community of responsible travelers.</p>
               </div>
            </div>
-           <div className="bg-green-50 p-6 rounded-[24px] border border-green-100 flex items-start gap-4">
-              <Lock size={24} className="text-green-600 mt-1" />
+           <div className="bg-green-50 p-5 sm:p-6 rounded-[20px] sm:rounded-[24px] border border-green-100 flex items-start gap-4">
+              <Lock size={20} className="text-green-600 mt-1 shrink-0" />
               <div className="space-y-1">
-                 <p className="font-black text-green-800 text-[14px]">Zero-Liability Guarantee</p>
-                 <p className="text-[12px] text-green-700/70 font-medium leading-relaxed">
+                 <p className="font-black text-green-800 text-[13px] sm:text-[14px]">Zero-Liability Guarantee</p>
+                 <p className="text-[11px] sm:text-[12px] text-green-700/70 font-medium leading-relaxed">
                     Hosting verified guests covers you by Airbnb's $1M policy automatically.
                  </p>
               </div>
@@ -509,11 +509,32 @@ const HostDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface font-inter text-[#1a1c1c] flex flex-col">
+    <div className="min-h-screen bg-surface font-inter text-[#1a1c1c] flex flex-col pb-20 lg:pb-0">
       <Navbar />
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar Navigation */}
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Mobile Bottom Navigation */}
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-t border-gray-100 px-6 py-3 flex items-center justify-between shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+          {[
+            { id: 'overview', label: 'Home', icon: LayoutGrid },
+            { id: 'portfolio', label: 'Listings', icon: Layout },
+            { id: 'reservations', label: 'Bookings', icon: Clock },
+            { id: 'safety', label: 'Safety', icon: ShieldCheck },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => { setSidebarTab(item.id); setSelectedPropertyId(null); }}
+              className={`flex flex-col items-center gap-1 transition-all ${
+                sidebarTab === item.id && !selectedPropertyId ? 'text-airbnb' : 'text-slate-400'
+              }`}
+            >
+              <item.icon size={20} className={sidebarTab === item.id && !selectedPropertyId ? 'scale-110' : ''} />
+              <span className="text-[10px] font-black uppercase tracking-tighter">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {/* Sidebar Navigation - Desktop only */}
         <aside className="hidden lg:flex w-72 flex-col bg-white border-r border-gray-100 p-6 space-y-8">
           <div className="space-y-1 px-2">
             <h2 className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Host Suite</h2>
@@ -552,7 +573,7 @@ const HostDashboard = () => {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto px-6 py-8 lg:px-10 lg:py-12">
+        <main className="flex-1 overflow-y-auto px-4 sm:px-6 py-8 lg:px-10 lg:py-12">
           {selectedPropertyId && selectedProperty ? (
             /* Detailed Listing Management View */
             <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 animate-in slide-in-from-right-8 duration-500">
@@ -562,16 +583,16 @@ const HostDashboard = () => {
                     <ChevronLeft size={16} /> Back to {sidebarTab}
                   </button>
                   <div className="space-y-4">
-                    <h1 className="text-4xl font-manrope font-black tracking-tight">{selectedProperty.title}</h1>
-                    <div className="flex items-center gap-1 p-1 bg-surface-low rounded-2xl w-fit border border-gray-100 shadow-sm">
+                    <h1 className="text-2xl sm:text-4xl font-manrope font-black tracking-tight">{selectedProperty.title}</h1>
+                    <div className="flex items-center gap-1 p-1 bg-surface-low rounded-2xl w-full sm:w-fit border border-gray-100 shadow-sm overflow-x-auto no-scrollbar">
                       {[
                         { id: 'overview', label: 'Overview', icon: Layout },
                         { id: 'details', label: 'Details', icon: Edit3 },
                         { id: 'media', label: 'Media', icon: ImageIcon },
                         { id: 'policies', label: 'Policies', icon: Shield }
                       ].map((tab) => (
-                        <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-extrabold text-[14px] transition-all ${activeTab === tab.id ? 'bg-white text-airbnb shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
-                          <tab.icon size={16} /> {tab.label}
+                        <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl font-extrabold text-[12px] sm:text-[14px] transition-all shrink-0 ${activeTab === tab.id ? 'bg-white text-airbnb shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
+                          <tab.icon size={14} /> {tab.label}
                         </button>
                       ))}
                     </div>
@@ -579,54 +600,54 @@ const HostDashboard = () => {
                 </header>
 
                 {activeTab === 'overview' && (
-                  <section className="bg-white rounded-[40px] p-10 shadow-ambient border border-gray-100 flex items-center gap-10">
+                  <section className="bg-white rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 shadow-ambient border border-gray-100 flex flex-col sm:flex-row items-center gap-6 sm:gap-10 text-center sm:text-left">
                     <div className="relative shrink-0">
-                      <div className={`w-32 h-32 rounded-full border-8 flex items-center justify-center ${selectedProperty.photos.every(p => p.isVerified) ? 'border-green-500' : 'border-airbnb/20'}`}>
-                        <span className="text-2xl font-black">{Math.round((selectedProperty.photos.filter(p => p.isVerified).length / selectedProperty.photos.length) * 100)}%</span>
+                      <div className={`w-24 h-24 sm:w-32 sm:h-32 rounded-full border-8 flex items-center justify-center ${selectedProperty.photos.every(p => p.isVerified) ? 'border-green-500' : 'border-airbnb/20'}`}>
+                        <span className="text-xl sm:text-2xl font-black">{Math.round((selectedProperty.photos.filter(p => p.isVerified).length / selectedProperty.photos.length) * 100)}%</span>
                       </div>
-                      <ShieldCheck size={24} className="absolute -bottom-2 right-0 bg-white p-2 rounded-full shadow-md text-airbnb" />
+                      <ShieldCheck size={20} className="absolute -bottom-1 right-0 bg-white p-2 rounded-full shadow-md text-airbnb" />
                     </div>
                     <div className="space-y-4">
-                      <h2 className="text-2xl font-black font-manrope">Ground Truth Health</h2>
-                      <p className="text-slate-500 max-w-md">Your listing provenance is currently rated {selectedProperty.photos.every(p => p.isVerified) ? 'Excellent' : 'Needs Improvement'}.</p>
-                      <button onClick={() => setActiveTab('media')} className="bg-airbnb text-white px-8 py-3 rounded-full font-black">Fix Legacy Media</button>
+                      <h2 className="text-xl sm:text-2xl font-black font-manrope">Ground Truth Health</h2>
+                      <p className="text-slate-500 text-sm sm:text-base max-w-md">Your listing provenance is currently rated {selectedProperty.photos.every(p => p.isVerified) ? 'Excellent' : 'Needs Improvement'}.</p>
+                      <button onClick={() => setActiveTab('media')} className="w-full sm:w-auto bg-airbnb text-white px-8 py-3 rounded-full font-black text-sm sm:text-base">Fix Legacy Media</button>
                     </div>
                   </section>
                 )}
 
                 {activeTab === 'details' && (
-                  <form onSubmit={handleUpdateProperty} className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm space-y-8">
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-2 col-span-2">
-                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Title</label>
-                        <input type="text" value={propertyDetails.title} onChange={(e) => setPropertyDetails({...propertyDetails, title: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none" placeholder="Property Title" />
+                  <form onSubmit={handleUpdateProperty} className="bg-white p-6 sm:p-10 rounded-[32px] sm:rounded-[40px] border border-gray-100 shadow-sm space-y-6 sm:space-y-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="space-y-2 sm:col-span-2">
+                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Title</label>
+                        <input type="text" value={propertyDetails.title} onChange={(e) => setPropertyDetails({...propertyDetails, title: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="Property Title" />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Price ($)</label>
-                        <input type="number" value={propertyDetails.price} onChange={(e) => setPropertyDetails({...propertyDetails, price: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none" />
+                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Price ($)</label>
+                        <input type="number" value={propertyDetails.price} onChange={(e) => setPropertyDetails({...propertyDetails, price: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Location</label>
-                        <input type="text" value={propertyDetails.location} onChange={(e) => setPropertyDetails({...propertyDetails, location: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none" placeholder="City, Country" />
+                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Location</label>
+                        <input type="text" value={propertyDetails.location} onChange={(e) => setPropertyDetails({...propertyDetails, location: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="City, Country" />
                       </div>
-                      <div className="space-y-2 col-span-2">
-                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Description</label>
-                        <textarea rows={4} value={propertyDetails.description} onChange={(e) => setPropertyDetails({...propertyDetails, description: e.target.value})} className="w-full bg-surface-low rounded-[24px] py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none resize-none" placeholder="Provide a detailed description of your stay." />
+                      <div className="space-y-2 sm:col-span-2">
+                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Description</label>
+                        <textarea rows={4} value={propertyDetails.description} onChange={(e) => setPropertyDetails({...propertyDetails, description: e.target.value})} className="w-full bg-surface-low rounded-[20px] sm:rounded-[24px] py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none resize-none text-sm" placeholder="Provide a detailed description of your stay." />
                       </div>
-                      <div className="space-y-2 col-span-2">
-                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Featured Image URL</label>
-                        <input type="text" value={propertyDetails.image} onChange={(e) => setPropertyDetails({...propertyDetails, image: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none" placeholder="https://images.unsplash.com/your-photo" />
-                        <p className="text-[10px] text-slate-400 font-bold pl-2 mt-1 uppercase italic">Note: Verified photos can also be set as primary from the Media tab.</p>
+                      <div className="space-y-2 sm:col-span-2">
+                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Featured Image URL</label>
+                        <input type="text" value={propertyDetails.image} onChange={(e) => setPropertyDetails({...propertyDetails, image: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="https://images.unsplash.com/your-photo" />
+                        <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold pl-2 mt-1 uppercase italic">Note: Verified photos can also be set as primary from the Media tab.</p>
                       </div>
                     </div>
-                    <button type="submit" className="bg-airbnb text-white px-10 py-4 rounded-2xl font-black">Save Changes</button>
+                    <button type="submit" className="w-full sm:w-auto bg-airbnb text-white px-10 py-4 rounded-2xl font-black text-sm sm:text-base">Save Changes</button>
                   </form>
                 )}
 
                 {activeTab === 'media' && (
-                  <div className="grid grid-cols-3 gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                     {selectedProperty.photos.map((ph, idx) => (
-                      <div key={ph.id || idx} className="aspect-4/3 rounded-[32px] overflow-hidden relative group">
+                      <div key={ph.id || idx} className="aspect-square sm:aspect-4/3 rounded-[24px] sm:rounded-[32px] overflow-hidden relative group shadow-sm border border-gray-100">
                         <img src={ph.url} className="w-full h-full object-cover" />
                         
                         {/* Status Badges */}
@@ -663,32 +684,32 @@ const HostDashboard = () => {
                 )}
 
                 {activeTab === 'policies' && (
-                  <div className="bg-white p-10 rounded-[40px] border border-gray-100 shadow-sm space-y-8">
-                     <div className="flex items-center justify-between">
-                        <div>
-                           <h4 className="font-black text-lg">Verified Guests Only</h4>
-                           <p className="text-sm text-slate-400">Restricts booking to hardware-attested travelers.</p>
+                  <div className="bg-white p-6 sm:p-10 rounded-[32px] sm:rounded-[40px] border border-gray-100 shadow-sm space-y-8">
+                     <div className="flex items-center justify-between gap-4">
+                        <div className="space-y-1">
+                           <h4 className="font-black text-base sm:text-lg">Verified Guests Only</h4>
+                           <p className="text-xs sm:text-sm text-slate-400">Restricts booking to hardware-attested travelers.</p>
                         </div>
                         <button 
                           onClick={() => setSafetySettings({...safetySettings, allowUnverifiedGuests: !safetySettings.allowUnverifiedGuests})}
-                          className={`w-14 h-8 rounded-full transition-all relative ${!safetySettings.allowUnverifiedGuests ? 'bg-airbnb' : 'bg-gray-200'}`}
+                          className={`w-14 h-8 shrink-0 rounded-full transition-all relative ${!safetySettings.allowUnverifiedGuests ? 'bg-airbnb' : 'bg-gray-200'}`}
                         >
                            <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${!safetySettings.allowUnverifiedGuests ? 'left-7' : 'left-1'}`} />
                         </button>
                      </div>
-                     <button onClick={handleUpdateProperty} className="w-full py-4 bg-black text-white rounded-2xl font-black">Confirm Policy</button>
+                     <button onClick={handleUpdateProperty} className="w-full py-4 bg-[#1a1c1c] text-white rounded-2xl font-black text-sm">Confirm Policy</button>
                   </div>
                 )}
               </div>
-              <aside className="w-full lg:w-[320px] bg-[#1a1c1c] rounded-[40px] p-8 text-white h-fit">
-                <h4 className="text-lg font-black mb-6">Listing Insights</h4>
+              <aside className="w-full lg:w-[320px] bg-[#1a1c1c] rounded-[32px] sm:rounded-[40px] p-6 sm:p-8 text-white h-fit">
+                <h4 className="text-base sm:text-lg font-black mb-6">Listing Insights</h4>
                 <div className="space-y-6">
                    <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                      <span className="text-sm opacity-60">Visibility Score</span>
+                      <span className="text-xs sm:text-sm opacity-60">Visibility Score</span>
                       <span className="font-black text-green-400">+12%</span>
                    </div>
                    <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                      <span className="text-sm opacity-60">Avg. Rating</span>
+                      <span className="text-xs sm:text-sm opacity-60">Avg. Rating</span>
                       <span className="font-black">{selectedProperty.rating} ★</span>
                    </div>
                 </div>

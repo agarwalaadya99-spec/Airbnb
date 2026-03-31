@@ -20,59 +20,46 @@ const BookingConfirmation = () => {
   return (
     <div className="bg-surface font-inter text-[#1a1c1c] min-h-screen">
       {/* TopAppBar - Fixed */}
-      <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-transparent">
-        <div className="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-8">
+      <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-gray-100">
+        <div className="flex justify-between items-center w-full px-4 sm:px-6 py-4 max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 sm:gap-8">
             <span 
               onClick={() => navigate('/')} 
-              className="text-2xl font-black text-airbnb tracking-tighter font-manrope cursor-pointer"
+              className="text-xl sm:text-2xl font-black text-airbnb tracking-tighter font-manrope cursor-pointer"
             >
               Airbnb
             </span>
-            <nav className="hidden md:flex items-center gap-6">
-              <a className="font-manrope font-bold tracking-tight text-slate-500 hover:text-slate-900 transition-colors" href="#">Properties</a>
-              <a 
-                onClick={() => navigate('/host-safety')}
-                className="font-manrope font-bold tracking-tight text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
-              >
-                Safety
-              </a>
-              <a className="font-manrope font-bold tracking-tight text-airbnb border-b-2 border-airbnb pb-1" href="#">Account</a>
-            </nav>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <button className="p-2 text-slate-500 hover:opacity-80 transition-opacity active:scale-95 duration-200">
-              <Bell size={24} />
+              <Bell size={20} />
             </button>
-            <button className="p-2 text-slate-500 hover:opacity-80 transition-opacity active:scale-95 duration-200">
-              <HelpCircle size={24} />
-            </button>
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-surface-container">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-gray-100">
               <img 
                 alt="User profile avatar" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQLAdqJpSQ7IZ5MvjGY9tSqLOfwFtEh1ebALYhQWwabdjAg3ncg-xEJtcTtlklubLDoswqWa8DYQkvAEJRPaSKChygk2J540HbPYBP1u7IAMw-PsBQTwHMVGWKhB_rIZ9rZ8W4D0vuriItGEc2O_kJaT7VZdjfnsq9rVazRDMQYW9oZLsEjTpff64_xjO2M-KBsunRoVAnxFQHV9lpEgM8HgG5xSWjGUihWHIR1c6Ryo5wmb8CJgDUq9HM_yBWv8HmrHfeRDVxbKg"
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150"
               />
             </div>
           </div>
         </div>
       </header>
 
-      <main className="pt-32 pb-20 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-          <div className="lg:col-span-7 space-y-12">
+      <main className="pt-24 sm:pt-32 pb-20 px-4 sm:px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-12 lg:gap-16">
+          <div className="lg:col-span-7 space-y-8 sm:space-y-12">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="space-y-4"
             >
-              <div className="inline-flex items-center gap-2 bg-[#006a45]/10 text-[#006a45] px-4 py-1.5 rounded-full text-[13px] font-extrabold uppercase tracking-widest">
-                <CheckCircle size={16} fill="currentColor" fillOpacity={0.1} />
+              <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-1.5 rounded-full text-[11px] sm:text-[13px] font-extrabold uppercase tracking-widest">
+                <CheckCircle size={14} fill="currentColor" fillOpacity={0.1} />
                 Booking Confirmed
               </div>
-              <h1 className="text-5xl md:text-6xl font-manrope font-extrabold tracking-tight text-[#1a1c1c] leading-[1.1]">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-manrope font-extrabold tracking-tight text-[#1a1c1c] leading-[1.1]">
                 Your stay is booked!
               </h1>
-              <p className="text-[18px] text-[#5c3f41] max-w-[500px] font-medium opacity-80 leading-relaxed">
+              <p className="text-[16px] sm:text-[18px] text-[#5c3f41] max-w-[500px] font-medium opacity-80 leading-relaxed">
                 Everything is set for your upcoming trip to the coast. We've sent the receipt to your email.
               </p>
             </motion.div>
@@ -127,11 +114,11 @@ const BookingConfirmation = () => {
                </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 pt-4">
-               <button className="px-8 py-4 bg-linear-to-r from-airbnb to-airbnb-hover text-white rounded-full font-extrabold text-[16px] shadow-lg shadow-airbnb/20 hover:scale-105 transition-all">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+               <button className="flex-1 px-8 py-4 bg-airbnb text-white rounded-full font-extrabold text-[15px] sm:text-[16px] shadow-lg shadow-airbnb/20 hover:scale-105 transition-all">
                   Manage Trip
                </button>
-               <button className="px-8 py-4 bg-slate-200 text-[#1a1c1c] rounded-full font-extrabold text-[16px] hover:bg-slate-300 transition-all flex items-center gap-2">
+               <button className="flex-1 px-8 py-4 bg-slate-100 text-[#1a1c1c] rounded-full font-extrabold text-[15px] sm:text-[16px] hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
                   <Download size={18} />
                   Download PDF
                </button>
@@ -139,8 +126,8 @@ const BookingConfirmation = () => {
           </div>
 
           <div className="lg:col-span-5">
-             <div className="bg-white rounded-2xl overflow-hidden shadow-ambient p-2">
-                <div className="relative rounded-t-xl overflow-hidden aspect-4/3">
+             <div className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-ambient p-2">
+                <div className="relative rounded-t-[20px] sm:rounded-t-[28px] overflow-hidden aspect-video sm:aspect-4/3">
                    <img 
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFS1R_O_C0fzC2p1ADXz7iHZexG0x-2xvD-pO4eG6RnsZe-wXlmmQXsZ6AKrGcH6PzNvhe2DNxnZnZ9p5vlKmO7lrkJqvyaZ5-X34LR75LcM_LSILLmxZ_ma7Nv0MWWh9VFEeeWuovjpXowSps6opN96OqyTtsd407x61U4H7GICGp-5YcVgWl7rqhkMxPEfH3vxh2Zoj-AWG3Ityg_hf_G2Jopo_cFAG-pn1Wq0lruoJS_vFq64D9isR_sw7B1x6J-WqRhOlTceg" 
                     className="w-full h-full object-cover"

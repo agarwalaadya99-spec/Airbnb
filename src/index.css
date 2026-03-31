@@ -79,3 +79,12 @@ body {
 .tonal-card:hover {
   box-shadow: 0 24px 48px -12px rgba(144, 111, 112, 0.12);
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

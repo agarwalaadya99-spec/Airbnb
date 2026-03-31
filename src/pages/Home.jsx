@@ -91,7 +91,7 @@ const Home = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative w-full aspect-[21/9] sm:aspect-[16/6] rounded-[32px] overflow-hidden group cursor-pointer bg-gray-100 shadow-xl"
+            className="relative w-full aspect-3/4 sm:aspect-[16/6] rounded-[32px] overflow-hidden group cursor-pointer bg-gray-100 shadow-xl"
           >
             <img 
               src="/forest.png" 
@@ -109,7 +109,7 @@ const Home = () => {
                     Featured Icon
                   </span>
                 </div>
-                <h2 className="text-white text-[32px] sm:text-[56px] font-manrope font-extrabold leading-[1.1] mb-6 max-w-[600px] drop-shadow-2xl">
+                <h2 className="text-white text-[24px] sm:text-[56px] font-manrope font-black leading-[1.2] sm:leading-[1.1] mb-4 sm:mb-6 max-w-[600px] drop-shadow-2xl">
                   Stay in a floating geometric forest.
                 </h2>
                 <button className="w-fit bg-white text-[#222222] px-8 py-4 rounded-2xl font-extrabold text-[16px] hover:scale-105 transition-all shadow-2xl active:scale-[0.98]">
@@ -121,7 +121,7 @@ const Home = () => {
         </section>
 
         {/* Property Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-6 gap-y-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-10 sm:gap-y-12">
           {activeProperties
             .filter(p => !activeCategory || activeCategory === 'all' || p.category?.toLowerCase() === activeCategory.toLowerCase() || (activeCategory === 'icons' && p.category === 'Icons'))
             .map((p, idx) => (
@@ -148,7 +148,7 @@ const Home = () => {
       <motion.div 
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50"
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 hidden md:block"
       >
         <button className="bg-[#222222] text-white flex items-center gap-2 px-6 py-4 rounded-full font-bold text-[14px] shadow-2xl hover:scale-105 transition-all active:scale-[0.95] group">
           Show map 

@@ -38,21 +38,21 @@ const LandingPage = () => {
         <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[100px]" />
       </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 py-12 lg:py-24 min-h-screen flex flex-col justify-center">
-        <div className="space-y-4 mb-16 text-center lg:text-left">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-24 min-h-screen flex flex-col justify-center">
+        <div className="space-y-4 mb-12 lg:mb-16 text-center lg:text-left">
           <motion.div 
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 text-[13px] font-extrabold text-airbnb uppercase tracking-widest"
+            className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100 text-[11px] sm:text-[13px] font-extrabold text-airbnb uppercase tracking-widest"
           >
-            <Shield size={16} fill="currentColor" fillOpacity={0.1} />
+            <Shield size={14} fill="currentColor" fillOpacity={0.1} />
             Airbnb Trust Core v2.0
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl lg:text-7xl font-manrope font-black tracking-tight leading-[1.05]"
+            className="text-4xl sm:text-5xl lg:text-7xl font-manrope font-black tracking-tight leading-[1.1] lg:leading-[1.05]"
           >
             A Future Built on <br />
             <span className="text-airbnb">Verifiable Truth</span>
@@ -61,9 +61,9 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-[18px] lg:text-[20px] text-[#5c3f41] max-w-[600px] font-medium opacity-80"
+            className="text-[15px] sm:text-[18px] lg:text-[20px] text-[#5c3f41] max-w-[600px] font-medium opacity-80"
           >
-            Eliminating AI-generated listing fraud through multi-layered hardware attestation and digital provenance. Choose your perspective to begin the study.
+            Eliminating AI-generated listing fraud through multi-layered hardware attestation and digital provenance. Choose your perspective to begin.
           </motion.p>
         </div>
 
@@ -128,14 +128,14 @@ const LandingPage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="mt-24 pt-8 border-t border-gray-100 flex flex-col lg:flex-row justify-between items-center gap-8 text-[12px] font-bold text-slate-400 uppercase tracking-widest"
+          className="mt-16 sm:mt-24 pt-8 border-t border-gray-100 flex flex-col lg:flex-row justify-between items-center gap-6 lg:gap-8 text-[10px] sm:text-[12px] font-bold text-slate-400 uppercase tracking-widest text-center"
         >
-          <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2"><Globe size={16} /> Distributed Ledger Hash: 0x82...AF21</div>
-            <div className="flex items-center gap-2 text-airbnb"><Sparkles size={16} /> AI Sentiment Score: 0.998</div>
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+            <div className="flex items-center gap-2"><Globe size={14} /> Distributed Ledger Hash: 0x82...AF21</div>
+            <div className="flex items-center gap-2 text-airbnb"><Sparkles size={14} /> AI Sentiment Score: 0.998</div>
           </div>
           <div className="flex items-center gap-1.5 opacity-60">
-            Powered by Airbnb Digital Provenance Parser · v0.8.4
+            Powered by Airbnb Digital Provenance Parser
           </div>
         </motion.div>
       </main>
