@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     Camera, MapPin, Shield, X, Circle, RefreshCw,
     AlertTriangle, CheckCircle, Loader, Lock, ChevronLeft,
-    Zap, ZapOff, SwitchCamera
+    Zap, ZapOff, SwitchCamera, Check
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Permission States ---
 const PERM = {
@@ -35,6 +36,9 @@ const SecureCamera = ({ onCapture, onClose }) => {
     const [flash, setFlash] = useState(false);
     const [shutter, setShutter] = useState(false);
     const [capturedImage, setCapturedImage] = useState(null);
+    const [isScanning, setIsScanning] = useState(false);
+    const [scanProgress, setScanProgress] = useState(0);
+    const [isSigning, setIsSigning] = useState(false);
     const [now, setNow] = useState(new Date());
 
     // Live clock
@@ -163,12 +167,37 @@ const SecureCamera = ({ onCapture, onClose }) => {
         canvas.toBlob((blob) => {
             const url = URL.createObjectURL(blob);
             setCapturedImage({ url, blob, timestamp, gpsCoords });
+            
+            // Kick off AI scanning
+            setIsScanning(true);
+            setScanProgress(0);
         }, 'image/jpeg', 0.95);
 
     }, [videoRef, canvasRef, facingMode, now, gpsCoords]);
+    
+    // Scan animation loop
+    useEffect(() => {
+        if (!isScanning) return;
+        const interval = setInterval(() => {
+            setScanProgress(p => {
+                if (p >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => setIsScanning(false), 500);
+                    return 100;
+                }
+                return p + 1.2;
+            });
+        }, 30);
+        return () => clearInterval(interval);
+    }, [isScanning]);
 
-    const confirmCapture = () => {
+    const confirmCapture = async () => {
         if (!capturedImage) return;
+        setIsSigning(true);
+
+        // Simulate high-tech signing process
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
         const { blob, timestamp, gpsCoords } = capturedImage;
 
         const file = new File([blob], `secure-capture-${Date.now()}.jpg`, { type: 'image/jpeg' });
@@ -203,6 +232,8 @@ const SecureCamera = ({ onCapture, onClose }) => {
 
     const retake = () => {
         setCapturedImage(null);
+        setIsScanning(false);
+        setScanProgress(0);
     };
 
     const canProceed = cameraPerm === PERM.GRANTED;
@@ -211,264 +242,334 @@ const SecureCamera = ({ onCapture, onClose }) => {
 
     if (step === 'permissions') {
         return (
-            <div className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-xl flex items-center justify-center p-6">
-                <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8 relative animate-in fade-in zoom-in duration-300">
+            <div className="fixed inset-0 z-200 bg-black/40 backdrop-blur-md flex items-center justify-center p-6 sm:p-0">
+                <motion.div 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="bg-white rounded-[32px] shadow-2xl w-full max-w-md p-8 relative overflow-hidden"
+                >
+                    {/* Decorative background blur */}
+                    <div className="absolute -top-24 -right-24 w-48 h-48 bg-airbnb/5 rounded-full blur-3xl opacity-50" />
 
                     {/* Close */}
                     <button
                         onClick={onClose}
-                        className="absolute top-5 right-5 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition-colors z-20"
                     >
                         <X className="w-5 h-5 text-gray-400" />
                     </button>
 
                     {/* Header */}
-                    <div className="flex items-center gap-3 mb-8">
-                        <div className="w-12 h-12 bg-[#FF385C] rounded-2xl flex items-center justify-center shadow-lg">
-                            <Lock className="w-6 h-6 text-white" />
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="w-14 h-14 bg-airbnb rounded-2xl flex items-center justify-center shadow-lg shadow-airbnb/20">
+                            <Shield className="w-7 h-7 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900">Open Secure Camera</h2>
-                            <p className="text-xs text-gray-500">Verified Human-Shot with real-time provenance</p>
+                            <h2 className="text-[22px] font-manrope font-extrabold text-[#222222]">Secure Verification</h2>
+                            <p className="text-[13px] text-[#717171] font-medium">Powered by Digital Provenance</p>
                         </div>
                     </div>
 
-                    {/* Trust Badge */}
-                    <div className="flex items-start gap-3 bg-green-50 border border-green-100 rounded-2xl p-4 sm:p-5 mb-6 sm:mb-8">
-                        <Shield className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <p className="text-xs sm:text-sm text-green-700 leading-relaxed">
-                            Photos taken here receive <strong>highest trust level</strong> — GPS coordinates, device timestamp, and a SHA2-256 hash are embedded at the moment of capture.
+                    {/* Info Card */}
+                    <div className="bg-surface-container-low rounded-2xl p-5 mb-8 border border-gray-100/50">
+                        <p className="text-[14px] text-[#222222] leading-relaxed">
+                            To ensure high-fidelity trust, we use a **secure enclave** to capture photos. This embeds tamper-proof GPS and device-level metadata.
                         </p>
                     </div>
 
-                    {/* Permission: Camera */}
-                    <div className="space-y-4 mb-8">
-                        <div className="flex items-center justify-between py-4 border-b border-gray-50">
+                    {/* Permissions List */}
+                    <div className="space-y-2 mb-10">
+                        {[
+                          { 
+                            id: 'camera', 
+                            label: 'Camera Access', 
+                            desc: 'Captures live, untampered media', 
+                            icon: Camera, 
+                            state: cameraPerm, 
+                            request: requestCamera 
+                          },
+                          { 
+                            id: 'gps', 
+                            label: 'Location (GPS)', 
+                            desc: 'Geospatial verification stamp', 
+                            icon: MapPin, 
+                            state: gpsPerm, 
+                            status: gpsStatus,
+                            request: requestGPS,
+                            disabled: cameraPerm !== PERM.GRANTED
+                          }
+                        ].map((item) => (
+                          <div key={item.id} className="flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 transition-colors group">
                             <div className="flex items-center gap-4">
-                                <div className={`p-3 rounded-xl transition-colors ${cameraPerm === PERM.GRANTED ? 'bg-green-50' : 'bg-gray-50'}`}>
-                                    <Camera className={`w-5 h-5 ${cameraPerm === PERM.GRANTED ? 'text-green-600' : 'text-gray-500'}`} />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-gray-900">Camera Access</p>
-                                    <p className="text-xs text-gray-400">Required to capture live photos</p>
-                                </div>
+                              <div className={`p-3 rounded-xl ${item.state === PERM.GRANTED ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400'}`}>
+                                <item.icon size={20} />
+                              </div>
+                              <div>
+                                <span className="block font-bold text-[15px]">{item.label}</span>
+                                <span className="text-[12px] text-[#717171]">
+                                  {item.id === 'gps' && item.status === GPS.FOUND && gpsCoords 
+                                    ? `${gpsCoords.lat}, ${gpsCoords.lng}` 
+                                    : item.desc}
+                                </span>
+                              </div>
                             </div>
-
-                            {cameraPerm === PERM.IDLE && (
-                                <button
-                                    onClick={requestCamera}
-                                    className="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-700 transition-colors"
+                            
+                            <div className="flex items-center">
+                              {item.state === PERM.IDLE && (
+                                <button 
+                                  onClick={item.request}
+                                  disabled={item.disabled}
+                                  className="text-[13px] font-extrabold text-airbnb px-4 py-1.5 rounded-full hover:bg-airbnb/5 transition-colors disabled:opacity-30"
                                 >
-                                    Allow
+                                  Allow
                                 </button>
-                            )}
-                            {cameraPerm === PERM.REQUESTING && (
-                                <Loader className="w-5 h-5 text-gray-400 animate-spin" />
-                            )}
-                            {cameraPerm === PERM.GRANTED && (
-                                <CheckCircle className="w-5 h-5 text-green-500" />
-                            )}
-                            {cameraPerm === PERM.DENIED && (
-                                <span className="text-xs text-red-500 font-bold">Denied</span>
-                            )}
-                        </div>
-
-                        {/* Permission: GPS */}
-                        <div className="flex items-center justify-between py-4">
-                            <div className="flex items-center gap-4">
-                                <div className={`p-3 rounded-xl transition-colors ${gpsStatus === GPS.FOUND ? 'bg-green-50' : 'bg-gray-50'}`}>
-                                    <MapPin className={`w-5 h-5 ${gpsStatus === GPS.FOUND ? 'text-green-600' : 'text-gray-500'}`} />
-                                </div>
-                                <div>
-                                    <p className="text-sm font-bold text-gray-900">Location (GPS)</p>
-                                    <p className="text-xs text-gray-400">
-                                        {gpsStatus === GPS.FOUND && gpsCoords
-                                            ? `${gpsCoords.lat}, ${gpsCoords.lng} (±${gpsCoords.accuracy}m)`
-                                            : 'Embeds real-world coordinates in photo'}
-                                    </p>
-                                </div>
+                              )}
+                              {item.state === PERM.REQUESTING && <Loader size={18} className="animate-spin text-gray-400" />}
+                              {item.state === PERM.GRANTED && <CheckCircle size={20} className="text-green-500" />}
+                              {item.state === PERM.DENIED && <span className="text-[12px] font-bold text-amber-500">Skipped</span>}
                             </div>
-
-                            {gpsPerm === PERM.IDLE && (
-                                <button
-                                    onClick={requestGPS}
-                                    disabled={cameraPerm !== PERM.GRANTED}
-                                    className="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-700 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                                >
-                                    Allow
-                                </button>
-                            )}
-                            {gpsPerm === PERM.REQUESTING && (
-                                <Loader className="w-5 h-5 text-gray-400 animate-spin" />
-                            )}
-                            {gpsPerm === PERM.GRANTED && gpsStatus === GPS.FOUND && (
-                                <CheckCircle className="w-5 h-5 text-green-500" />
-                            )}
-                            {gpsPerm === PERM.DENIED && (
-                                <span className="text-xs text-amber-500 font-bold">Skipped</span>
-                            )}
-                        </div>
+                          </div>
+                        ))}
                     </div>
 
-                    {cameraPerm === PERM.DENIED && (
-                        <div className="flex gap-2 items-start bg-red-50 border border-red-100 rounded-xl p-4 mb-6 text-sm text-red-700">
-                            <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                            Camera permission was denied. Please allow camera access in your browser settings and try again.
-                        </div>
-                    )}
-
-                    {/* Proceed Button */}
+                    {/* Action */}
                     <button
                         onClick={proceedToCamera}
                         disabled={!canProceed}
-                        className="w-full py-4 bg-[#FF385C] text-white font-bold rounded-2xl flex items-center justify-center gap-2 hover:bg-[#E31C5F] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-lg shadow-[#FF385C]/20 active:scale-[0.98] transform"
+                        className="w-full py-4 bg-airbnb text-white font-extrabold rounded-2xl flex items-center justify-center gap-2 hover:bg-airbnb-hover transition-all disabled:opacity-40 shadow-xl shadow-airbnb/20 active:scale-[0.98]"
                     >
-                        <Camera className="w-5 h-5" />
-                        Open Secure Camera
+                        Launch Secure Viewfinder
                     </button>
-
-                    <p className="text-center text-[10px] text-gray-400 mt-4">
-                        GPS is optional but increases trust score
-                    </p>
-                </div>
+                    
+                    <button 
+                      onClick={onClose}
+                      className="w-full text-center mt-4 text-[13px] font-semibold text-[#717171] hover:text-[#222222]"
+                    >
+                      Maybe later
+                    </button>
+                </motion.div>
             </div>
         );
     }
 
-    // ─── CAMERA VIEW ──────────────────────────────────────────────────────────
     if (step === 'camera') {
         return (
-            <div className="fixed inset-0 z-[200] bg-black flex flex-col">
+            <div className="fixed inset-0 z-200 bg-black flex flex-col sm:p-4 lg:p-8">
+                {/* Viewfinder Container */}
+                <motion.div 
+                    initial={{ scale: 0.95, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="flex-1 relative bg-black rounded-[24px] overflow-hidden shadow-2xl flex flex-col"
+                >
+                    {shutter && (
+                        <div className="absolute inset-0 bg-white/90 z-50 pointer-events-none" />
+                    )}
 
-                {/* Shutter flash overlay */}
-                {shutter && (
-                    <div className="absolute inset-0 bg-white z-50 pointer-events-none animate-[flash_250ms_ease-in-out]" />
-                )}
+                    {capturedImage ? (
+                        <div className="flex-1 flex flex-col bg-black">
+                            <div className="flex-1 relative flex items-center justify-center">
+                                <img src={capturedImage.url} className="max-h-full max-w-full object-contain" alt="Captured" />
+                                
+                                {/* AI Scanning Laser Line */}
+                                <AnimatePresence>
+                                  {isScanning && (
+                                    <>
+                                      <motion.div 
+                                        initial={{ top: '0%' }}
+                                        animate={{ top: `${scanProgress}%` }}
+                                        className="absolute left-0 right-0 h-[3px] bg-green-400 shadow-[0_0_15px_#4ade80] z-30 pointer-events-none"
+                                        transition={{ type: 'tween', ease: 'linear' }}
+                                      />
+                                      <div className="absolute inset-0 bg-green-400/5 z-20 pointer-events-none" />
+                                      
+                                      {/* Forensic Points */}
+                                      {[15, 30, 45, 60, 75].map((pos, i) => (
+                                        scanProgress > pos && (
+                                          <motion.div 
+                                            key={i}
+                                            initial={{ scale: 0, opacity: 0 }}
+                                            animate={{ scale: 1, opacity: 1 }}
+                                            className="absolute w-4 h-4 z-40"
+                                            style={{ 
+                                              left: `${20 + (i * 15)}%`, 
+                                              top: `${pos + 5}%` 
+                                            }}
+                                          >
+                                            <div className="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-40" />
+                                            <div className="absolute inset-1 bg-green-400 rounded-full shadow-[0_0_8px_#4ade80]" />
+                                          </motion.div>
+                                        )
+                                      ))}
+                                    </>
+                                  )}
+                                </AnimatePresence>
 
-                {/* Captured Image Preview */}
-                {capturedImage ? (
-                    <div className="flex-1 flex flex-col">
-                        <div className="flex-1 relative bg-black flex items-center justify-center">
-                            <img src={capturedImage.url} className="max-h-full max-w-full object-contain" alt="Captured" />
+                                <div className="absolute top-6 inset-x-6 flex items-center justify-between z-20">
+                                    <button
+                                        onClick={retake}
+                                        className="w-12 h-12 bg-black/40 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 text-white hover:bg-black/60 transition-all active:scale-90"
+                                    >
+                                        <ChevronLeft size={24} />
+                                    </button>
+                                    
+                                    <div className="flex flex-col items-center gap-1">
+                                      <div className={`flex items-center gap-2 bg-black/40 backdrop-blur-xl px-4 py-2 rounded-full border ${isScanning ? 'border-green-400/50' : 'border-white/10'}`}>
+                                        <Shield size={16} className={isScanning ? 'text-green-400 animate-pulse' : 'text-green-400'} />
+                                        <span className="text-[12px] font-bold text-white tracking-wide">
+                                          {isScanning ? `ANALYZING PIXELS (${Math.round(scanProgress)}%)` : 'AUTHENTIC SIGNAL'}
+                                        </span>
+                                      </div>
+                                      {isScanning && (
+                                        <motion.span 
+                                          initial={{ opacity: 0 }} 
+                                          animate={{ opacity: 1 }}
+                                          className="text-[10px] font-black text-green-400 font-mono tracking-tighter uppercase"
+                                        >
+                                          Forensic integrity check in progress...
+                                        </motion.span>
+                                      )}
+                                    </div>
 
-                            {/* Provenance Stamp is already on the canvas image, no redundant UI labels needed here */}
-
-
-                        </div>
-
-                        {/* Action Bar */}
-                        <div className="bg-black px-6 sm:px-8 py-6 sm:py-8 flex items-center justify-between border-t border-white/5 gap-4">
-                            <button
-                                onClick={retake}
-                                className="flex-1 flex items-center justify-center gap-2 px-4 sm:px-6 py-4 bg-white/10 border border-white/20 text-white rounded-2xl font-bold hover:bg-white/20 transition-colors active:scale-95"
-                            >
-                                <RefreshCw className="w-4 h-4" />
-                                <span className="text-[14px]">Retake</span>
-                            </button>
-
-                            <button
-                                onClick={confirmCapture}
-                                className="flex-[1.5] flex items-center justify-center gap-3 px-6 sm:px-8 py-4 bg-[#FF385C] text-white rounded-2xl font-bold text-[14px] sm:text-lg hover:bg-[#E31C5F] transition-colors shadow-2xl shadow-[#FF385C]/30 active:scale-[0.97]"
-                            >
-                                <CheckCircle className="w-5 h-5" />
-                                <span className="text-[14px] sm:text-base">Add to Library</span>
-                            </button>
-                        </div>
-                    </div>
-                ) : (
-                    /* LIVE VIEWFINDER */
-                    <div className="flex-1 relative overflow-hidden">
-                        <video
-                            ref={videoRef}
-                            autoPlay
-                            playsInline
-                            muted
-                            className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
-                        />
-
-                        {/* Corner guide marks */}
-                        {[
-                            'top-4 left-4 border-t-2 border-l-2 rounded-tl-xl',
-                            'top-4 right-4 border-t-2 border-r-2 rounded-tr-xl',
-                            'bottom-20 left-4 border-b-2 border-l-2 rounded-bl-xl',
-                            'bottom-20 right-4 border-b-2 border-r-2 rounded-br-xl',
-                        ].map((c, i) => (
-                            <div key={i} className={`absolute w-10 h-10 border-white/40 ${c}`} />
-                        ))}
-
-                        {/* Top Bar */}
-                        <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/70 to-transparent px-6 pt-6 pb-10">
-                            <div className="flex items-center justify-between">
-                                <button
-                                    onClick={() => { stopStream(); onClose(); }}
-                                    className="p-2.5 bg-black/30 backdrop-blur-md rounded-full border border-white/10"
-                                >
-                                    <ChevronLeft className="w-5 h-5 text-white" />
-                                </button>
-
-                                <div className="flex items-center gap-2 bg-green-500/80 backdrop-blur-md px-4 py-1.5 rounded-full border border-green-300/30">
-                                    <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
-                                    <span className="text-[11px] font-bold text-white tracking-wider">Secure Enclave · LIVE</span>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    {/* Flash toggle placeholder */}
-                                    <button className="p-2.5 bg-black/30 backdrop-blur-md rounded-full border border-white/10">
-                                        <Zap className="w-4 h-4 text-white/60" />
+                                    <button
+                                        onClick={confirmCapture}
+                                        disabled={isSigning || isScanning}
+                                        className="h-12 px-6 bg-green-500/90 backdrop-blur-xl rounded-full flex items-center justify-center gap-2 border border-white/20 text-white hover:bg-green-600 transition-all active:scale-95 disabled:opacity-50 shadow-lg"
+                                    >
+                                        <Check size={20} strokeWidth={3} />
+                                        <span className="text-[12px] font-black uppercase tracking-wider">Confirm</span>
                                     </button>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Bottom HUD */}
-                        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent px-6 pb-8 pt-16">
-
-                            {/* Live Metadata Strip */}
-                            <div className="flex items-center justify-between mb-6">
-                                <div className="bg-black/50 backdrop-blur-md rounded-xl px-3 py-1.5 flex items-center gap-2">
-                                    <MapPin className="w-3 h-3 text-green-400" />
-                                    <span className="text-[10px] text-white font-mono">
-                                        {gpsCoords
-                                            ? `${gpsCoords.lat}, ${gpsCoords.lng}`
-                                            : gpsPerm === PERM.REQUESTING
-                                                ? 'Getting GPS...'
-                                                : 'No GPS'}
-                                    </span>
-                                </div>
-                                <div className="bg-black/50 backdrop-blur-md rounded-xl px-3 py-1.5">
-                                    <span className="text-[10px] text-white font-mono">
-                                        {now.toLocaleTimeString()} · {now.toLocaleDateString()}
-                                    </span>
-                                </div>
+                            <div className="flex gap-4 p-8 bg-black/40 backdrop-blur-2xl border-t border-white/5 pb-12">
+                                <button
+                                    onClick={retake}
+                                    className="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all border border-white/10 active:scale-95"
+                                >
+                                    Retake
+                                </button>
                             </div>
 
-                            {/* Shutter Row */}
-                            <div className="flex items-center justify-between">
-                                <button
-                                    onClick={flipCamera}
-                                    className="w-12 h-12 bg-white/10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors active:scale-90 backdrop-blur-md"
-                                >
-                                    <SwitchCamera className="w-5 h-5 text-white" />
-                                </button>
+                            {/* Signing Animation Overlay */}
+                            <AnimatePresence>
+                                {isSigning && (
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="absolute inset-0 z-50 bg-black/80 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center"
+                                    >
+                                        <div className="relative mb-12">
+                                            <motion.div 
+                                                animate={{ rotate: 360 }}
+                                                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                                                className="w-24 h-24 border-[3px] border-airbnb/20 border-t-airbnb rounded-full"
+                                            />
+                                            <Shield className="absolute inset-0 m-auto text-airbnb animate-pulse" size={32} />
+                                        </div>
 
-                                {/* Main Shutter */}
-                                <button
-                                    onClick={capturePhoto}
-                                    className="w-20 h-20 rounded-full bg-white border-4 border-white/30 flex items-center justify-center shadow-2xl shadow-black/40 hover:scale-105 transition-transform active:scale-90"
-                                >
-                                    <div className="w-14 h-14 rounded-full bg-white border-4 border-gray-200" />
-                                </button>
+                                        <div className="space-y-6 max-w-[320px]">
+                                            <div className="space-y-1">
+                                                <h3 className="text-2xl font-manrope font-black text-white">Provenance Signing</h3>
+                                                <p className="text-white/40 font-mono text-[11px] tracking-widest uppercase">Securing Enclave Metadata</p>
+                                            </div>
 
-                                {/* Placeholder for gallery */}
-                                <div className="w-12 h-12" />
-                            </div>
+                                            <div className="flex flex-col gap-3">
+                                                <TechnicalRow label="CRYPTO_GEOTAG_INJECTION" delay={0.5} />
+                                                <TechnicalRow label="CID_GEN_SHA2_256" delay={1.2} />
+                                                <TechnicalRow label="DEVICE_TRUST_ATTESTATION" delay={1.9} />
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        <>
+                            <video
+                                ref={videoRef}
+                                autoPlay
+                                playsInline
+                                muted
+                                className={`w-full h-full object-cover ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
+                            />
+
+                            {/* Viewfinder Overlay */}
+                            <div className="absolute inset-0 pointer-events-none border-[1.5px] border-white/10 rounded-[24px]" />
+                            
+                            {/* Dashboard Top */}
+                            <div className="absolute top-0 inset-x-0 p-6 flex items-center justify-between pointer-events-auto">
+                                <button
+                                    onClick={() => { stopStream(); onClose(); }}
+                                    className="w-10 h-10 bg-black/30 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 text-white hover:bg-black/50 transition-colors"
+                                >
+                                    <X size={20} />
+                                </button>
+
+                                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-xl px-4 py-2 rounded-full border border-white/20">
+                                    <div className="w-2 h-2 bg-airbnb rounded-full animate-pulse shadow-[0_0_8px_#ff385c]" />
+                                    <span className="text-[11px] font-extrabold text-white tracking-tighter uppercase">Live Provenance Active</span>
+                                </div>
+
+                                <button 
+                                  onClick={flipCamera}
+                                  className="w-10 h-10 bg-black/30 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 text-white"
+                                >
+                                    <RefreshCw size={18} />
+                                </button>
+                            </div>
+
+                            {/* Dashboard Bottom */}
+                            <div className="absolute bottom-0 inset-x-0 p-8 flex flex-col gap-8 pointer-events-auto tracking-normal">
+                                <div className="flex items-center justify-between text-white/60 font-mono text-[10px]">
+                                    <div className="bg-black/20 backdrop-blur-md px-3 py-1 rounded-lg flex items-center gap-2 border border-white/5">
+                                      <MapPin size={12} />
+                                      <span>{gpsCoords ? `${gpsCoords.lat}, ${gpsCoords.lng}` : 'GPS...'}</span>
+                                    </div>
+                                    <div className="bg-black/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/5">
+                                      {now.toLocaleTimeString([], { hour12: false })}
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-center">
+                                    <button
+                                        onClick={capturePhoto}
+                                        className="relative flex items-center justify-center group"
+                                    >
+                                        <div className="absolute inset-0 bg-white/20 rounded-full blur-xl group-hover:scale-125 transition-transform" />
+                                        <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center relative z-10 p-1 group-active:scale-90 transition-transform">
+                                          <div className="w-full h-full rounded-full border-2 border-gray-100" />
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </motion.div>
                 <canvas ref={canvasRef} className="hidden" />
             </div>
         );
     }
+
+    return null;
 };
+
+const TechnicalRow = ({ label, delay }) => (
+    <motion.div 
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay }}
+        className="flex items-center gap-3"
+    >
+        <div className="w-1.5 h-1.5 bg-airbnb rounded-full shadow-[0_0_8px_rgba(255,56,92,0.6)]" />
+        <span className="text-[10px] font-black font-mono text-white/60 tracking-tight">{label}</span>
+        <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: delay + 0.5 }}
+            className="text-[10px] font-black font-mono text-green-500 ml-auto"
+        >
+            DONE
+        </motion.span>
+    </motion.div>
+);
 
 export default SecureCamera;
