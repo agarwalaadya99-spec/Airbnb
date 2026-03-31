@@ -385,6 +385,23 @@ const HostDashboard = () => {
   const [propertyDetails, setPropertyDetails] = useState(null);
   const [safetySettings, setSafetySettings] = useState(null);
 
+  // Sync details when property changes
+  useEffect(() => {
+    if (selectedProperty) {
+      setPropertyDetails({ 
+        title: selectedProperty.title, 
+        price: selectedProperty.price, 
+        location: selectedProperty.location, 
+        description: selectedProperty.description,
+        image: selectedProperty.image || ""
+      });
+      setSafetySettings({ 
+        allowUnverifiedGuests: selectedProperty.allowUnverifiedGuests, 
+        minTrustScore: selectedProperty.minTrustScore || 75 
+      });
+    }
+  }, [selectedPropertyId, allProperties]);
+
   // Sync with storage
   useEffect(() => {
     const handleStorageUpdate = () => {
@@ -396,10 +413,7 @@ const HostDashboard = () => {
   }, []);
 
   const handleSelectProperty = (id) => {
-    const p = allProperties.find(prop => prop.id === id);
     setSelectedPropertyId(id);
-    setPropertyDetails({ title: p.title, price: p.price, location: p.location, description: p.description });
-    setSafetySettings({ allowUnverifiedGuests: p.allowUnverifiedGuests, minTrustScore: p.minTrustScore || 75 });
     setActiveTab('overview');
     window.scrollTo(0, 0);
   };
@@ -598,6 +612,11 @@ const HostDashboard = () => {
                       <div className="space-y-2 col-span-2">
                         <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Description</label>
                         <textarea rows={4} value={propertyDetails.description} onChange={(e) => setPropertyDetails({...propertyDetails, description: e.target.value})} className="w-full bg-surface-low rounded-[24px] py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none resize-none" placeholder="Provide a detailed description of your stay." />
+                      </div>
+                      <div className="space-y-2 col-span-2">
+                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Featured Image URL</label>
+                        <input type="text" value={propertyDetails.image} onChange={(e) => setPropertyDetails({...propertyDetails, image: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none" placeholder="https://images.unsplash.com/your-photo" />
+                        <p className="text-[10px] text-slate-400 font-bold pl-2 mt-1 uppercase italic">Note: Verified photos can also be set as primary from the Media tab.</p>
                       </div>
                     </div>
                     <button type="submit" className="bg-airbnb text-white px-10 py-4 rounded-2xl font-black">Save Changes</button>
