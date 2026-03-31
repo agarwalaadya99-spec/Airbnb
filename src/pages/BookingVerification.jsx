@@ -385,7 +385,7 @@ const BookingVerification = () => {
                     Dismiss
                   </button>
                   <button 
-                    onClick={() => setShowModal(false)}
+                    onClick={() => addMember(mockVerifiedUsers[0])}
                     className="py-4 bg-linear-to-r from-airbnb to-airbnb-hover text-white font-black rounded-2xl shadow-lg shadow-airbnb/20 hover:opacity-90 transition-all text-[15px]"
                   >
                     Add Member

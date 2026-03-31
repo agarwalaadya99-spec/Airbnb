@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Shield, 
@@ -221,35 +221,143 @@ const ReservationsList = () => (
   </div>
 );
 
-const GlobalSafetySettings = () => (
-  <div className="space-y-8 animate-in fade-in duration-700">
-    <header className="space-y-2">
-      <h1 className="text-4xl font-manrope font-black tracking-tight">Global Safety</h1>
-      <p className="text-[#5c3f41] font-medium opacity-60">Manage defaults and cross-portfolio trust policies.</p>
-    </header>
-    <div className="bg-white rounded-[40px] p-10 border border-gray-100 shadow-sm space-y-10">
-       <div className="flex items-center justify-between">
-          <div className="space-y-1">
-             <h4 className="font-extrabold text-[18px]">Universal Verification Gate</h4>
-             <p className="text-[13px] text-slate-500 max-w-md">Enable hardware attestation requirements for ALL existing and future listings.</p>
+const GlobalSafetySettings = () => {
+  const [allowOnlyVerified, setAllowOnlyVerified] = useState(true);
+  const [trustScore, setTrustScore] = useState(80);
+
+  return (
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <header className="space-y-2">
+        <h1 className="text-4xl font-manrope font-black tracking-tight">Global Safety</h1>
+        <p className="text-[#5c3f41] font-medium opacity-60">Manage defaults and cross-portfolio trust policies.</p>
+      </header>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="lg:col-span-8 space-y-8">
+          {/* Main Safety Controls */}
+          <section className="bg-white p-10 rounded-[40px] shadow-sm border border-gray-100 space-y-10">
+            <div className="flex items-center justify-between gap-8">
+              <div className="space-y-1 flex-1">
+                <div className="flex items-center gap-2 text-airbnb mb-2 font-extrabold tracking-widest text-[11px] uppercase">
+                  <Shield size={16} /> Trust Requirements
+                </div>
+                <h3 className="text-[18px] font-extrabold">Allow only verified guests</h3>
+                <p className="text-[#5c3f41] text-[14px] leading-relaxed opacity-60">
+                  Guests must complete government ID verification and phone authentication before booking.
+                </p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer" 
+                  checked={allowOnlyVerified} 
+                  onChange={() => setAllowOnlyVerified(!allowOnlyVerified)}
+                />
+                <div className="w-14 h-7 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-airbnb"></div>
+              </label>
+            </div>
+
+            <div className="space-y-6">
+              <div className="flex justify-between items-end">
+                <div className="space-y-1">
+                  <h3 className="text-[18px] font-extrabold">Minimum trust score required</h3>
+                  <p className="text-[#5c3f41] text-[14px] leading-relaxed opacity-60">
+                    Automated threshold based on past host reviews and profile age.
+                  </p>
+                </div>
+                <div className="text-[32px] font-manrope font-extrabold text-airbnb leading-none mb-1">
+                  {trustScore}%
+                </div>
+              </div>
+              <div className="space-y-2">
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  value={trustScore} 
+                  onChange={(e) => setTrustScore(e.target.value)}
+                  className="w-full h-1.5 bg-surface-low rounded-lg appearance-none cursor-pointer accent-airbnb"
+                />
+                <div className="flex justify-between text-[11px] font-extrabold text-slate-400 uppercase tracking-widest pt-2">
+                  <span>Lenient</span>
+                  <span>Standard</span>
+                  <span>Strict</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 bg-airbnb/5 rounded-3xl border border-airbnb/5 flex gap-4 text-airbnb">
+              <ShieldCheck size={24} className="shrink-0" />
+              <div className="space-y-1">
+                <h4 className="text-[13px] font-extrabold uppercase tracking-wider">Security Optimization</h4>
+                <p className="text-[13px] opacity-80 leading-relaxed font-semibold">
+                  Higher trust = safer bookings. Your current settings reduce potential risk incidents by an estimated 84%.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          {/* Tier Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm space-y-4">
+               <div className="w-10 h-10 bg-surface-low rounded-xl flex items-center justify-center text-airbnb">
+                  <Settings size={20} />
+               </div>
+               <h4 className="font-extrabold">Essential Tier</h4>
+               <p className="text-xs text-slate-400 font-medium">Identity verified via government document matching. Required for all booking requests.</p>
+            </div>
+            <div className="bg-[#1a1c1c] p-8 rounded-[32px] shadow-xl text-white space-y-4">
+               <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-airbnb">
+                  <ShieldCheck size={20} />
+               </div>
+               <h4 className="font-extrabold">Elite Tier</h4>
+               <p className="text-xs text-white/40 font-medium">Multiple 5-star host endorsements and background check cleared. Perfect for luxury listings.</p>
+            </div>
           </div>
-          <button className="w-14 h-8 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300 transition-colors" />
-       </div>
-       <div className="bg-airbnb/5 p-6 rounded-3xl flex items-start gap-4 text-airbnb">
-          <ShieldCheck size={24} />
-          <p className="text-[14px] font-bold">Enabling this adds an "Elite Security" badge to your host profile, visible globally.</p>
-       </div>
+        </div>
+
+        {/* Info Sidebar */}
+        <div className="lg:col-span-4 space-y-6">
+           <div className="bg-white rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
+              <div className="aspect-video bg-surface-low">
+                 <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover" />
+              </div>
+              <div className="p-6 space-y-3">
+                 <h4 className="font-black">Protecting Your Haven</h4>
+                 <p className="text-xs text-slate-500 font-medium leading-relaxed">Verification standards build a community of responsible travelers.</p>
+              </div>
+           </div>
+           <div className="bg-green-50 p-6 rounded-[24px] border border-green-100 flex items-start gap-4">
+              <Lock size={24} className="text-green-600 mt-1" />
+              <div className="space-y-1">
+                 <p className="font-black text-green-800 text-[14px]">Zero-Liability Guarantee</p>
+                 <p className="text-[12px] text-green-700/70 font-medium leading-relaxed">
+                    Hosting verified guests covers you by Airbnb's $1M policy automatically.
+                 </p>
+              </div>
+           </div>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // --- MAIN COMPONENT ---
 
 const HostDashboard = () => {
   const navigate = useNavigate();
   
-  // Sidebar State (Global Host Mode)
-  const [sidebarTab, setSidebarTab] = useState('portfolio'); // overview, portfolio, reservations, safety
+  const location = useLocation();
+  const [sidebarTab, setSidebarTab] = useState('portfolio'); 
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab && ['overview', 'portfolio', 'reservations', 'safety'].includes(tab)) {
+      setSidebarTab(tab);
+      setSelectedPropertyId(null);
+    }
+  }, [location.search]);
   const [portfolioView, setPortfolioView] = useState('grid'); // grid, list
   
   // Data State
@@ -299,31 +407,46 @@ const HostDashboard = () => {
   const handleUpdateProperty = (e) => {
     if (e) e.preventDefault();
     setVerificationStatus('verifying');
+    
+    // Simulate attestation delay for the new details
     setTimeout(() => {
-      const updated = { ...selectedProperty, ...propertyDetails, ...safetySettings };
+      const updated = { 
+        ...selectedProperty, 
+        ...propertyDetails, 
+        ...safetySettings
+      };
       updatePropertyInStore(updated);
       setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
       setVerificationStatus('complete');
-      setTimeout(() => { setVerificationStatus('partial'); setActiveTab('overview'); }, 1500);
-    }, 2000);
+      
+      // Snappy transition back to overview after success
+      setTimeout(() => { 
+        setVerificationStatus('partial'); 
+        setActiveTab('overview'); 
+      }, 1000);
+    }, 1200);
   };
 
   const handleCreateListing = () => {
-    const newId = String(allProperties.length + 1);
+    const newId = String(Date.now()); // Using timestamp for safer ID generation
     const newProp = {
       id: newId,
-      title: "New Haven Vista",
+      title: "Unnamed Oasis",
       location: "San Francisco, CA",
       price: 350,
       image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop",
-      photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop", isVerified: false }],
+      photos: [
+        { id: "p1", url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop", isVerified: false }
+      ],
       allowUnverifiedGuests: true,
-      description: "A fresh listing waiting for verification.",
-      rating: 4.8
+      description: "Enter your property description here.",
+      rating: 5.0,
+      verified: false
     };
     updatePropertyInStore(newProp);
     setAllProperties([...allProperties, newProp]);
     handleSelectProperty(newId);
+    setTimeout(() => setActiveTab('details'), 100); // Auto-focus on Details for immediate editing
   };
 
   const handleCapture = async (file, meta) => {
@@ -462,15 +585,19 @@ const HostDashboard = () => {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="space-y-2 col-span-2">
                         <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Title</label>
-                        <input type="text" value={propertyDetails.title} onChange={(e) => setPropertyDetails({...propertyDetails, title: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold" />
+                        <input type="text" value={propertyDetails.title} onChange={(e) => setPropertyDetails({...propertyDetails, title: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none" placeholder="Property Title" />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Price</label>
-                        <input type="number" value={propertyDetails.price} onChange={(e) => setPropertyDetails({...propertyDetails, price: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold" />
+                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Price ($)</label>
+                        <input type="number" value={propertyDetails.price} onChange={(e) => setPropertyDetails({...propertyDetails, price: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none" />
                       </div>
                       <div className="space-y-2">
                         <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Location</label>
-                        <input type="text" value={propertyDetails.location} onChange={(e) => setPropertyDetails({...propertyDetails, location: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold" />
+                        <input type="text" value={propertyDetails.location} onChange={(e) => setPropertyDetails({...propertyDetails, location: e.target.value})} className="w-full bg-surface-low rounded-2xl py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none" placeholder="City, Country" />
+                      </div>
+                      <div className="space-y-2 col-span-2">
+                        <label className="text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Description</label>
+                        <textarea rows={4} value={propertyDetails.description} onChange={(e) => setPropertyDetails({...propertyDetails, description: e.target.value})} className="w-full bg-surface-low rounded-[24px] py-4 px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none resize-none" placeholder="Provide a detailed description of your stay." />
                       </div>
                     </div>
                     <button type="submit" className="bg-airbnb text-white px-10 py-4 rounded-2xl font-black">Save Changes</button>

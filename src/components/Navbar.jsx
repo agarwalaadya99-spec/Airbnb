@@ -70,9 +70,9 @@ const Navbar = () => {
         {/* Right Actions */}
         <div className="flex items-center gap-4 shrink-0">
           <Link 
-            to="/host-safety" 
+            to="/host?tab=safety" 
             className={`hidden sm:flex items-center gap-2 text-[14px] font-bold px-5 py-2.5 border rounded-full transition-all ${
-              location.pathname === '/host-safety' 
+              location.pathname === '/host' && new URLSearchParams(location.search).get('tab') === 'safety'
                 ? 'bg-airbnb/5 border-airbnb/20 text-airbnb' 
                 : 'border-transparent hover:bg-gray-50 text-slate-700'
             }`}

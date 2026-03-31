@@ -4,7 +4,7 @@ import Home from './pages/Home';
 import PropertyReviews from './pages/PropertyReviews';
 import BookingVerification from './pages/BookingVerification';
 import BookingConfirmation from './pages/BookingConfirmation';
-import HostSafetySettings from './pages/HostSafetySettings';
+
 import LandingPage from './pages/LandingPage';
 import HostDashboard from './pages/HostDashboard';
 import { AnimatePresence } from 'framer-motion';
@@ -22,7 +22,7 @@ function App() {
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
             <Route path="/host/property/:id" element={<PropertyReviews />} />
             <Route path="/host" element={<HostDashboard />} />
-            <Route path="/host-safety" element={<HostSafetySettings />} />
+
           </Routes>
         </AnimatePresence>
       </div>
