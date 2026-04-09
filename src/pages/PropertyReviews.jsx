@@ -102,12 +102,43 @@ const PropertyReviews = () => {
   };
 
   const handleReviewSubmit = async () => {
+    if (!newReview.trim()) return;
+    
     setIsSubmittingReview(true);
     // Simulate high-tech signature process
-    await new Promise(resolve => setTimeout(resolve, 2500));
-    setIsSubmittingReview(false);
-    setReviewSubmitted(true);
-    setNewReview('');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    const reviewObj = {
+      id: `r${Date.now()}`,
+      user: "Verified User", // In a real app, this would be the logged-in user's name
+      rating: 5,
+      date: new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(new Date()),
+      comment: newReview,
+      verified: true,
+      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150"
+    };
+
+    const updated = { 
+      ...property, 
+      reviews: [reviewObj, ...(property.reviews || [])],
+      reviewsCount: (property.reviewsCount || 0) + 1,
+      verifiedReviewsCount: (property.verifiedReviewsCount || 0) + 1
+    };
+
+    try {
+      await updatePropertyInStore(updated);
+      setProperty(updated);
+      setReviewSubmitted(true);
+      setNewReview('');
+      setShowWriteReview(false);
+      
+      // Clear success message after a few seconds
+      setTimeout(() => setReviewSubmitted(false), 5000);
+    } catch (err) {
+      console.error("Failed to post review:", err);
+    } finally {
+      setIsSubmittingReview(false);
+    }
   };
 
   if (loading || !property) {
