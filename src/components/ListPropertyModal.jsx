@@ -79,8 +79,16 @@ const ListPropertyModal = ({ isOpen, onClose, onRefresh }) => {
       price: formData.price,
       rating: 5.0,
       image: formData.images[0],
-      isVerified: formData.forensicReport?.aiConfidence < 40,
-      forensics: formData.forensicReport
+      verified: formData.forensicReport?.aiConfidence < 30, // Strict threshold for main badge
+      forensics: formData.forensicReport,
+      photos: [
+        {
+          id: `p-${Date.now()}`,
+          url: formData.images[0],
+          isVerified: formData.forensicReport?.aiConfidence < 50,
+          meta: formData.forensicReport
+        }
+      ]
     };
 
     await updatePropertyInStore(newProperty);
