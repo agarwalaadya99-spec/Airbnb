@@ -5,7 +5,7 @@ import { getProperties, categories } from '../utils/mockData';
 import { 
   Search, SlidersHorizontal, ChevronRight, ChevronLeft, 
   Star, Heart, Map, List, Stars, Mountain, 
-  Palmtree, Waves, Castle, Home as HomeIcon, Triangle 
+  Palmtree, Waves, Castle, Home as HomeIcon, Triangle, Globe 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
