@@ -43,6 +43,9 @@ export const updatePropertyInStore = async (updatedProperty) => {
 
     // Attempt to seed photo metadata if it exists
     if (updatedProperty.photos && data?.[0]?.id) {
+       // First, delete old photos to prevent duplicates if we're re-syncing
+       await supabase.from('property_photos').delete().eq('property_id', data[0].id);
+       
        const photoInserts = updatedProperty.photos.map(ph => ({
          property_id: data[0].id,
          url: ph.url,
@@ -50,6 +53,23 @@ export const updatePropertyInStore = async (updatedProperty) => {
          meta_data: ph.meta
        }));
        await supabase.from('property_photos').insert(photoInserts);
+    }
+
+    // Attempt to persist reviews if they exist
+    if (updatedProperty.reviews && data?.[0]?.id) {
+       // Delete existing to allow a clean sync (Standard and simplified for demo)
+       await supabase.from('property_reviews').delete().eq('property_id', data[0].id);
+
+       const reviewInserts = updatedProperty.reviews.map(rev => ({
+         property_id: data[0].id,
+         user_name: rev.user,
+         rating: rev.rating,
+         comment: rev.comment,
+         date: rev.date,
+         is_verified: rev.verified,
+         avatar_url: rev.avatar
+       }));
+       await supabase.from('property_reviews').insert(reviewInserts);
     }
   } catch (err) {
     console.warn("Supabase update failed, falling back to localStorage:", err);
