@@ -55,11 +55,25 @@ export const updatePropertyInStore = async (updatedProperty) => {
     const current = getStoredProperties() || initialProperties;
     const exists = current.some(p => p.id === updatedProperty.id);
     
+    // Safety check: Remove heavy binary data before saving to limited localStorage
+    const sanitizedProperty = {
+      ...updatedProperty,
+      image: (updatedProperty.image?.length > 1000) ? "https://images.unsplash.com/photo-1549497538-301288c86a4a?q=80&w=400" : updatedProperty.image,
+      photos: updatedProperty.photos?.map(ph => ({
+        ...ph,
+        url: (ph.url?.length > 1000) ? "https://images.unsplash.com/photo-1549497538-301288c86a4a?q=80&w=400" : ph.url
+      }))
+    };
+
     const updated = exists 
-      ? current.map(p => p.id === updatedProperty.id ? updatedProperty : p)
-      : [...current, updatedProperty];
+      ? current.map(p => p.id === updatedProperty.id ? sanitizedProperty : p)
+      : [...current, sanitizedProperty];
       
-    localStorage.setItem('havenSafeProperties', JSON.stringify(updated));
+    try {
+      localStorage.setItem('havenSafeProperties', JSON.stringify(updated));
+    } catch (storageErr) {
+      console.warn("⚠️ LocalStorage full, skipping fallback save.");
+    }
   }
   
   // Signal updates to other components
