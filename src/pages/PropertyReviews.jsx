@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProperties, updatePropertyInStore, fileToBase64 } from '../utils/mockData';
+import { getProperties, getPropertyById, updatePropertyInStore, fileToBase64 } from '../utils/mockData';
 import Navbar from '../components/Navbar';
 import { Star, ShieldCheck, ChevronLeft, Camera, Upload, CheckCircle, Info, ArrowRight, Shield, Globe, MapPin, Lock, Clock, Sparkles, AlertTriangle, X, Edit3, Trash2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
@@ -18,10 +18,14 @@ const PropertyReviews = () => {
   const [loading, setLoading] = useState(true);
   
   const fetchProperty = async () => {
-    const all = await getProperties();
-    const found = all.find(p => p.id === id) || all[0];
-    setProperty(found);
-    setLoading(false);
+    try {
+      const found = await getPropertyById(id);
+      setProperty(found);
+    } catch (err) {
+      console.error("Failed to load property details:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

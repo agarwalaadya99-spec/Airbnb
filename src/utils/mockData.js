@@ -280,24 +280,55 @@ export const getProperties = async () => {
     }
     
     if (properties && properties.length > 0) {
-      console.log(`🟢 SUPABASE CONNECTED: Fetched ${properties.length} properties.`);
+      console.log(`🟢 SUPABASE CONNECTED: Fetched ${properties.length} properties (Lightweight).`);
       
-      // 2. Fetch photos and reviews in parallel
-      const [photosRes, reviewsRes] = await Promise.all([
-        supabase.from('property_photos').select('*'),
-        supabase.from('property_reviews').select('*')
-      ]);
-
-      const photos = photosRes.data || [];
-      const reviews = reviewsRes.data || [];
-
-      // 3. Map snake_case to camelCase and manually join related data
+      // 3. Map snake_case to camelCase
       return properties.map(p => {
-        const propertyPhotos = photos.filter(ph => ph.property_id === p.id);
-        const propertyReviews = reviews.filter(r => r.property_id === p.id);
-
         return {
           id: p.id,
+          title: p.title,
+          location: p.location,
+          price: p.price,
+          rating: p.rating,
+          reviewsCount: p.reviews_count,
+          verifiedReviewsCount: p.verified_reviews_count,
+          verified: p.verified,
+          allowUnverifiedGuests: p.allow_unverified_guests,
+          category: p.category,
+          image: p.image_url,
+          description: p.description,
+          host: p.host || { name: " Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
+          photos: [], // Defer loading heavy photos to the details page
+          reviews: [] // Defer loading heavy reviews to the details page
+        };
+      });
+    }
+  } catch (err) {
+    console.warn("Supabase lightweight fetch failed, falling back to mock data:", err);
+  }
+
+  const stored = getStoredProperties();
+  const baseData = Array.isArray(stored) ? stored : initialProperties;
+  return baseData;
+};
+
+// NEW FUNCTION: Fetch full details only when a single property is clicked
+export const getPropertyById = async (id) => {
+  try {
+    const [propRes, photosRes, reviewsRes] = await Promise.all([
+      supabase.from('properties').select('*').eq('id', id).single(),
+      supabase.from('property_photos').select('*').eq('property_id', id),
+      supabase.from('property_reviews').select('*').eq('property_id', id)
+    ]);
+
+    if (propRes.error) throw propRes.error;
+
+    const p = propRes.data;
+    const propertyPhotos = photosRes.data || [];
+    const propertyReviews = reviewsRes.data || [];
+
+    return {
+      id: p.id,
         title: p.title,
         location: p.location,
         price: p.price,
@@ -308,41 +339,35 @@ export const getProperties = async () => {
         allowUnverifiedGuests: p.allow_unverified_guests,
         category: p.category,
         image: p.image_url,
-        description: p.description,
-        host: p.host || { name: " Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
-        photos: propertyPhotos.map(ph => ({
-           id: ph.id,
-           url: ph.url,
-           isVerified: ph.is_verified,
-           meta: ph.meta_data || ph.metadata
-        })),
-        reviews: propertyReviews.map(r => ({
-           id: r.id,
-           user: r.user_name || r.user,
-           rating: r.rating,
-           date: r.date,
-           comment: r.comment,
-           verified: r.is_verified ?? r.verified,
-           avatar: r.avatar_url || r.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150"
-        }))
-      };
-    });
-    }
-  } catch (err) {
-    console.warn("Supabase fetch failed, falling back to mock data:", err);
-  }
-
-  const stored = getStoredProperties();
-  const baseData = Array.isArray(stored) ? stored : initialProperties;
-  
-  // Ensure we definitely have the hardcoded reviews if we're falling back
-  return baseData.map(p => {
-    const initial = initialProperties.find(ip => ip.id === p.id);
-    return {
-      ...p,
-      reviews: p.reviews || initial?.reviews || []
+      description: p.description,
+      host: p.host || { name: " Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
+      photos: propertyPhotos.map(ph => ({
+         id: ph.id,
+         url: ph.url,
+         isVerified: ph.is_verified,
+         meta: ph.meta_data || ph.metadata
+      })),
+      reviews: propertyReviews.map(r => ({
+         id: r.id,
+         user: r.user_name || r.user,
+         rating: r.rating,
+         date: r.date,
+         comment: r.comment,
+         verified: r.is_verified ?? r.verified,
+         avatar: r.avatar_url || r.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150"
+      }))
     };
-  });
+  } catch (err) {
+    console.warn("Supabase getPropertyById failed, using local data", err);
+    const properties = await getProperties();
+    const mockProperty = properties.find(p => p.id === id) || initialProperties[0];
+    const initial = initialProperties.find(ip => ip.id === mockProperty.id);
+    return {
+      ...mockProperty,
+      photos: mockProperty.photos?.length ? mockProperty.photos : initial?.photos || [],
+      reviews: mockProperty.reviews?.length ? mockProperty.reviews : initial?.reviews || []
+    };
+  }
 };
 
 // Kept for static access in some components, but should use getProperties()
