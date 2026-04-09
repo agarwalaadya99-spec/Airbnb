@@ -19,22 +19,36 @@ export const updatePropertyInStore = async (updatedProperty) => {
     const { data, error } = await supabase
       .from('properties')
       .upsert({
-        id: updatedProperty.id.length > 5 ? updatedProperty.id : undefined, // only use if it looks like a UUID
+        id: updatedProperty.id.length > 20 ? updatedProperty.id : undefined, // only use if it looks like a valid UUID
         title: updatedProperty.title,
         location: updatedProperty.location,
-        price: updatedProperty.price,
-        rating: updatedProperty.rating,
-        reviews_count: updatedProperty.reviewsCount,
-        verified_reviews_count: updatedProperty.verifiedReviewsCount,
+        price: parseFloat(updatedProperty.price),
+        rating: updatedProperty.rating || 5.0,
+        reviews_count: updatedProperty.reviewsCount || 0,
+        verified_reviews_count: updatedProperty.verifiedReviewsCount || 0,
         verified: updatedProperty.verified,
-        allow_unverified_guests: updatedProperty.allowUnverifiedGuests,
-        category: updatedProperty.category,
+        allow_unverified_guests: updatedProperty.allowUnverifiedGuests ?? true,
+        category: updatedProperty.category || 'Design',
         image_url: updatedProperty.image,
         description: updatedProperty.description
       })
       .select();
     
-    if (error) throw error;
+    if (error) {
+       console.error("Supabase upsert error detail:", error);
+       throw error;
+    }
+
+    // Attempt to seed photo metadata if it exists
+    if (updatedProperty.photos && data?.[0]?.id) {
+       const photoInserts = updatedProperty.photos.map(ph => ({
+         property_id: data[0].id,
+         url: ph.url,
+         is_verified: ph.isVerified,
+         meta_data: ph.meta
+       }));
+       await supabase.from('property_photos').insert(photoInserts);
+    }
   } catch (err) {
     console.warn("Supabase update failed, falling back to localStorage:", err);
     
