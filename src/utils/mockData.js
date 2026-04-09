@@ -77,13 +77,13 @@ export const updatePropertyInStore = async (updatedProperty) => {
     const current = getStoredProperties() || initialProperties;
     const exists = current.some(p => p.id === updatedProperty.id);
     
-    // Safety check: Remove heavy binary data before saving to limited localStorage
+    // Safety check: Remove heavy binary data only if extremely large (>2MB) to prevent crash
     const sanitizedProperty = {
       ...updatedProperty,
-      image: (updatedProperty.image?.length > 1000) ? "https://images.unsplash.com/photo-1549497538-301288c86a4a?q=80&w=400" : updatedProperty.image,
+      image: (updatedProperty.image?.length > 2000000) ? "https://images.unsplash.com/photo-1549497538-301288c86a4a?q=80&w=400" : updatedProperty.image,
       photos: updatedProperty.photos?.map(ph => ({
         ...ph,
-        url: (ph.url?.length > 1000) ? "https://images.unsplash.com/photo-1549497538-301288c86a4a?q=80&w=400" : ph.url
+        url: (ph.url?.length > 2000000) ? "https://images.unsplash.com/photo-1549497538-301288c86a4a?q=80&w=400" : ph.url
       }))
     };
 
