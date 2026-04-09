@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProperties, getPropertyById, updatePropertyInStore, fileToBase64 } from '../utils/mockData';
+
+console.log("🚀 Forensic Detail Engine: Loaded v1.5.1");
 import Navbar from '../components/Navbar';
 import { Star, ShieldCheck, ChevronLeft, Camera, Upload, CheckCircle, Info, ArrowRight, Shield, Globe, MapPin, Lock, Clock, Sparkles, AlertTriangle, X, Edit3, Trash2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
@@ -325,7 +327,7 @@ const PropertyReviews = () => {
                     <h3 className="text-[20px] sm:text-[22px] font-manrope font-extrabold text-[#222222]">Property Insights</h3>
                     <p className="text-[13px] text-[#717171]">Photos verified via secure hardware device IDs.</p>
                   </div>
-                  {property.photos.some(p => p.meta?.aiConfidence > 60) ? (
+                  {(!property.photos || property.photos.length === 0 || property.photos.some(p => p.meta?.aiConfidence > 60 || (!p.isVerified && p.meta?.aiConfidence > 40))) ? (
                     <div className="flex items-center gap-2 px-3 py-1 bg-red-50 rounded-full text-[11px] font-extrabold text-red-700 uppercase tracking-widest border border-red-100 animate-pulse">
                       <AlertTriangle size={12} fill="currentColor" fillOpacity={0.1} /> Forensic Alert: Low Trust
                     </div>
@@ -338,8 +340,17 @@ const PropertyReviews = () => {
   
                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {property.photos.map((photo) => (
-                    <div key={photo.id} className="relative group rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100 aspect-square sm:aspect-video lg:aspect-square bg-gray-100">
-                       <img src={photo.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Listing" />
+                    <div 
+                      key={photo.id} 
+                      className="relative group rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100 bg-gray-100"
+                      style={{ aspectRatio: '1/1', position: 'relative' }}
+                    >
+                       <img 
+                         src={photo.url} 
+                         className="w-full h-full group-hover:scale-105 transition-transform duration-700" 
+                         style={{ objectFit: 'cover', width: '100%', height: '100%', display: 'block' }}
+                         alt="Listing" 
+                       />
                        <div className="absolute top-4 left-4 flex gap-2">
                           {photo.isVerified ? (
                             <div className="bg-green-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
