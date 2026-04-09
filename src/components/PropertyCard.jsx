@@ -17,12 +17,15 @@ const PropertyCard = ({ property, index = 0 }) => {
       className="group"
     >
       <Link to={`/property/${property.id}`} className="flex flex-col gap-3">
-        {/* Image Container */}
-        <div className="relative aspect-square overflow-hidden rounded-[24px] bg-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:rounded-[32px]">
+        <div 
+          className="relative aspect-square overflow-hidden rounded-[24px] bg-gray-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:rounded-[32px]"
+          style={{ aspectRatio: '1/1', overflow: 'hidden' }}
+        >
           <img 
             src={displayImage} 
             alt={property.title}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110 ease-out"
+            className="h-full w-full group-hover:scale-110 transition-transform duration-700 ease-out"
+            style={{ objectFit: 'cover', width: '100%', height: '100%', display: 'block' }}
           />
           
           {/* Heart Icon */}
@@ -43,7 +46,7 @@ const PropertyCard = ({ property, index = 0 }) => {
               </motion.div>
             )}
             
-            {property.forensics?.aiConfidence > 70 && (
+            {property.forensics?.aiConfidence > 85 && (
               <motion.div 
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -54,7 +57,7 @@ const PropertyCard = ({ property, index = 0 }) => {
               </motion.div>
             )}
 
-            {property.verified && !property.forensics?.aiConfidence && (
+            {isEnclaveLive && !property.forensics?.aiConfidence && (
               <div className="flex items-center gap-2 px-3.5 py-2 bg-white/95 backdrop-blur-xl shadow-2xl rounded-full border border-white/20 transform group-hover:scale-105 transition-transform">
                 <ShieldCheck size={14} className="text-airbnb" fill="currentColor" fillOpacity={0.15} />
                 <span className="text-[11px] font-extrabold text-[#222222] tracking-wider uppercase">AI Verified</span>
