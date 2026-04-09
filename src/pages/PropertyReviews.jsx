@@ -308,8 +308,12 @@ const PropertyReviews = () => {
             
             {property.host && (
               <section className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 sm:p-8 bg-gray-50/50 rounded-[32px] border border-gray-100/50">
-                <div className="relative">
-                    <img src={property.host.avatar} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white shadow-sm" alt={property.host.name} />
+                <div className="relative flex-shrink-0">
+                    <img 
+                      src={property.host.avatar} 
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white shadow-sm object-cover" 
+                      alt={property.host.name} 
+                    />
                     {property.host.superhost && (
                       <div className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md text-airbnb">
                         <Shield size={14} className="text-airbnb" fill="currentColor" fillOpacity={0.1} />
