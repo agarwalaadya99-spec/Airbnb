@@ -275,14 +275,14 @@ const PropertyReviews = () => {
         </button>
 
         {/* Sticky Mobile Booking Bar */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-100 px-6 py-4 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
-           <div className="flex flex-col">
-              <span className="text-[18px] font-black tracking-tight text-[#1a1c1c]">₹{property.price} <span className="text-[14px] font-medium text-slate-400">night</span></span>
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-100 px-6 py-4 pb-safe flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
+           <div className="flex flex-col min-w-0">
+              <span className="text-[18px] font-black tracking-tight text-[#1a1c1c] truncate">₹{property.price} <span className="text-[14px] font-medium text-slate-400">night</span></span>
               <span className="text-[12px] font-extrabold text-[#222222] underline">{property.rating} ★</span>
            </div>
            <button 
              onClick={() => isHostMode ? navigate('/host') : navigate(`/booking-verification/${property.id}`)}
-             className="bg-airbnb text-white px-8 py-3.5 rounded-xl font-black text-[15px] shadow-lg shadow-airbnb/20 active:scale-95 transition-all"
+             className="bg-airbnb text-white px-6 sm:px-8 py-3.5 rounded-xl font-black text-[14px] sm:text-[15px] shadow-lg shadow-airbnb/20 active:scale-95 transition-all whitespace-nowrap ml-4"
            >
              {isHostMode ? "Edit Listing" : "Reserve"}
            </button>
@@ -291,43 +291,43 @@ const PropertyReviews = () => {
         <div className="flex flex-col lg:flex-row gap-12 pb-24 lg:pb-0">
           {/* Left Column: Property Highlights & Reviews */}
           <div className="flex-1 space-y-12">
-            <section>
-              <h1 className="text-[28px] sm:text-[32px] font-manrope font-extrabold leading-tight mb-2">{property.title}</h1>
-              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[14px] font-semibold">
+            <section className="overflow-hidden">
+              <h1 className="text-[24px] sm:text-[32px] font-manrope font-extrabold leading-[1.2] mb-3 break-words">{property.title}</h1>
+              <div className="flex flex-wrap items-center gap-y-2 gap-x-3 sm:gap-4 text-[13px] sm:text-[14px] font-semibold text-[#222222]">
                 <div className="flex items-center gap-1">
-                  <Star size={16} fill="currentColor" />
+                  <Star size={14} fill="currentColor" />
                   <span>{property.rating}</span>
                 </div>
                 <span className="underline cursor-pointer">{property.reviewsCount} reviews</span>
-                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-green-50 text-green-700 rounded-lg text-[12px] font-extrabold border border-green-100">
-                  <ShieldCheck size={14} /> {property.verifiedReviewsCount} Verified
+                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-green-50 text-green-700 rounded-lg text-[11px] font-extrabold border border-green-100 whitespace-nowrap">
+                  <ShieldCheck size={12} /> {property.verifiedReviewsCount} Verified
                 </div>
-                <span className="underline cursor-pointer">{property.location}</span>
+                <span className="underline cursor-pointer truncate max-w-[150px] sm:max-w-none">{property.location}</span>
               </div>
             </section>
             
             {property.host && (
-              <section className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 sm:p-8 bg-gray-50/50 rounded-[32px] border border-gray-100/50">
+              <section className="flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-6 p-5 sm:p-8 bg-gray-50/50 rounded-[28px] sm:rounded-[32px] border border-gray-100/50">
                 <div className="relative flex-shrink-0">
                     <img 
                       src={property.host.avatar} 
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white shadow-sm object-cover" 
+                      className="w-14 h-14 sm:w-20 sm:h-20 rounded-full border-4 border-white shadow-sm object-cover" 
                       alt={property.host.name} 
                     />
                     {property.host.superhost && (
                       <div className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md text-airbnb">
-                        <Shield size={14} className="text-airbnb" fill="currentColor" fillOpacity={0.1} />
+                        <Shield size={12} className="text-airbnb" fill="currentColor" fillOpacity={0.1} />
                       </div>
                     )}
                 </div>
-                <div className="space-y-1">
-                    <h3 className="text-[18px] sm:text-[20px] font-manrope font-black">Hosted by {property.host.name}</h3>
-                    <p className="text-[14px] text-slate-500 font-medium whitespace-nowrap">Joined in {property.host.joined} · Trust ID: HS-92{property.id}4</p>
-                    <div className="flex gap-4 pt-1">
-                      <span className="text-[11px] font-black uppercase text-airbnb tracking-widest flex items-center gap-1.5 border-r border-gray-200 pr-4">
-                          <Star size={12} fill="currentColor" /> {property.rating} Rating
+                <div className="space-y-1 min-w-0 flex-1">
+                    <h3 className="text-[17px] sm:text-[20px] font-manrope font-black tracking-tight">Hosted by {property.host.name}</h3>
+                    <p className="text-[13px] text-slate-500 font-medium overflow-hidden text-ellipsis">Joined in {property.host.joined} · Trust ID: HS-92{property.id}4</p>
+                    <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1">
+                      <span className="text-[10px] font-black uppercase text-airbnb tracking-widest flex items-center gap-1.5 sm:border-r border-gray-200 sm:pr-4">
+                          <Star size={10} fill="currentColor" /> {property.rating} Rating
                       </span>
-                      <span className="text-[11px] font-black uppercase text-slate-400 tracking-widest">
+                      <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest whitespace-nowrap">
                           {property.reviewsCount} Reviews
                       </span>
                     </div>
@@ -344,14 +344,14 @@ const PropertyReviews = () => {
               }`}
             >
               <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 uppercase tracking-wider">
-                <div className="space-y-2">
+                <div className="space-y-2 w-full">
                   <div className={`flex items-center gap-2 ${verificationStatus === 'complete' ? 'text-green-600' : 'text-airbnb'}`}>
-                    <ShieldCheck size={24} fill="currentColor" fillOpacity={0.1} />
-                    <span className="font-manrope font-extrabold text-[16px] sm:text-[18px]">
+                    <ShieldCheck size={20} className="sm:w-6 sm:h-6" fill="currentColor" fillOpacity={0.1} />
+                    <span className="font-manrope font-extrabold text-[15px] sm:text-[18px] leading-tight break-words">
                       {verificationStatus === 'complete' ? 'Live Authenticated' : 'Digital Provenance Protected'}
                     </span>
                   </div>
-                  <p className="text-[#717171] text-[13px] sm:text-[14px] max-w-[480px] normal-case tracking-normal">
+                  <p className="text-[#717171] text-[12px] sm:text-[14px] max-w-full sm:max-w-[480px] normal-case tracking-normal leading-relaxed">
                     {verificationStatus === 'complete' 
                       ? "Success! This property has been verified against live ground truth using Secure Enclave provenance."
                       : "This listing uses **Digital Provenance Technology**. Photos were captured via hardware-attestation, ensuring listing honesty."
