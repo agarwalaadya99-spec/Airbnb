@@ -77,15 +77,9 @@ export const updatePropertyInStore = async (updatedProperty) => {
     const current = getStoredProperties() || initialProperties;
     const exists = current.some(p => p.id === updatedProperty.id);
     
-    // Safety check: Remove heavy binary data only if extremely large (>2MB) to prevent crash
-    const sanitizedProperty = {
-      ...updatedProperty,
-      image: (updatedProperty.image?.length > 2000000) ? "https://images.unsplash.com/photo-1549497538-301288c86a4a?q=80&w=400" : updatedProperty.image,
-      photos: updatedProperty.photos?.map(ph => ({
-        ...ph,
-        url: (ph.url?.length > 2000000) ? "https://images.unsplash.com/photo-1549497538-301288c86a4a?q=80&w=400" : ph.url
-      }))
-    };
+    // Safety check: Only sanitize if the total dataset exceeds LocalStorage limits (approx 5MB)
+    // We allow large forensic images to persist as they are critical for the demo.
+    const sanitizedProperty = { ...updatedProperty };
 
     const updated = exists 
       ? current.map(p => p.id === updatedProperty.id ? sanitizedProperty : p)
@@ -319,7 +313,11 @@ export const getProperties = async () => {
       console.log(`🟢 SUPABASE CONNECTED: Fetched ${properties.length} properties (Lightweight).`);
       
       // 3. Map snake_case to camelCase
+      // 4. Also fetch photos for these properties to show verified badges on home page
+      const { data: allPhotos } = await supabase.from('property_photos').select('*');
+      
       return properties.map(p => {
+        const propPhotos = allPhotos?.filter(ph => ph.property_id === p.id) || [];
         return {
           id: p.id,
           title: p.title,
@@ -334,8 +332,13 @@ export const getProperties = async () => {
           image: p.image_url,
           description: p.description,
           host: p.host || { name: " Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
-          photos: [], // Defer loading heavy photos to the details page
-          reviews: [] // Defer loading heavy reviews to the details page
+          photos: propPhotos.map(ph => ({
+            id: ph.id,
+            url: ph.url,
+            isVerified: ph.is_verified,
+            meta: ph.meta_data || ph.metadata
+          })),
+          reviews: [] // Reviews still deferred for detail page
         };
       });
     }
