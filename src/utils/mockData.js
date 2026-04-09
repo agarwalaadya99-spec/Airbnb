@@ -1,3 +1,5 @@
+import { supabase } from './supabase';
+
 // Helper to sync with localStorage for demo persistence
 const getStoredProperties = () => {
   try {
@@ -11,15 +13,41 @@ const getStoredProperties = () => {
   return null;
 };
 
-export const updatePropertyInStore = (updatedProperty) => {
-  const current = getStoredProperties() || initialProperties;
-  const exists = current.some(p => p.id === updatedProperty.id);
-  
-  const updated = exists 
-    ? current.map(p => p.id === updatedProperty.id ? updatedProperty : p)
-    : [...current, updatedProperty];
+export const updatePropertyInStore = async (updatedProperty) => {
+  // Try Supabase first
+  try {
+    const { data, error } = await supabase
+      .from('properties')
+      .upsert({
+        id: updatedProperty.id.length > 5 ? updatedProperty.id : undefined, // only use if it looks like a UUID
+        title: updatedProperty.title,
+        location: updatedProperty.location,
+        price: updatedProperty.price,
+        rating: updatedProperty.rating,
+        reviews_count: updatedProperty.reviewsCount,
+        verified_reviews_count: updatedProperty.verifiedReviewsCount,
+        verified: updatedProperty.verified,
+        allow_unverified_guests: updatedProperty.allowUnverifiedGuests,
+        category: updatedProperty.category,
+        image_url: updatedProperty.image,
+        description: updatedProperty.description
+      })
+      .select();
     
-  localStorage.setItem('havenSafeProperties', JSON.stringify(updated));
+    if (error) throw error;
+  } catch (err) {
+    console.warn("Supabase update failed, falling back to localStorage:", err);
+    
+    const current = getStoredProperties() || initialProperties;
+    const exists = current.some(p => p.id === updatedProperty.id);
+    
+    const updated = exists 
+      ? current.map(p => p.id === updatedProperty.id ? updatedProperty : p)
+      : [...current, updatedProperty];
+      
+    localStorage.setItem('havenSafeProperties', JSON.stringify(updated));
+  }
+  
   // Signal updates to other components
   window.dispatchEvent(new Event('storage-update'));
 };
@@ -53,7 +81,12 @@ const initialProperties = [
       { id: "p3", url: "https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?q=80&w=1200", isVerified: false }
     ],
     host: { name: "Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
-    description: "A architectural marvel nestled in the high desert, this geometric cabin offers panoramic mountain views and refined minimalist interiors."
+    description: "A architectural marvel nestled in the high desert, this geometric cabin offers panoramic mountain views and refined minimalist interiors.",
+    reviews: [
+      { id: "r1", user: "Vikram Sharma", rating: 5, date: "October 2025", comment: "The perspective of the mountains from the geometric living area is life-changing. Everything in the photos matches the reality exactly.", verified: true, avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150" },
+      { id: "r2", user: "Sarah Chen", rating: 5, date: "December 2025", comment: "Clean, quiet, and absolutely stunning. The digital provenance tech gave me so much peace of mind before booking.", verified: true, avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150" },
+      { id: "r3", user: "John Doe", rating: 4, date: "August 2025", comment: "Cool place, but a bit far from the main road.", verified: false, avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150" }
+    ]
   },
   {
     id: "2",
@@ -74,7 +107,11 @@ const initialProperties = [
       { id: "p3", url: "https://images.unsplash.com/photo-1600607687989-e7247571a650?q=80&w=1200", isVerified: false }
     ],
     host: { name: "Elena", superhost: true, joined: "2015", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200" },
-    description: "Suspended over the Pacific, this glass villa provides an immersive oceanic experience with floor-to-ceiling windows."
+    description: "Suspended over the Pacific, this glass villa provides an immersive oceanic experience with floor-to-ceiling windows.",
+    reviews: [
+      { id: "r4", user: "Elena Rodriguez", rating: 5, date: "January 2026", comment: "Absolute luxury. Seeing the 'Live Enclave' badge made me confident that the pool view wasn't a Photoshop trick. It was even better in person!", verified: true, avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=150" },
+      { id: "r5", user: "Anonymous Trip", rating: 3, date: "November 2025", comment: "Great place, but the Wi-Fi was spotty.", verified: false, avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150" }
+    ]
   },
   {
     id: "3",
@@ -94,37 +131,191 @@ const initialProperties = [
       { id: "p2", url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200", isVerified: false }
     ],
     host: { name: "Marcus", superhost: false, joined: "2020", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" },
-    description: "A 5,500 sq ft mirror-cladding home that reflects its stunning surroundings while offering unparalleled luxury."
+    description: "A 5,500 sq ft mirror-cladding home that reflects its stunning surroundings while offering unparalleled luxury.",
+    reviews: [
+      { id: "r6", user: "Adventurer Sam", rating: 5, date: "July 2025", comment: "Mind-blowing architecture. A bit expensive but worth it for the photos alone.", verified: false, avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?q=80&w=150" },
+      { id: "r7", user: "Trust First", rating: 4, date: "September 2025", comment: "Host was slow to respond, but the place is exactly as pictured.", verified: false, avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?q=80&w=150" }
+    ]
   },
   {
-    id: "4",
-    title: "Cliffside Sanctuary",
-    location: "Big Sur, California",
-    distance: "150 miles away",
-    price: 850,
-    rating: 4.99,
-    reviewsCount: 215,
-    verifiedReviewsCount: 190,
+    id: "f1",
+    title: "Mountain Hideaway",
+    location: "Aspen, Colorado",
+    distance: "850 miles away",
+    price: 890,
+    rating: 4.95,
+    reviewsCount: 312,
+    verifiedReviewsCount: 280,
     verified: true,
-    allowUnverifiedGuests: true,
-    category: "A-frames",
-    image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=1200",
-    photos: [
-      { id: "p1", url: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?q=80&w=1200", isVerified: true, meta: { sourceDevice: "Leica SL3", timestamp: "March 10, 2026" } },
-      { id: "p2", url: "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=1200", isVerified: true }
-    ],
-    host: { name: "Sophia", superhost: true, joined: "2016", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200" },
-    description: "Perched on a rugged cliffside, this sanctuary offers breathtaking views of the Pacific coast."
+    image: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200",
+    photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200", isVerified: true, meta: { sourceDevice: "Sony A7R IV" } }],
+    host: { name: "Erik", superhost: true, joined: "2019", avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=200" },
+    description: "A luxury hideaway in the heart of Aspen, offering world-class views and absolute privacy.",
+    reviews: [{ id: "rf1", user: "Verified Guest", rating: 5, date: "Feb 2026", comment: "The mountain view is exactly as seen in the verified photo.", verified: true, avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150" }]
+  },
+  {
+    id: "f2",
+    title: "Modernist Retreat",
+    location: "Austin, Texas",
+    distance: "1,200 miles away",
+    price: 320,
+    rating: 4.88,
+    verified: false,
+    image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=1200",
+    photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=1200", isVerified: false }],
+    host: { name: "Sarah", superhost: false, joined: "2021", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200" },
+    description: "Sleek, modern, and perfectly located in Austin's trendiest neighborhood.",
+    reviews: []
+  },
+  {
+    id: "f3",
+    title: "Nordic Cabin",
+    location: "Lofoten, Norway",
+    distance: "4,500 miles away",
+    price: 550,
+    rating: 5.0,
+    verified: true,
+    image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200",
+    photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200", isVerified: true, meta: { sourceDevice: "Phase One XF" } }],
+    host: { name: "Lars", superhost: true, joined: "2017", avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&q=80&w=200" },
+    description: "Experience the Aurora from this handcrafted Nordic cabin perched over a fjord.",
+    reviews: []
+  },
+  {
+    id: "f4",
+    title: "Zen Sanctuary",
+    location: "Kyoto, Japan",
+    distance: "6,200 miles away",
+    price: 720,
+    rating: 4.97,
+    verified: true,
+    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200",
+    photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200", isVerified: true }],
+    host: { name: "Yuki", superhost: true, joined: "2015", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200" },
+    description: "A tranquil sanctuary in the hills of Kyoto.",
+    reviews: []
+  },
+  {
+    id: "f5",
+    title: "Desert Oasis",
+    location: "Palm Springs, California",
+    distance: "105 miles away",
+    price: 410,
+    rating: 4.92,
+    verified: true,
+    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1200",
+    photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1200", isVerified: true }],
+    host: { name: "Mark", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" },
+    description: "Classic Palm Springs luxury.",
+    reviews: []
+  },
+  {
+    id: "f6",
+    title: "Architectural Cube",
+    location: "Berlin, Germany",
+    distance: "5,100 miles away",
+    price: 280,
+    rating: 4.85,
+    verified: true,
+    image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200",
+    photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200", isVerified: true }],
+    host: { name: "Dieter", superhost: true, joined: "2016", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200" },
+    description: "Modernist cube in the city center.",
+    reviews: []
+  },
+  {
+    id: "f7",
+    title: "Lakeside Minimalist",
+    location: "Lake Como, Italy",
+    distance: "5,800 miles away",
+    price: 1500,
+    rating: 4.99,
+    verified: true,
+    image: "https://images.unsplash.com/photo-1512918766671-ad6507962077?q=80&w=1200",
+    photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1512918766671-ad6507962077?q=80&w=1200", isVerified: true }],
+    host: { name: "Giulia", superhost: true, joined: "2014", avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200" },
+    description: "Unparalleled luxury on Lake Como.",
+    reviews: []
+  },
+  {
+    id: "f8",
+    title: "Concrete Loft",
+    location: "London, UK",
+    distance: "4,900 miles away",
+    price: 450,
+    rating: 4.91,
+    verified: true,
+    image: "https://images.unsplash.com/photo-1502117859338-fd9daa518a9a?q=80&w=1200",
+    photos: [{ id: "p1", url: "https://images.unsplash.com/photo-1502117859338-fd9daa518a9a?q=80&w=1200", isVerified: true }],
+    host: { name: "James", superhost: false, joined: "2020", avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200" },
+    description: "Brutalist beauty in East London.",
+    reviews: []
   }
 ];
 
-export const getProperties = () => {
+export const getProperties = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('properties')
+      .select(`
+        *,
+        photos:property_photos(*),
+        reviews:property_reviews(*)
+      `);
+    
+    if (error) throw error;
+    
+    if (data && data.length > 0) {
+      // Map snake_case to camelCase
+      return data.map(p => ({
+        id: p.id,
+        title: p.title,
+        location: p.location,
+        price: p.price,
+        rating: p.rating,
+        reviewsCount: p.reviews_count,
+        verifiedReviewsCount: p.verified_reviews_count,
+        verified: p.verified,
+        allowUnverifiedGuests: p.allow_unverified_guests,
+        category: p.category,
+        image: p.image_url,
+        description: p.description,
+        photos: p.photos ? p.photos.map(ph => ({
+           id: ph.id,
+           url: ph.url,
+           isVerified: ph.is_verified,
+           meta: ph.metadata
+        })) : [],
+        reviews: p.reviews ? p.reviews.map(r => ({
+           id: r.id,
+           user: r.user_name || r.user,
+           rating: r.rating,
+           date: r.date,
+           comment: r.comment,
+           verified: r.is_verified ?? r.verified,
+           avatar: r.avatar_url || r.avatar
+        })) : []
+      }));
+    }
+  } catch (err) {
+    console.warn("Supabase fetch failed, falling back to mock data:", err);
+  }
+
   const stored = getStoredProperties();
-  return Array.isArray(stored) ? stored : initialProperties;
+  const baseData = Array.isArray(stored) ? stored : initialProperties;
+  
+  // Ensure we definitely have the hardcoded reviews if we're falling back
+  return baseData.map(p => {
+    const initial = initialProperties.find(ip => ip.id === p.id);
+    return {
+      ...p,
+      reviews: p.reviews || initial?.reviews || []
+    };
+  });
 };
 
-// Backward compatibility for components importing static 'properties'
-export const properties = getProperties();
+// Kept for static access in some components, but should use getProperties()
+export const properties = initialProperties;
 
 export const categories = [
   { id: "icons", name: "Icons", icon: "Stars" },
@@ -135,6 +326,30 @@ export const categories = [
   { id: "tiny-homes", name: "Tiny homes", icon: "Home" },
   { id: "a-frames", name: "A-frames", icon: "Triangle" }
 ];
+
+export const getVerifiedUsers = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*');
+    
+    if (error) throw error;
+    
+    if (data && data.length > 0) {
+      return data.map(u => ({
+        id: u.id,
+        name: u.name,
+        avatar: u.avatar_url,
+        verified: u.verified,
+        trustScore: u.trust_score,
+        level: u.level
+      }));
+    }
+  } catch (err) {
+    console.warn("Supabase profiles fetch failed:", err);
+  }
+  return mockVerifiedUsers;
+};
 
 export const mockVerifiedUsers = [
   { 

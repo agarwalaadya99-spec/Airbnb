@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import ListPropertyModal from '../components/ListPropertyModal';
+
 const iconMap = {
   Stars,
   Mountain,
@@ -20,13 +22,26 @@ const iconMap = {
 };
 
 const Home = () => {
-  const [activeProperties, setActiveProperties] = useState(getProperties());
+  const [activeProperties, setActiveProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('icons');
+  const [isListModalOpen, setIsListModalOpen] = useState(false);
 
-  // Sync with storage updates from Host Dashboard
+  const fetchProperties = async () => {
+    setLoading(true);
+    const data = await getProperties();
+    setActiveProperties(data);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const handleStorageUpdate = () => {
-      setActiveProperties(getProperties());
+    fetchProperties();
+  }, []);
+
+  // Sync with storage updates from Host Dashboard or Modal
+  useEffect(() => {
+    const handleStorageUpdate = async () => {
+      await fetchProperties();
     };
     window.addEventListener('storage-update', handleStorageUpdate);
     return () => window.removeEventListener('storage-update', handleStorageUpdate);
@@ -34,7 +49,13 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white pb-24">
-      <Navbar />
+      <Navbar onListProperty={() => setIsListModalOpen(true)} />
+
+      <ListPropertyModal 
+        isOpen={isListModalOpen} 
+        onClose={() => setIsListModalOpen(false)} 
+        onRefresh={fetchProperties}
+      />
 
       {/* Categories Bar */}
       <div className="sticky top-[80px] sm:top-[100px] z-40 bg-white border-b border-gray-100/50 flex items-center justify-between px-4 sm:px-6 lg:px-12 py-2 gap-4">
@@ -128,19 +149,6 @@ const Home = () => {
               <PropertyCard key={p.id} property={p} index={idx} />
             ))
           }
-          {/* Fill the grid with curated, unique aesthetic listings */}
-          {[
-            { id: 'f1', title: 'Mountain Hideaway', location: 'Aspen, Colorado', price: 890, image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200', rating: 4.95, distance: '850 miles away' },
-            { id: 'f2', title: 'Modernist Retreat', location: 'Austin, Texas', price: 320, image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?q=80&w=1200', rating: 4.88, distance: '1,200 miles away' },
-            { id: 'f3', title: 'Nordic Cabin', location: 'Lofoten, Norway', price: 550, image: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200', rating: 5.0, distance: '4,500 miles away' },
-            { id: 'f4', title: 'Zen Sanctuary', location: 'Kyoto, Japan', price: 720, image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200', rating: 4.97, distance: '6,200 miles away' },
-            { id: 'f5', title: 'Desert Oasis', location: 'Palm Springs, California', price: 410, image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1200', rating: 4.92, distance: '105 miles away' },
-            { id: 'f6', title: 'Architectural Cube', location: 'Berlin, Germany', price: 280, image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=1200', rating: 4.85, distance: '5,100 miles away' },
-            { id: 'f7', title: 'Lakeside Minimalist', location: 'Lake Como, Italy', price: 1500, image: 'https://images.unsplash.com/photo-1512918766671-ad6507962077?q=80&w=1200', rating: 4.99, distance: '5,800 miles away' },
-            { id: 'f8', title: 'Concrete Loft', location: 'London, UK', price: 450, image: 'https://images.unsplash.com/photo-1502117859338-fd9daa518a9a?q=80&w=1200', rating: 4.91, distance: '4,900 miles away' }
-          ].map((p, idx) => (
-            <PropertyCard key={p.id} property={{...p, verified: idx % 3 === 0}} index={idx + 4} />
-          ))}
         </div>
       </main>
 

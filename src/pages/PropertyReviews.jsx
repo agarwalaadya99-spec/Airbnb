@@ -14,17 +14,24 @@ const PropertyReviews = () => {
   const isHostMode = location.pathname.startsWith('/host');
   
   // Local state for property to handle host updates
-  const [property, setProperty] = useState(() => {
-    const all = getProperties();
-    return all.find(p => p.id === id) || all[0];
-  });
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  const fetchProperty = async () => {
+    const all = await getProperties();
+    const found = all.find(p => p.id === id) || all[0];
+    setProperty(found);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProperty();
+  }, [id]);
   
   // Sync with storage updates
   useEffect(() => {
-    const handleStorageUpdate = () => {
-      const all = getProperties();
-      const updated = all.find(p => p.id === id);
-      if (updated) setProperty(updated);
+    const handleStorageUpdate = async () => {
+      await fetchProperty();
     };
     window.addEventListener('storage-update', handleStorageUpdate);
     return () => window.removeEventListener('storage-update', handleStorageUpdate);
@@ -96,6 +103,14 @@ const PropertyReviews = () => {
     setReviewSubmitted(true);
     setNewReview('');
   };
+
+  if (loading || !property) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-airbnb border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -521,7 +536,7 @@ const PropertyReviews = () => {
           <div className="hidden lg:block w-[380px] shrink-0">
             <div className="sticky top-[100px] border border-gray-100 shadow-ambient p-6 rounded-[24px] bg-white space-y-6">
               <div className="flex items-center justify-between">
-                <div className="text-[22px] font-extrabold">$ {property.price} <span className="text-[16px] font-normal text-[#717171]">night</span></div>
+                <div className="text-[22px] font-extrabold">₹ {property.price} <span className="text-[16px] font-normal text-[#717171]">night</span></div>
                 <div className="flex items-center gap-1 text-[14px] font-semibold">
                   <Star size={14} fill="currentColor" /> {property.rating}
                 </div>

@@ -15,14 +15,18 @@ function App() {
       <div className="min-h-screen bg-white font-inter text-[#222222] antialiased">
         <AnimatePresence mode="wait">
           <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/explore" element={<Home />} />
+            {/* Primary Single View */}
+            <Route path="/" element={<Home />} />
+            
+            {/* Exploration & Details */}
             <Route path="/property/:id" element={<PropertyReviews />} />
             <Route path="/booking-verification/:id" element={<BookingVerification />} />
             <Route path="/booking-confirmation" element={<BookingConfirmation />} />
-            <Route path="/host/property/:id" element={<PropertyReviews />} />
+            
+            {/* Preserved / Hidden Routes (Student Project Simplicity) */}
+            <Route path="/explore" element={<Home />} />
             <Route path="/host" element={<HostDashboard />} />
-
+            <Route path="/landing" element={<LandingPage />} />
           </Routes>
         </AnimatePresence>
       </div>

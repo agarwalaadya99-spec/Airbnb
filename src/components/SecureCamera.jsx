@@ -215,7 +215,11 @@ const SecureCamera = ({ onCapture, onClose }) => {
             aiDetection: '✓ Verified Human-Shot (Secure Enclave)',
             aiConfidence: 0,
             aiColor: 'green',
-            aiSignals: [],
+            aiSignals: [
+                { type: 'info', label: 'Hardware Attestation', value: 'Secure Enclave' },
+                { type: 'info', label: 'Real-time GPS', value: 'Embedded' },
+                { type: 'info', label: 'Integrity Hash', value: 'SHA2-256 Verified' }
+            ],
             aiDetails: [
                 'Photo captured directly via browser Secure Enclave Camera.',
                 'Real-time GPS coordinates embedded at moment of capture.',

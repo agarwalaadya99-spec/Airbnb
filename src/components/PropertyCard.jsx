@@ -68,7 +68,7 @@ const PropertyCard = ({ property, index = 0 }) => {
           </div>
           
           <p className="text-[15px] pt-2 flex items-baseline gap-1.5">
-            <span className="font-extrabold text-[16px]">${property.price}</span>
+            <span className="font-extrabold text-[16px]">₹{property.price}</span>
             <span className="text-[#444444] font-medium">night</span>
           </p>
         </div>

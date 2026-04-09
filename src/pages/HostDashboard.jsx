@@ -35,6 +35,7 @@ import {
 import Navbar from '../components/Navbar';
 import SecureCamera from '../components/SecureCamera';
 import { getProperties, updatePropertyInStore, fileToBase64 } from '../utils/mockData';
+import { uploadImage } from '../utils/supabase';
 
 // --- Sub-Components for Organization ---
 
@@ -361,10 +362,22 @@ const HostDashboard = () => {
   const [portfolioView, setPortfolioView] = useState('grid'); // grid, list
   
   // Data State
-  const [allProperties, setAllProperties] = useState(getProperties());
-  const [selectedPropertyId, setSelectedPropertyId] = useState(getProperties()[0].id);
+  const [allProperties, setAllProperties] = useState([]);
+  const [selectedPropertyId, setSelectedPropertyId] = useState(null);
   const [activeTab, setActiveTab] = useState('overview'); // overview, details, media, policies
   const [searchQuery, setSearchQuery] = useState('');
+
+  const fetchProperties = async () => {
+    const data = await getProperties();
+    setAllProperties(data);
+    if (!selectedPropertyId && data.length > 0) {
+      setSelectedPropertyId(data[0].id);
+    }
+  };
+
+  useEffect(() => {
+    fetchProperties();
+  }, []);
 
   // Dynamic get for selected property
   const selectedProperty = allProperties.find(p => p.id === selectedPropertyId) || allProperties[0];
@@ -404,9 +417,8 @@ const HostDashboard = () => {
 
   // Sync with storage
   useEffect(() => {
-    const handleStorageUpdate = () => {
-      const stored = localStorage.getItem('havenSafeProperties');
-      if (stored) setAllProperties(JSON.parse(stored));
+    const handleStorageUpdate = async () => {
+      await fetchProperties();
     };
     window.addEventListener('storage-update', handleStorageUpdate);
     return () => window.removeEventListener('storage-update', handleStorageUpdate);
@@ -418,18 +430,18 @@ const HostDashboard = () => {
     window.scrollTo(0, 0);
   };
 
-  const handleUpdateProperty = (e) => {
+  const handleUpdateProperty = async (e) => {
     if (e) e.preventDefault();
     setVerificationStatus('verifying');
     
     // Simulate attestation delay for the new details
-    setTimeout(() => {
+    setTimeout(async () => {
       const updated = { 
         ...selectedProperty, 
         ...propertyDetails, 
         ...safetySettings
       };
-      updatePropertyInStore(updated);
+      await updatePropertyInStore(updated);
       setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
       setVerificationStatus('complete');
       
@@ -441,7 +453,7 @@ const HostDashboard = () => {
     }, 1200);
   };
 
-  const handleCreateListing = () => {
+  const handleCreateListing = async () => {
     const newId = String(Date.now()); // Using timestamp for safer ID generation
     const newProp = {
       id: newId,
@@ -457,7 +469,7 @@ const HostDashboard = () => {
       rating: 5.0,
       verified: false
     };
-    updatePropertyInStore(newProp);
+    await updatePropertyInStore(newProp);
     setAllProperties([...allProperties, newProp]);
     handleSelectProperty(newId);
     setTimeout(() => setActiveTab('details'), 100); // Auto-focus on Details for immediate editing
@@ -467,29 +479,33 @@ const HostDashboard = () => {
     setShowCamera(false);
     setVerificationStatus('verifying');
     
-    // Convert to Base64 for persistent storage
-    const base64Photo = await fileToBase64(file);
+    // Upload to Supabase Storage for persistent cloud hosting
+    const fileName = `${selectedPropertyId}/${Date.now()}.jpg`;
+    const publicUrl = await uploadImage('provenance-assets', fileName, file);
+    
+    // Fallback to Base64 if upload fails
+    const finalUrl = publicUrl || await fileToBase64(file);
     
     // Snappy anchoring since verification happened in camera
-    setTimeout(() => {
-      const newPhoto = { id: `p${Date.now()}`, url: base64Photo, isVerified: true, meta };
+    setTimeout(async () => {
+      const newPhoto = { id: `p${Date.now()}`, url: finalUrl, isVerified: true, meta };
       const updated = { ...selectedProperty, photos: [...selectedProperty.photos, newPhoto] };
-      updatePropertyInStore(updated);
+      await updatePropertyInStore(updated);
       setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
       setVerificationStatus('complete');
       setTimeout(() => setVerificationStatus('partial'), 1500);
     }, 1200);
   };
 
-  const handleDeletePhoto = (photoId) => {
+  const handleDeletePhoto = async (photoId) => {
     const updated = { ...selectedProperty, photos: selectedProperty.photos.filter(p => p.id !== photoId) };
-    updatePropertyInStore(updated);
+    await updatePropertyInStore(updated);
     setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
   };
 
-  const handleSetPrimary = (photoUrl) => {
+  const handleSetPrimary = async (photoUrl) => {
     const updated = { ...selectedProperty, image: photoUrl };
-    updatePropertyInStore(updated);
+    await updatePropertyInStore(updated);
     setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
   };
 

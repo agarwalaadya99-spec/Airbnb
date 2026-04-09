@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { properties, mockVerifiedUsers } from '../utils/mockData';
 import Navbar from '../components/Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -12,30 +11,39 @@ import {
   Info as InfoIcon, 
   ShieldCheck, 
   CheckCircle2, 
+  CheckCircle,
   AlertTriangle, 
   User, 
   Plus, 
-  ChevronRight as ChevronRightIcon,
-  Shield,
-  X
+  ChevronRight as ChevronRightIcon, 
+  Shield, 
+  X 
 } from 'lucide-react';
+import { getProperties, mockVerifiedUsers } from '../utils/mockData';
 
 const BookingVerification = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   
   // Local state for property to handle host updates
-  const [property, setProperty] = useState(properties.find(p => p.id === id) || properties[0]);
+  const [property, setProperty] = useState(null);
+  const [loading, setLoading] = useState(true);
+  
+  const fetchProperty = async () => {
+    const all = await getProperties();
+    const found = all.find(p => p.id === id) || all[0];
+    setProperty(found);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProperty();
+  }, [id]);
   
   // Sync with storage updates
   useEffect(() => {
-    const handleStorageUpdate = () => {
-      const stored = localStorage.getItem('havenSafeProperties');
-      if (stored) {
-        const all = JSON.parse(stored);
-        const updated = all.find(p => p.id === id);
-        if (updated) setProperty(updated);
-      }
+    const handleStorageUpdate = async () => {
+      await fetchProperty();
     };
     window.addEventListener('storage-update', handleStorageUpdate);
     return () => window.removeEventListener('storage-update', handleStorageUpdate);
@@ -44,6 +52,7 @@ const BookingVerification = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+
   const [partyMembers, setPartyMembers] = useState([
     { 
       id: "guest_1", 
@@ -53,6 +62,14 @@ const BookingVerification = () => {
     }
   ]);
   const [showUnverifiedWarning, setShowUnverifiedWarning] = useState(false);
+
+  if (loading || !property) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-airbnb border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const handleSearch = (e) => {
     const term = e.target.value;
@@ -270,20 +287,20 @@ const BookingVerification = () => {
                 <h3 className="text-[24px] font-manrope font-black mb-8 tracking-tight">Reservation Breakdown</h3>
                 <div className="space-y-4 mb-10">
                   <div className="flex justify-between text-[#5c3f41] font-medium">
-                    <span>${property.price} × 5 nights</span>
-                    <span className="font-black text-[#1a1c1c]">${property.price * 5}</span>
+                    <span>₹{property.price} × 5 nights</span>
+                    <span className="font-black text-[#1a1c1c]">₹{property.price * 5}</span>
                   </div>
                   <div className="flex justify-between text-[#5c3f41] font-medium">
                     <span>Airbnb Service Fee</span>
-                    <span className="font-black text-[#1a1c1c]">$140</span>
+                    <span className="font-black text-[#1a1c1c]">₹140</span>
                   </div>
                   <div className="flex justify-between text-[#5c3f41] font-medium">
                     <span>Cleaning & Sanitization</span>
-                    <span className="font-black text-[#1a1c1c]">$85</span>
+                    <span className="font-black text-[#1a1c1c]">₹85</span>
                   </div>
                   <div className="pt-6 border-t border-gray-100 flex justify-between items-center">
-                    <span className="text-[20px] font-manrope font-black">Total (USD)</span>
-                    <span className="text-[28px] font-manrope font-black text-airbnb tracking-tighter">${property.price * 5 + 225}</span>
+                    <span className="text-[20px] font-manrope font-black">Total (INR)</span>
+                    <span className="text-[28px] font-manrope font-black text-airbnb tracking-tighter">₹{property.price * 5 + 225}</span>
                   </div>
                 </div>
                 <button 
