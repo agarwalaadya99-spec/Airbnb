@@ -1,5 +1,7 @@
 import { supabase } from './supabase';
 
+console.log("🚀 HavenSafe Version: v1.5.0-forensic-fix");
+
 // Helper to sync with localStorage for demo persistence
 const getStoredProperties = () => {
   try {
