@@ -325,14 +325,20 @@ const PropertyReviews = () => {
                     <h3 className="text-[20px] sm:text-[22px] font-manrope font-extrabold text-[#222222]">Property Insights</h3>
                     <p className="text-[13px] text-[#717171]">Photos verified via secure hardware device IDs.</p>
                   </div>
-                  <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full text-[11px] font-extrabold text-green-700 uppercase tracking-widest border border-green-100">
-                    <Shield size={12} fill="currentColor" fillOpacity={0.1} /> High Trust Level
-                  </div>
+                  {property.photos.some(p => p.meta?.aiConfidence > 60) ? (
+                    <div className="flex items-center gap-2 px-3 py-1 bg-red-50 rounded-full text-[11px] font-extrabold text-red-700 uppercase tracking-widest border border-red-100 animate-pulse">
+                      <AlertTriangle size={12} fill="currentColor" fillOpacity={0.1} /> Forensic Alert: Low Trust
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full text-[11px] font-extrabold text-green-700 uppercase tracking-widest border border-green-100">
+                      <Shield size={12} fill="currentColor" fillOpacity={0.1} /> High Trust Level
+                    </div>
+                  )}
                </div>
   
                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   {property.photos.map((photo) => (
-                    <div key={photo.id} className="relative group rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100 h-[240px] sm:h-[320px]">
+                    <div key={photo.id} className="relative group rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100 aspect-square sm:aspect-video lg:aspect-square bg-gray-100">
                        <img src={photo.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Listing" />
                        <div className="absolute top-4 left-4 flex gap-2">
                           {photo.isVerified ? (
