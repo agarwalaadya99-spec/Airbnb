@@ -18,13 +18,14 @@ const iconMap = {
   Waves,
   Castle,
   Home: HomeIcon,
-  Triangle
+  Triangle,
+  Globe
 };
 
 const Home = () => {
   const [activeProperties, setActiveProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState('icons');
+  const [activeCategory, setActiveCategory] = useState('all');
   const [isListModalOpen, setIsListModalOpen] = useState(false);
 
   const fetchProperties = async () => {
@@ -144,7 +145,7 @@ const Home = () => {
         {/* Property Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-10 sm:gap-y-12">
           {activeProperties
-            .filter(p => !activeCategory || activeCategory === 'all' || p.category?.toLowerCase() === activeCategory.toLowerCase() || (activeCategory === 'icons' && p.category === 'Icons'))
+            .filter(p => !activeCategory || activeCategory === 'all' || p.category?.toLowerCase() === activeCategory.toLowerCase())
             .map((p, idx) => (
               <PropertyCard key={p.id} property={p} index={idx} />
             ))

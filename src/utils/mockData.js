@@ -294,6 +294,7 @@ export const getProperties = async () => {
         category: p.category,
         image: p.image_url,
         description: p.description,
+        host: p.host || { name: " Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
         photos: p.photos ? p.photos.map(ph => ({
            id: ph.id,
            url: ph.url,
@@ -307,7 +308,7 @@ export const getProperties = async () => {
            date: r.date,
            comment: r.comment,
            verified: r.is_verified ?? r.verified,
-           avatar: r.avatar_url || r.avatar
+           avatar: r.avatar_url || r.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150"
         })) : []
       }));
     }
@@ -332,6 +333,7 @@ export const getProperties = async () => {
 export const properties = initialProperties;
 
 export const categories = [
+  { id: "all", name: "All", icon: "Globe" },
   { id: "icons", name: "Icons", icon: "Stars" },
   { id: "amazing-views", name: "Amazing views", icon: "Mountain" },
   { id: "design", name: "Design", icon: "Palmtree" },

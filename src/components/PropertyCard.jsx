@@ -43,7 +43,18 @@ const PropertyCard = ({ property, index = 0 }) => {
               </motion.div>
             )}
             
-            {property.verified && (
+            {property.forensics?.aiConfidence > 70 && (
+              <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="flex items-center gap-2 px-3.5 py-2 bg-red-600 text-white shadow-2xl rounded-full border border-white/20"
+              >
+                <div className="w-2 h-2 bg-white rounded-full animate-ping" />
+                <span className="text-[10px] font-black tracking-widest uppercase">Forensic Alert: AI Detected</span>
+              </motion.div>
+            )}
+
+            {property.verified && !property.forensics?.aiConfidence && (
               <div className="flex items-center gap-2 px-3.5 py-2 bg-white/95 backdrop-blur-xl shadow-2xl rounded-full border border-white/20 transform group-hover:scale-105 transition-transform">
                 <ShieldCheck size={14} className="text-airbnb" fill="currentColor" fillOpacity={0.15} />
                 <span className="text-[11px] font-extrabold text-[#222222] tracking-wider uppercase">AI Verified</span>

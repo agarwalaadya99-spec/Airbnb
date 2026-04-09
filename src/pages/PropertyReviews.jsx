@@ -235,28 +235,30 @@ const PropertyReviews = () => {
               </div>
             </section>
             
-            <section className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 sm:p-8 bg-gray-50/50 rounded-[32px] border border-gray-100/50">
-               <div className="relative">
-                  <img src={property.host.avatar} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white shadow-sm" alt={property.host.name} />
-                  {property.host.superhost && (
-                    <div className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md text-airbnb">
-                       <Shield size={14} className="text-airbnb" fill="currentColor" fillOpacity={0.1} />
+            {property.host && (
+              <section className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 sm:p-8 bg-gray-50/50 rounded-[32px] border border-gray-100/50">
+                <div className="relative">
+                    <img src={property.host.avatar} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white shadow-sm" alt={property.host.name} />
+                    {property.host.superhost && (
+                      <div className="absolute -bottom-1 -right-1 bg-white p-1 rounded-full shadow-md text-airbnb">
+                        <Shield size={14} className="text-airbnb" fill="currentColor" fillOpacity={0.1} />
+                      </div>
+                    )}
+                </div>
+                <div className="space-y-1">
+                    <h3 className="text-[18px] sm:text-[20px] font-manrope font-black">Hosted by {property.host.name}</h3>
+                    <p className="text-[14px] text-slate-500 font-medium whitespace-nowrap">Joined in {property.host.joined} · Trust ID: HS-92{property.id}4</p>
+                    <div className="flex gap-4 pt-1">
+                      <span className="text-[11px] font-black uppercase text-airbnb tracking-widest flex items-center gap-1.5 border-r border-gray-200 pr-4">
+                          <Star size={12} fill="currentColor" /> {property.rating} Rating
+                      </span>
+                      <span className="text-[11px] font-black uppercase text-slate-400 tracking-widest">
+                          {property.reviewsCount} Reviews
+                      </span>
                     </div>
-                  )}
-               </div>
-               <div className="space-y-1">
-                  <h3 className="text-[18px] sm:text-[20px] font-manrope font-black">Hosted by {property.host.name}</h3>
-                  <p className="text-[14px] text-slate-500 font-medium whitespace-nowrap">Joined in {property.host.joined} \u00b7 Trust ID: HS-92{property.id}4</p>
-                  <div className="flex gap-4 pt-1">
-                     <span className="text-[11px] font-black uppercase text-airbnb tracking-widest flex items-center gap-1.5 border-r border-gray-200 pr-4">
-                        <Star size={12} fill="currentColor" /> {property.rating} Rating
-                     </span>
-                     <span className="text-[11px] font-black uppercase text-slate-400 tracking-widest">
-                        {property.reviewsCount} Reviews
-                     </span>
-                  </div>
-               </div>
-            </section>
+                </div>
+              </section>
+            )}
 
             {/* AI Trust Banner */}
             <motion.section 
