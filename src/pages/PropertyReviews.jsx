@@ -55,6 +55,7 @@ const PropertyReviews = () => {
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [showWriteReview, setShowWriteReview] = useState(false);
+  const [userSelectedRating, setUserSelectedRating] = useState(5);
 
   const handleStartVerification = () => {
     if (isHostMode) {
@@ -111,7 +112,7 @@ const PropertyReviews = () => {
     const reviewObj = {
       id: `r${Date.now()}`,
       user: "Verified User", // In a real app, this would be the logged-in user's name
-      rating: 5,
+      rating: userSelectedRating,
       date: new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(new Date()),
       comment: newReview,
       verified: true,
@@ -513,9 +514,27 @@ const PropertyReviews = () => {
                     exit={{ opacity: 0, y: -10 }}
                     className="p-6 sm:p-8 bg-gray-50 rounded-[24px] sm:rounded-[32px] border border-gray-100 space-y-4"
                   >
-                    <div className="flex items-center gap-3 mb-2">
-                       <div className="p-2 bg-white rounded-lg shadow-sm"><Star size={16} className="text-airbnb" /></div>
-                       <span className="font-manrope font-black text-[15px]">Verify Your Stay</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+                       <div className="flex items-center gap-3">
+                          <div className="p-2 bg-white rounded-lg shadow-sm"><Star size={16} className="text-airbnb" /></div>
+                          <span className="font-manrope font-black text-[15px]">Verify Your Stay</span>
+                       </div>
+                       <div className="flex items-center gap-1 bg-white p-2 rounded-xl shadow-sm border border-gray-100">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              onClick={() => setUserSelectedRating(star)}
+                              className="p-1 transition-all hover:scale-110 active:scale-95"
+                            >
+                              <Star 
+                                size={18} 
+                                fill={star <= userSelectedRating ? "#FF385C" : "transparent"} 
+                                className={star <= userSelectedRating ? "text-airbnb" : "text-gray-300"} 
+                              />
+                            </button>
+                          ))}
+                          <span className="ml-2 text-[12px] font-black text-airbnb mr-2">{userSelectedRating}.0</span>
+                       </div>
                     </div>
                     <textarea 
                       value={newReview}
