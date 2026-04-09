@@ -125,8 +125,15 @@ const SecureCamera = ({ onCapture, onClose }) => {
         const video = videoRef.current;
         const canvas = canvasRef.current;
 
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+        // Mobile optimization: Limit max resolution to prevent memory crash
+        const MAX_DIM = 1920;
+        let scale = 1;
+        if (video.videoWidth > MAX_DIM || video.videoHeight > MAX_DIM) {
+            scale = MAX_DIM / Math.max(video.videoWidth, video.videoHeight);
+        }
+
+        canvas.width = video.videoWidth * scale;
+        canvas.height = video.videoHeight * scale;
         const ctx = canvas.getContext('2d');
 
         // Mirror for selfie mode
@@ -136,6 +143,7 @@ const SecureCamera = ({ onCapture, onClose }) => {
         }
 
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        console.log(`📸 Captured at ${canvas.width}x${canvas.height} (scaled ${scale.toFixed(2)}x)`);
 
         // Stamp provenance overlay onto the image
         ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
@@ -165,13 +173,24 @@ const SecureCamera = ({ onCapture, onClose }) => {
         setTimeout(() => setShutter(false), 250);
 
         canvas.toBlob((blob) => {
+            if (!blob) {
+                console.error('❌ Failed to create image blob');
+                return;
+            }
             const url = URL.createObjectURL(blob);
+            console.log('✅ Blob created:', (blob.size / 1024).toFixed(1), 'KB');
+            
+            // Cleanup previous object URL if it exists to save memory
+            if (capturedImage?.url) {
+                URL.revokeObjectURL(capturedImage.url);
+            }
+
             setCapturedImage({ url, blob, timestamp, gpsCoords });
             
             // Kick off AI scanning
             setIsScanning(true);
             setScanProgress(0);
-        }, 'image/jpeg', 0.95);
+        }, 'image/jpeg', 0.85); // Slightly lower quality for better mobile resilience
 
     }, [videoRef, canvasRef, facingMode, now, gpsCoords]);
     
