@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Upload, Camera, Shield, CheckCircle, AlertTriangle, 
-  Info, MapPin, DollarSign, FileText, Sparkles, Zap, 
-  ChevronRight, ArrowLeft, Loader2, Binary, Fingerprint, Search, Plus
+  Info, MapPin, FileText, Sparkles, Zap, 
+  ChevronRight, ArrowLeft, Loader2, Binary, Fingerprint, Search, Plus, IndianRupee
 } from 'lucide-react';
 import { extractMetadata } from '../utils/forensics';
 import { updatePropertyInStore } from '../utils/mockData';
@@ -204,7 +204,7 @@ const ListPropertyModal = ({ isOpen, onClose, onRefresh }) => {
                   <div className="space-y-2">
                     <label className="text-[13px] font-black uppercase tracking-widest text-slate-400 ml-1">Price per Night</label>
                     <div className="relative group">
-                      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-airbnb transition-colors" size={18} />
+                      <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-airbnb transition-colors" size={18} />
                       <input 
                         name="price"
                         value={formData.price}

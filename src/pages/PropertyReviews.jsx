@@ -275,9 +275,9 @@ const PropertyReviews = () => {
         </button>
 
         {/* Sticky Mobile Booking Bar */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-100 bg-white border-t border-gray-100 px-6 py-4 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)] animate-in slide-in-from-bottom duration-500">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-100 px-6 py-4 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
            <div className="flex flex-col">
-              <span className="text-[18px] font-black tracking-tight text-[#1a1c1c]">${property.price} <span className="text-[14px] font-medium text-slate-400">night</span></span>
+              <span className="text-[18px] font-black tracking-tight text-[#1a1c1c]">₹{property.price} <span className="text-[14px] font-medium text-slate-400">night</span></span>
               <span className="text-[12px] font-extrabold text-[#222222] underline">{property.rating} ★</span>
            </div>
            <button 
