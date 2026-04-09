@@ -41,18 +41,31 @@ const ListPropertyModal = ({ isOpen, onClose, onRefresh }) => {
       
       const report = await extractMetadata(file);
       
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData(prev => ({
-          ...prev,
-          images: [reader.result],
-          forensicReport: report
-        }));
-        setScanning(false);
-        setLoading(false);
-        setStep(3); // Move to Forensic Report step
-      };
-      reader.readAsDataURL(file);
+      // Upload to Supabase Storage for a real public URL
+      let imageUrl = null;
+      try {
+        const { uploadImage } = await import('../utils/supabase');
+        const filePath = `listings/${Date.now()}_${file.name}`;
+        imageUrl = await uploadImage('property-photos', filePath, file);
+        console.log('✅ File upload to Supabase Storage:', imageUrl);
+      } catch (uploadErr) {
+        console.warn('⚠️ Supabase Storage upload failed, using object URL:', uploadErr);
+      }
+      
+      // Fallback to local object URL if storage fails
+      if (!imageUrl) {
+        imageUrl = URL.createObjectURL(file);
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        images: [imageUrl],
+        forensicReport: report,
+        _uploadedFile: file  // Keep file reference in case we need it
+      }));
+      setScanning(false);
+      setLoading(false);
+      setStep(3);
     } catch (error) {
       console.error('Forensic analysis failed:', error);
       setScanning(false);
@@ -60,14 +73,29 @@ const ListPropertyModal = ({ isOpen, onClose, onRefresh }) => {
     }
   };
 
-  const onCapture = (imageData, report) => {
-     setFormData(prev => ({
-        ...prev,
-        images: [imageData],
-        forensicReport: report
-     }));
-     setShowCamera(false);
-     setStep(3);
+  const onCapture = async (file, report) => {
+    // Upload file to Supabase Storage for a real public URL
+    let imageUrl = null;
+    try {
+      const { uploadImage } = await import('../utils/supabase');
+      const filePath = `listings/secure-capture-${Date.now()}.jpg`;
+      imageUrl = await uploadImage('property-photos', filePath, file);
+      console.log('✅ Secure capture uploaded to Supabase Storage:', imageUrl);
+    } catch (uploadErr) {
+      console.warn('⚠️ Supabase Storage upload failed:', uploadErr);
+    }
+    
+    if (!imageUrl) {
+      imageUrl = URL.createObjectURL(file);
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      images: [imageUrl],
+      forensicReport: report
+    }));
+    setShowCamera(false);
+    setStep(3);
   };
 
   const handleSubmit = async () => {

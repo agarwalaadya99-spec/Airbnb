@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProperties, getPropertyById, updatePropertyInStore, fileToBase64 } from '../utils/mockData';
+import { getProperties, getPropertyById, updatePropertyInStore } from '../utils/mockData';
 
 console.log("🚀 Forensic Detail Engine: Loaded v1.5.1");
 import Navbar from '../components/Navbar';
@@ -71,21 +71,35 @@ const PropertyReviews = () => {
     setShowCamera(false);
     setVerificationStatus('loading');
     
-    // Convert to Base64 for persistent storage
-    const base64Photo = await fileToBase64(file);
-    setCapturedMedia(base64Photo);
+    let photoUrl = null;
     
-    // Quick anchor delay since camera already did the heavy lifting
+    // STEP 1: Upload file to Supabase Storage to get a real public URL
+    try {
+      const { uploadImage } = await import('../utils/supabase');
+      const filePath = `forensic/${property.id}/${Date.now()}.jpg`;
+      photoUrl = await uploadImage('property-photos', filePath, file);
+      console.log('✅ Supabase Storage upload success:', photoUrl);
+    } catch (uploadErr) {
+      console.warn('⚠️ Supabase Storage upload failed, using local object URL:', uploadErr);
+    }
+    
+    // STEP 2: Fallback to object URL if storage upload failed
+    if (!photoUrl) {
+      photoUrl = URL.createObjectURL(file);
+    }
+    
+    setCapturedMedia(photoUrl);
+    
     setTimeout(() => {
       setProvenanceData(meta);
       setVerificationStatus('complete');
-      setShowProvenanceModal(true); // Auto-show the work!
+      setShowProvenanceModal(true);
       
-      // Permanently store the photo if in host mode
+      // STEP 3: Permanently store the photo if in host mode
       if (isHostMode) {
         const newPhoto = { 
           id: `p${Date.now()}`, 
-          url: base64Photo, 
+          url: photoUrl,   // Real URL, not base64!
           isVerified: true, 
           meta 
         };
