@@ -57,6 +57,25 @@ const PropertyReviews = () => {
   const [showWriteReview, setShowWriteReview] = useState(false);
   const [userSelectedRating, setUserSelectedRating] = useState(5);
 
+  // Booking details
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guests, setGuests] = useState(1);
+
+  const calculateTotalNights = () => {
+    if (!checkIn || !checkOut) return 0;
+    const start = new Date(checkIn);
+    const end = new Date(checkOut);
+    const diffTime = Math.abs(end - start);
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  const totalNights = calculateTotalNights();
+  const subtotal = (property?.price || 0) * totalNights;
+  const cleaningFee = totalNights > 0 ? 1500 : 0;
+  const serviceFee = Math.round(subtotal * 0.14);
+  const finalTotal = subtotal + cleaningFee + serviceFee;
+
   const handleStartVerification = () => {
     if (isHostMode) {
       setShowCamera(true);
@@ -393,8 +412,7 @@ const PropertyReviews = () => {
                     >
                        <img 
                          src={photo.url} 
-                         className="w-full h-full group-hover:scale-105 transition-transform duration-700" 
-                         style={{ objectFit: 'cover', width: '100%', height: '100%', display: 'block' }}
+                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
                          alt="Listing" 
                        />
                        <div className="absolute top-4 left-4 flex gap-2">
@@ -620,56 +638,106 @@ const PropertyReviews = () => {
           </div>
 
           {/* Right Column: Reservation Sidebar - Desktop Only */}
-          <div className="hidden lg:block w-[380px] shrink-0">
-            <div className="sticky top-[100px] border border-gray-100 shadow-ambient p-6 rounded-[24px] bg-white space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="text-[22px] font-extrabold">₹ {property.price} <span className="text-[16px] font-normal text-[#717171]">night</span></div>
-                <div className="flex items-center gap-1 text-[14px] font-semibold">
+          <div className="hidden lg:block w-[400px] shrink-0">
+            <div className="sticky top-[100px] border border-gray-100 shadow-ambient p-8 rounded-[32px] bg-white space-y-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="text-[24px] font-extrabold text-[#222222]">₹ {property.price} <span className="text-[16px] font-normal text-[#717171]">night</span></div>
+                <div className="flex items-center gap-1 text-[14px] font-bold">
                   <Star size={14} fill="currentColor" /> {property.rating}
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 border border-gray-300 rounded-xl overflow-hidden text-[13px] font-medium">
-                <div className="p-3 border-r border-b border-gray-300"><span className="block text-[10px] font-black uppercase">Check-in</span>Add date</div>
-                <div className="p-3 border-b border-gray-300"><span className="block text-[10px] font-black uppercase">Checkout</span>Add date</div>
-                <div className="p-3 col-span-2"><span className="block text-[10px] font-black uppercase">Guests</span>1 guest</div>
+              {/* Functional Date Pickers */}
+              <div className="border border-gray-300 rounded-2xl overflow-hidden shadow-sm">
+                <div className="grid grid-cols-2">
+                  <div className="p-3 border-r border-b border-gray-300">
+                    <label className="block text-[10px] font-black uppercase text-gray-500 mb-1">Check-in</label>
+                    <input 
+                      type="date" 
+                      value={checkIn}
+                      onChange={(e) => setCheckIn(e.target.value)}
+                      className="w-full bg-transparent border-none outline-none font-bold text-[13px] cursor-pointer" 
+                    />
+                  </div>
+                  <div className="p-3 border-b border-gray-300">
+                    <label className="block text-[10px] font-black uppercase text-gray-500 mb-1">Checkout</label>
+                    <input 
+                      type="date" 
+                      value={checkOut}
+                      onChange={(e) => setCheckOut(e.target.value)}
+                      className="w-full bg-transparent border-none outline-none font-bold text-[13px] cursor-pointer" 
+                    />
+                  </div>
+                </div>
+                <div className="p-3">
+                  <label className="block text-[10px] font-black uppercase text-gray-500 mb-1">Guests</label>
+                  <select 
+                    value={guests}
+                    onChange={(e) => setGuests(parseInt(e.target.value))}
+                    className="w-full bg-transparent border-none outline-none font-bold text-[14px] cursor-pointer"
+                  >
+                    {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n} guest{n > 1 ? 's' : ''}</option>)}
+                  </select>
+                </div>
               </div>
+
+              {/* Price Breakdown */}
+              {totalNights > 0 && (
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center justify-between text-[15px] font-medium text-[#222222]">
+                    <span className="underline">₹ {property.price} x {totalNights} nights</span>
+                    <span>₹ {subtotal}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[15px] font-medium text-[#222222]">
+                    <span className="underline">Cleaning fee</span>
+                    <span>₹ {cleaningFee}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-[15px] font-medium text-[#222222]">
+                    <span className="underline">Airbnb service fee</span>
+                    <span>₹ {serviceFee}</span>
+                  </div>
+                  <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-[18px] font-black text-[#222222]">
+                    <span>Total</span>
+                    <span>₹ {finalTotal}</span>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-4">
                 {isHostMode ? (
                   <button 
                     onClick={() => navigate('/host')}
-                    className="w-full bg-airbnb text-white py-3.5 rounded-xl font-extrabold text-[16px] shadow-sm hover:bg-airbnb-hover transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+                    className="w-full bg-airbnb text-white py-4 rounded-2xl font-black text-[16px] shadow-lg hover:bg-airbnb-hover transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                   >
                     <Edit3 size={18} /> Edit This Listing
                   </button>
                 ) : (
                   <button 
-                    onClick={() => navigate(`/booking-verification/${property.id}`)}
-                    className="w-full bg-airbnb text-white py-3.5 rounded-xl font-extrabold text-[16px] shadow-sm hover:bg-airbnb-hover transition-colors active:scale-[0.98]"
+                    onClick={() => totalNights > 0 ? navigate(`/booking-verification/${property.id}`) : alert("Please select dates first")}
+                    className="w-full bg-airbnb text-white py-4 rounded-2xl font-black text-[16px] shadow-lg hover:bg-airbnb-hover transition-all active:scale-[0.98]"
                   >
-                    Reserve
+                    Book Property
                   </button>
                 )}
                 
-                <div className={`p-4 rounded-2xl flex items-start gap-3 border ${
-                  property.allowUnverifiedGuests ? 'bg-blue-50/50 border-blue-100 text-blue-800' : 'bg-orange-50/50 border-orange-100 text-orange-800'
+                <div className={`p-4 rounded-2xl flex items-start gap-4 border ${
+                  property.allowUnverifiedGuests ? 'bg-blue-50/50 border-blue-100 text-blue-900' : 'bg-red-50/50 border-red-100 text-red-900'
                 }`}>
-                   <div className="mt-0.5 text-current opacity-60"><Shield size={16} /></div>
+                   <div className="mt-0.5 opacity-60"><Shield size={18} /></div>
                    <div className="space-y-1">
-                      <p className="text-[12px] font-black uppercase tracking-tight">Booking Policy</p>
-                      <p className="text-[12px] font-medium leading-relaxed opacity-80">
+                      <p className="text-[11px] font-black uppercase tracking-widest">Trust Policy</p>
+                      <p className="text-[12px] font-bold leading-relaxed opacity-90">
                         {property.allowUnverifiedGuests 
-                          ? "This host accepts all guests. No advance verification required."
-                          : "Host requires Verified Identity. A Secure Enclave attestation is needed."
+                          ? "Verified Human-Shot photos confirmed."
+                          : "Host requires a fresh Secure Enclave capture before booking."
                         }
                       </p>
                    </div>
                 </div>
               </div>
 
-              <p className="text-center text-[13px] text-[#717171]">
-                {isHostMode ? "Manage listing from dashboard" : "You won't be charged yet"}
+              <p className="text-center text-[12px] font-bold text-[#717171]">
+                {isHostMode ? "Sync status: Real-time Ledger active" : "You won't be charged yet"}
               </p>
             </div>
           </div>
