@@ -2,33 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Bell, 
-  HelpCircle, 
-  MapPin, 
-  Calendar, 
-  Users, 
-  Info as InfoIcon, 
-  ShieldCheck, 
-  CheckCircle2, 
+import {
+  Bell,
+  HelpCircle,
+  MapPin,
+  Calendar,
+  Users,
+  Info as InfoIcon,
+  ShieldCheck,
+  CheckCircle2,
   CheckCircle,
-  AlertTriangle, 
-  User, 
-  Plus, 
-  ChevronRight as ChevronRightIcon, 
-  Shield, 
-  X 
+  AlertTriangle,
+  User,
+  Plus,
+  ChevronRight as ChevronRightIcon,
+  Shield,
+  X
 } from 'lucide-react';
 import { getProperties, mockVerifiedUsers } from '../utils/mockData';
 
 const BookingVerification = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   // Local state for property to handle host updates
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   const fetchProperty = async () => {
     const all = await getProperties();
     const found = all.find(p => p.id === id) || all[0];
@@ -39,7 +39,7 @@ const BookingVerification = () => {
   useEffect(() => {
     fetchProperty();
   }, [id]);
-  
+
   // Sync with storage updates
   useEffect(() => {
     const handleStorageUpdate = async () => {
@@ -54,11 +54,11 @@ const BookingVerification = () => {
   const [searchResults, setSearchResults] = useState([]);
 
   const [partyMembers, setPartyMembers] = useState([
-    { 
-      id: "guest_1", 
-      name: "Aadya Agarwal", 
+    {
+      id: "guest_1",
+      name: "Aadya Agarwal",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150",
-      verified: true 
+      verified: true
     }
   ]);
   const [showUnverifiedWarning, setShowUnverifiedWarning] = useState(false);
@@ -78,8 +78,8 @@ const BookingVerification = () => {
       setSearchResults([]);
       return;
     }
-    const filtered = mockVerifiedUsers.filter(u => 
-      u.name.toLowerCase().includes(term.toLowerCase()) && 
+    const filtered = mockVerifiedUsers.filter(u =>
+      u.name.toLowerCase().includes(term.toLowerCase()) &&
       !partyMembers.some(m => m.id === u.id)
     );
     setSearchResults(filtered);
@@ -117,10 +117,10 @@ const BookingVerification = () => {
             {/* Property Summary Card */}
             <section className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
               <div className="aspect-video w-full relative">
-                <img 
-                   alt={property.title} 
-                   className="w-full h-full object-cover" 
-                   src={property.image} 
+                <img
+                  alt={property.title}
+                  className="w-full h-full object-cover"
+                  src={property.image}
                 />
                 <div className="absolute top-4 left-4">
                   <span className="bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest text-airbnb uppercase border border-white/20 shadow-lg">Verified Listing</span>
@@ -136,7 +136,7 @@ const BookingVerification = () => {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-manrope font-black text-airbnb">₹{property.price}<span className="text-sm font-normal text-[#5c3f41]">/night</span></p>
+                    <p className="text-2xl font-manrope font-black text-airbnb">${property.price}<span className="text-sm font-normal text-[#5c3f41]">/night</span></p>
                   </div>
                 </div>
               </div>
@@ -170,8 +170,8 @@ const BookingVerification = () => {
                   <div className="space-y-1">
                     <h2 className="text-[17px] font-manrope font-black tracking-tight">Host Verification Policy</h2>
                     <p className="text-[13px] text-slate-500 font-medium">
-                      {property.allowUnverifiedGuests 
-                        ? "This host allows unverified guests." 
+                      {property.allowUnverifiedGuests
+                        ? "This host allows unverified guests."
                         : "Strict Policy: Only verified Airbnb members may stay."}
                     </p>
                   </div>
@@ -183,23 +183,23 @@ const BookingVerification = () => {
 
               <div className="space-y-4">
                 <div className="relative">
-                  <input 
-                    className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-airbnb/5 focus:border-airbnb outline-none transition-all placeholder:text-slate-300 font-medium text-[15px] shadow-sm" 
-                    placeholder="Search by Airbnb ID or Name" 
+                  <input
+                    className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-4 focus:ring-4 focus:ring-airbnb/5 focus:border-airbnb outline-none transition-all placeholder:text-slate-300 font-medium text-[15px] shadow-sm"
+                    placeholder="Search by Airbnb ID or Name"
                     type="text"
                     value={searchTerm}
                     onChange={handleSearch}
                   />
                   <AnimatePresence>
                     {searchResults.length > 0 && (
-                      <motion.div 
+                      <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
                         className="absolute z-50 top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden"
                       >
                         {searchResults.map(user => (
-                          <button 
+                          <button
                             key={user.id}
                             onClick={() => addMember(user)}
                             className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-0"
@@ -223,11 +223,10 @@ const BookingVerification = () => {
                 </div>
 
                 {partyMembers.map((member) => (
-                  <div 
+                  <div
                     key={member.id}
-                    className={`p-6 rounded-[24px] border flex items-center justify-between group transition-all ${
-                      member.verified ? 'bg-white border-gray-100 hover:shadow-md' : 'bg-orange-50/30 border-orange-100'
-                    }`}
+                    className={`p-6 rounded-[24px] border flex items-center justify-between group transition-all ${member.verified ? 'bg-white border-gray-100 hover:shadow-md' : 'bg-orange-50/30 border-orange-100'
+                      }`}
                   >
                     <div className="flex items-center gap-4">
                       <div className="relative">
@@ -260,7 +259,7 @@ const BookingVerification = () => {
                       </div>
                     </div>
                     {partyMembers.length > 1 && (
-                      <button 
+                      <button
                         onClick={() => removeMember(member.id)}
                         className="text-slate-300 hover:text-airbnb transition-colors p-2"
                       >
@@ -271,7 +270,7 @@ const BookingVerification = () => {
                 ))}
               </div>
 
-              <button 
+              <button
                 onClick={() => setShowModal(true)}
                 className="w-full flex items-center justify-center gap-2 py-5 rounded-[24px] border-2 border-dashed border-gray-200 text-slate-400 font-black text-[15px] hover:border-airbnb hover:text-airbnb hover:bg-airbnb/5 transition-all group"
               >
@@ -282,8 +281,8 @@ const BookingVerification = () => {
           </div>
 
           <div className="lg:col-span-5">
-             <div className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-ambient p-2">
-                <div className="relative rounded-t-[20px] sm:rounded-t-[28px] overflow-hidden aspect-video sm:aspect-video">
+            <div className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-ambient p-2">
+              <div className="relative rounded-t-[20px] sm:rounded-t-[28px] overflow-hidden aspect-video sm:aspect-video">
                 <h3 className="text-[24px] font-manrope font-black mb-8 tracking-tight">Reservation Breakdown</h3>
                 <div className="space-y-4 mb-10">
                   <div className="flex justify-between text-[#5c3f41] font-medium">
@@ -303,7 +302,7 @@ const BookingVerification = () => {
                     <span className="text-[28px] font-manrope font-black text-airbnb tracking-tighter">₹{property.price * 5 + 225}</span>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={handleConfirm}
                   className="w-full bg-linear-to-r from-airbnb to-airbnb-hover text-white py-5 rounded-[20px] font-manrope font-black text-[18px] shadow-xl shadow-airbnb/20 active:scale-95 hover:scale-[1.02] transition-all"
                 >
@@ -311,7 +310,7 @@ const BookingVerification = () => {
                 </button>
                 <p className="text-center text-[12px] text-slate-400 mt-6 italic font-medium">Ground Truth verification active for this stay.</p>
               </div>
-              
+
               <div className="bg-green-50/50 p-6 rounded-[24px] border border-green-100 flex items-start gap-4">
                 <ShieldCheck size={24} className="text-green-600 mt-1" />
                 <div className="space-y-1">
@@ -329,30 +328,30 @@ const BookingVerification = () => {
       {/* Verification Warning Modal */}
       <AnimatePresence>
         {showUnverifiedWarning && (
-           <div className="fixed inset-0 z-100 flex items-center justify-center p-6 bg-[#1a1c1c]/40 backdrop-blur-sm">
-            <motion.div 
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-6 bg-[#1a1c1c]/40 backdrop-blur-sm">
+            <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden p-8 space-y-6 text-center"
             >
-               <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-3xl flex items-center justify-center mx-auto shadow-sm">
-                 <AlertTriangle size={32} />
-               </div>
-               <div className="space-y-2">
-                 <h3 className="text-[20px] font-manrope font-black tracking-tight">Trust Level Mismatch</h3>
-                 <p className="text-[14px] text-slate-500 leading-relaxed font-medium">
-                   This host requires **Verified Identity** for all guests. One or more party members lack a hardware-attested trust record.
-                 </p>
-               </div>
-               <button 
+              <div className="w-16 h-16 bg-orange-50 text-orange-600 rounded-3xl flex items-center justify-center mx-auto shadow-sm">
+                <AlertTriangle size={32} />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-[20px] font-manrope font-black tracking-tight">Trust Level Mismatch</h3>
+                <p className="text-[14px] text-slate-500 leading-relaxed font-medium">
+                  This host requires **Verified Identity** for all guests. One or more party members lack a hardware-attested trust record.
+                </p>
+              </div>
+              <button
                 onClick={() => setShowUnverifiedWarning(false)}
                 className="w-full py-4 bg-airbnb text-white rounded-2xl font-black text-[15px] shadow-lg shadow-airbnb/20 transition-all hover:scale-[1.02] active:scale-95"
-               >
-                 Review Party
-               </button>
+              >
+                Review Party
+              </button>
             </motion.div>
-           </div>
+          </div>
         )}
       </AnimatePresence>
 
@@ -360,7 +359,7 @@ const BookingVerification = () => {
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 z-100 flex items-center justify-center p-6 bg-[#1a1c1c]/40 backdrop-blur-sm">
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
@@ -371,12 +370,12 @@ const BookingVerification = () => {
                   <h3 className="text-[24px] font-manrope font-black tracking-tight">Add Trust Member</h3>
                   <p className="text-slate-400 text-[14px] font-medium">Search for existing verified travelers.</p>
                 </div>
-                
+
                 <div className="bg-slate-50 p-8 rounded-[32px] flex flex-col items-center text-center space-y-6 border border-gray-100">
                   <div className="relative">
                     <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                      <img 
-                        alt="Profile" 
+                      <img
+                        alt="Profile"
                         src={mockVerifiedUsers[0].avatar}
                       />
                     </div>
@@ -389,21 +388,21 @@ const BookingVerification = () => {
                     <p className="text-[13px] text-slate-400 font-bold uppercase tracking-widest mt-1">{mockVerifiedUsers[0].level}</p>
                   </div>
                   <div className="flex items-center gap-2 bg-white px-5 py-2.5 rounded-full shadow-sm border border-gray-100">
-                     <div className="flex items-center gap-1.5 text-airbnb">
-                        <CheckCircle size={14} fill="currentColor" fillOpacity={0.1} />
-                        <span className="text-[12px] font-extrabold uppercase tracking-widest">Verified Provenance Assets</span>
-                     </div>
+                    <div className="flex items-center gap-1.5 text-airbnb">
+                      <CheckCircle size={14} fill="currentColor" fillOpacity={0.1} />
+                      <span className="text-[12px] font-extrabold uppercase tracking-widest">Verified Provenance Assets</span>
+                    </div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <button 
+                  <button
                     onClick={() => setShowModal(false)}
                     className="py-4 bg-white border border-gray-200 text-slate-500 font-black rounded-2xl hover:bg-gray-50 transition-all text-[15px]"
                   >
                     Dismiss
                   </button>
-                  <button 
+                  <button
                     onClick={() => addMember(mockVerifiedUsers[0])}
                     className="py-4 bg-linear-to-r from-airbnb to-airbnb-hover text-white font-black rounded-2xl shadow-lg shadow-airbnb/20 hover:opacity-90 transition-all text-[15px]"
                   >

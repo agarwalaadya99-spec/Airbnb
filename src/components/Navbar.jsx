@@ -45,7 +45,7 @@ const Navbar = ({ onListProperty }) => {
             >
               <Menu size={16} />
               <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-100 hidden sm:block">
-                <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100" className="w-full h-full object-cover" alt="User Profile" />
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" className="w-full h-full object-cover" alt="User Profile" />
               </div>
             </button>
           </div>
@@ -100,7 +100,7 @@ const Navbar = ({ onListProperty }) => {
               <div className="mt-auto">
                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-[24px]">
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
-                       <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=100" className="w-full h-full object-cover" />
+                       <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" className="w-full h-full object-cover" alt="Aadya Agarwal" />
                     </div>
                     <div>
                        <p className="font-extrabold">Aadya Agarwal</p>

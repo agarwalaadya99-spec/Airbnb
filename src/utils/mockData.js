@@ -51,63 +51,63 @@ export const updatePropertyInStore = async (updatedProperty) => {
         description: updatedProperty.description
       })
       .select();
-    
+
     if (error) {
-       console.error("Supabase upsert error detail:", error);
-       throw error;
+      console.error("Supabase upsert error detail:", error);
+      throw error;
     }
 
     // Attempt to seed photo metadata if it exists
     if (updatedProperty.photos && data?.[0]?.id) {
-       // First, delete old photos to prevent duplicates if we're re-syncing
-       await supabase.from('property_photos').delete().eq('property_id', data[0].id);
-       
-       const photoInserts = updatedProperty.photos.map(ph => ({
-         property_id: data[0].id,
-         url: ph.url,
-         is_verified: ph.isVerified,
-         meta_data: ph.meta
-       }));
-       await supabase.from('property_photos').insert(photoInserts);
+      // First, delete old photos to prevent duplicates if we're re-syncing
+      await supabase.from('property_photos').delete().eq('property_id', data[0].id);
+
+      const photoInserts = updatedProperty.photos.map(ph => ({
+        property_id: data[0].id,
+        url: ph.url,
+        is_verified: ph.isVerified,
+        meta_data: ph.meta
+      }));
+      await supabase.from('property_photos').insert(photoInserts);
     }
 
     // Attempt to persist reviews if they exist
     if (updatedProperty.reviews && data?.[0]?.id) {
-       // Delete existing to allow a clean sync (Standard and simplified for demo)
-       await supabase.from('property_reviews').delete().eq('property_id', data[0].id);
+      // Delete existing to allow a clean sync (Standard and simplified for demo)
+      await supabase.from('property_reviews').delete().eq('property_id', data[0].id);
 
-       const reviewInserts = updatedProperty.reviews.map(rev => ({
-         property_id: data[0].id,
-         user_name: rev.user,
-         rating: rev.rating,
-         comment: rev.comment,
-         date: rev.date,
-         is_verified: rev.verified,
-         avatar_url: rev.avatar
-       }));
-       await supabase.from('property_reviews').insert(reviewInserts);
+      const reviewInserts = updatedProperty.reviews.map(rev => ({
+        property_id: data[0].id,
+        user_name: rev.user,
+        rating: rev.rating,
+        comment: rev.comment,
+        date: rev.date,
+        is_verified: rev.verified,
+        avatar_url: rev.avatar
+      }));
+      await supabase.from('property_reviews').insert(reviewInserts);
     }
   } catch (err) {
     console.warn("Supabase update failed, falling back to localStorage:", err);
-    
+
     const current = getStoredProperties() || initialProperties;
     const exists = current.some(p => p.id === updatedProperty.id);
-    
+
     // Safety check: Only sanitize if the total dataset exceeds LocalStorage limits (approx 5MB)
     // We allow large forensic images to persist as they are critical for the demo.
     const sanitizedProperty = { ...updatedProperty };
 
-    const updated = exists 
+    const updated = exists
       ? current.map(p => p.id === updatedProperty.id ? sanitizedProperty : p)
       : [...current, sanitizedProperty];
-      
+
     try {
       localStorage.setItem('havenSafeProperties', JSON.stringify(updated));
     } catch (storageErr) {
       console.warn("⚠️ LocalStorage full, skipping fallback save.");
     }
   }
-  
+
   // Signal updates to other components
   window.dispatchEvent(new Event('storage-update'));
 };
@@ -187,33 +187,8 @@ const initialProperties = [
     category: "Amazing views",
     image: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200",
     photos: [
-      { 
-        id: "p1", 
-        url: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200", 
-        isVerified: false, 
-        isAI: true,
-        meta: {
-          source: "Generative AI",
-          model: "Stable Diffusion XL v1.0",
-          model_version: "2024-Feb-Refiner",
-          fingerprint: "0xAI_ARTIFACT_82A1B",
-          detection_score: 0.998,
-          timestamp: "2024-03-10T08:15:22Z"
-        }
-      },
-      { 
-        id: "p2", 
-        url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200", 
-        isVerified: false,
-        isAI: true,
-        meta: {
-          source: "Generative AI",
-          model: "Midjourney v6.0",
-          fingerprint: "0xAI_ARTIFACT_C921X",
-          detection_score: 0.985,
-          timestamp: "2024-03-11T12:04:15Z"
-        }
-      }
+      { id: "p1", url: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200", isVerified: false },
+      { id: "p2", url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200", isVerified: false }
     ],
     host: { name: "Marcus", superhost: false, joined: "2020", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" },
     description: "A 5,500 sq ft mirror-cladding home that reflects its stunning surroundings while offering unparalleled luxury.",
@@ -344,19 +319,19 @@ export const getProperties = async () => {
     const { data: properties, error } = await supabase
       .from('properties')
       .select('*');
-    
+
     if (error) {
       console.error("❌ Supabase Properties Error:", error);
       throw error;
     }
-    
+
     if (properties && properties.length > 0) {
       console.log(`🟢 SUPABASE CONNECTED: Fetched ${properties.length} properties (Lightweight).`);
-      
+
       // 3. Map snake_case to camelCase
       // 4. Also fetch photos for these properties to show verified badges on home page
       const { data: allPhotos } = await supabase.from('property_photos').select('*');
-      
+
       return properties.map(p => {
         const propPhotos = allPhotos?.filter(ph => ph.property_id === p.id) || [];
         return {
@@ -410,33 +385,33 @@ export const getPropertyById = async (id) => {
 
     return {
       id: p.id,
-        title: p.title,
-        location: p.location,
-        price: p.price,
-        rating: p.rating,
-        reviewsCount: p.reviews_count,
-        verifiedReviewsCount: p.verified_reviews_count,
-        verified: p.verified,
-        allowUnverifiedGuests: p.allow_unverified_guests,
-        category: p.category,
-        image: p.image_url,
+      title: p.title,
+      location: p.location,
+      price: p.price,
+      rating: p.rating,
+      reviewsCount: p.reviews_count,
+      verifiedReviewsCount: p.verified_reviews_count,
+      verified: p.verified,
+      allowUnverifiedGuests: p.allow_unverified_guests,
+      category: p.category,
+      image: p.image_url,
       description: p.description,
       host: p.host || getRandomHost(p.id),
       photos: propertyPhotos.map(ph => ({
-         id: ph.id,
-         url: ph.url,
-         isVerified: ph.is_verified,
-         isAI: ph.is_ai,
-         meta: ph.meta_data || ph.metadata
+        id: ph.id,
+        url: ph.url,
+        isVerified: ph.is_verified,
+        isAI: ph.is_ai,
+        meta: ph.meta_data || ph.metadata
       })),
       reviews: propertyReviews.map(r => ({
-         id: r.id,
-         user: r.user_name || r.user,
-         rating: r.rating,
-         date: r.date,
-         comment: r.comment,
-         verified: r.is_verified ?? r.verified,
-         avatar: r.avatar_url || r.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150"
+        id: r.id,
+        user: r.user_name || r.user,
+        rating: r.rating,
+        date: r.date,
+        comment: r.comment,
+        verified: r.is_verified ?? r.verified,
+        avatar: r.avatar_url || r.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150"
       }))
     };
   } catch (err) {
@@ -471,9 +446,9 @@ export const getVerifiedUsers = async () => {
     const { data, error } = await supabase
       .from('profiles')
       .select('*');
-    
+
     if (error) throw error;
-    
+
     if (data && data.length > 0) {
       return data.map(u => ({
         id: u.id,
@@ -491,36 +466,61 @@ export const getVerifiedUsers = async () => {
 };
 
 export const mockVerifiedUsers = [
-  { 
-    id: "hs_9210", 
-    name: "Vikram Sharma", 
+  {
+    id: "hs_9210",
+    name: "Vikram Sharma",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
     verified: true,
     trustScore: 98,
     level: "Trust Elite Level 4"
   },
-  { 
-    id: "hs_4432", 
-    name: "Sarah Chen", 
+  {
+    id: "hs_4432",
+    name: "Sarah Chen",
     avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
     verified: true,
     trustScore: 95,
     level: "Trust Pro Level 3"
   },
-  { 
-    id: "hs_1109", 
-    name: "Marcus Wright", 
+  {
+    id: "hs_1109",
+    name: "Marcus Wright",
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
     verified: false,
     trustScore: 42,
     level: "Pending Verification"
   },
-  { 
-    id: "hs_8876", 
-    name: "Elena Rodriguez", 
+  {
+    id: "hs_8876",
+    name: "Elena Rodriguez",
     avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
     verified: true,
     trustScore: 99,
     level: "Trust Guardian"
   }
+];
+{
+  id: "hs_4432",
+    name: "Sarah Chen",
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
+        verified: true,
+          trustScore: 95,
+            level: "Trust Pro Level 3"
+},
+{
+  id: "hs_1109",
+    name: "Marcus Wright",
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+        verified: false,
+          trustScore: 42,
+            level: "Pending Verification"
+},
+{
+  id: "hs_8876",
+    name: "Elena Rodriguez",
+      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
+        verified: true,
+          trustScore: 99,
+            level: "Trust Guardian"
+}
 ];

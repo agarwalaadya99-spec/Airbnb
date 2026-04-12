@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Shield, 
-  Camera, 
-  CheckCircle, 
-  AlertTriangle, 
-  TrendingUp, 
-  Users, 
+import {
+  Shield,
+  Camera,
+  CheckCircle,
+  AlertTriangle,
+  TrendingUp,
+  Users,
   Image as ImageIcon,
   ArrowRight,
   ShieldCheck,
@@ -18,7 +18,7 @@ import {
   Clock,
   Edit3,
   MapPin,
-  DollarSign as RupeeIcon,
+  DollarSign,
   FileText,
   ChevronLeft,
   LayoutGrid,
@@ -55,7 +55,7 @@ const OverviewDashboard = ({ allProperties }) => {
           <div className="p-3 bg-airbnb/5 text-airbnb w-fit rounded-2xl"><DollarSign size={20} /></div>
           <div>
             <p className="text-slate-400 font-bold text-[10px] sm:text-sm uppercase tracking-widest">Est. Monthly Earnings</p>
-            <h3 className="text-2xl sm:text-3xl font-black">₹{totalEarnings.toLocaleString()}</h3>
+            <h3 className="text-2xl sm:text-3xl font-black">${totalEarnings.toLocaleString()}</h3>
           </div>
         </div>
         <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-sm space-y-4">
@@ -75,19 +75,19 @@ const OverviewDashboard = ({ allProperties }) => {
       </div>
 
       <div className="bg-[#1a1c1c] rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-         <div className="space-y-4">
-            <h2 className="text-xl sm:text-2xl font-black font-manrope">Verification Performance</h2>
-            <p className="text-white/60 max-w-md text-sm sm:text-base">Properties with 100% verified ground truth see 3.4x higher booking conversion rates.</p>
-            <div className="flex items-center gap-4 pt-2">
-               <div className="px-4 py-2 bg-white/10 rounded-full text-[12px] font-black border border-white/10 uppercase italic">Experimental</div>
-               <span className="text-green-400 font-bold flex items-center gap-1 text-sm">
-                  <TrendingUp size={16} /> +22% this week
-               </span>
-            </div>
-         </div>
-         <button className="bg-white text-black px-10 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all shadow-xl shadow-white/5 whitespace-nowrap">
-            Upgrade All Media
-         </button>
+        <div className="space-y-4">
+          <h2 className="text-xl sm:text-2xl font-black font-manrope">Verification Performance</h2>
+          <p className="text-white/60 max-w-md text-sm sm:text-base">Properties with 100% verified ground truth see 3.4x higher booking conversion rates.</p>
+          <div className="flex items-center gap-4 pt-2">
+            <div className="px-4 py-2 bg-white/10 rounded-full text-[12px] font-black border border-white/10 uppercase italic">Experimental</div>
+            <span className="text-green-400 font-bold flex items-center gap-1 text-sm">
+              <TrendingUp size={16} /> +22% this week
+            </span>
+          </div>
+        </div>
+        <button className="bg-white text-black px-10 py-4 rounded-2xl font-black hover:bg-gray-100 transition-all shadow-xl shadow-white/5 whitespace-nowrap">
+          Upgrade All Media
+        </button>
       </div>
     </div>
   );
@@ -102,20 +102,20 @@ const PortfolioSection = ({ allProperties, portfolioView, setPortfolioView, onSe
       </div>
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex bg-surface-low p-1 rounded-xl border border-gray-100">
-           <button 
+          <button
             onClick={() => setPortfolioView('grid')}
             className={`p-2 rounded-lg transition-all ${portfolioView === 'grid' ? 'bg-white shadow-sm text-airbnb' : 'text-slate-400'}`}
-           >
-             <LayoutGrid size={18} />
-           </button>
-           <button 
+          >
+            <LayoutGrid size={18} />
+          </button>
+          <button
             onClick={() => setPortfolioView('list')}
             className={`p-2 rounded-lg transition-all ${portfolioView === 'list' ? 'bg-white shadow-sm text-airbnb' : 'text-slate-400'}`}
-           >
-             <Layout size={18} />
-           </button>
+          >
+            <Layout size={18} />
+          </button>
         </div>
-        <button 
+        <button
           onClick={onAdd}
           className="flex-1 sm:flex-initial bg-airbnb text-white px-6 py-3 rounded-2xl font-black shadow-lg shadow-airbnb/20 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-all text-sm"
         >
@@ -131,7 +131,7 @@ const PortfolioSection = ({ allProperties, portfolioView, setPortfolioView, onSe
           const totalCount = p.photos.length;
           const score = Math.round((verifiedCount / totalCount) * 100);
           return (
-            <motion.div 
+            <motion.div
               key={p.id}
               whileHover={{ y: -8 }}
               onClick={() => onSelect(p.id)}
@@ -153,7 +153,7 @@ const PortfolioSection = ({ allProperties, portfolioView, setPortfolioView, onSe
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-[12px] font-bold">
                   <span className={p.allowUnverifiedGuests ? 'text-blue-500' : 'text-airbnb'}>{p.allowUnverifiedGuests ? 'Open Enroll' : 'Verified Only'}</span>
-                  <span>₹{p.price}/night</span>
+                  <span>${p.price}/night</span>
                 </div>
               </div>
             </motion.div>
@@ -177,27 +177,27 @@ const PortfolioSection = ({ allProperties, portfolioView, setPortfolioView, onSe
               const score = Math.round((p.photos.filter(ph => ph.isVerified).length / p.photos.length) * 100);
               return (
                 <tr key={p.id} className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors cursor-pointer group" onClick={() => onSelect(p.id)}>
-                   <td className="p-6">
-                      <div className="flex items-center gap-4">
-                         <img src={p.image} className="w-12 h-12 rounded-xl object-cover" />
-                         <span className="font-bold text-[14px] truncate max-w-[200px]">{p.title}</span>
-                      </div>
-                   </td>
-                   <td className="p-6">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${score === 100 ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                        <span className="text-[13px] font-bold">{score}% Provenance</span>
-                      </div>
-                   </td>
-                   <td className="p-6">
-                      <span className={`px-3 py-1.5 rounded-full text-[11px] font-black uppercase ${p.allowUnverifiedGuests ? 'bg-blue-50 text-blue-500' : 'bg-airbnb/5 text-airbnb'}`}>
-                        {p.allowUnverifiedGuests ? 'Relaxed' : 'Strict'}
-                      </span>
-                   </td>
-                   <td className="p-6 font-bold text-[14px]">₹{p.price}</td>
-                   <td className="p-6 text-slate-300">
-                      <button className="p-2 hover:text-airbnb transition-colors"><ChevronRight size={20} /></button>
-                   </td>
+                  <td className="p-6">
+                    <div className="flex items-center gap-4">
+                      <img src={p.image} className="w-12 h-12 rounded-xl object-cover" />
+                      <span className="font-bold text-[14px] truncate max-w-[200px]">{p.title}</span>
+                    </div>
+                  </td>
+                  <td className="p-6">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2 h-2 rounded-full ${score === 100 ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                      <span className="text-[13px] font-bold">{score}% Provenance</span>
+                    </div>
+                  </td>
+                  <td className="p-6">
+                    <span className={`px-3 py-1.5 rounded-full text-[11px] font-black uppercase ${p.allowUnverifiedGuests ? 'bg-blue-50 text-blue-500' : 'bg-airbnb/5 text-airbnb'}`}>
+                      {p.allowUnverifiedGuests ? 'Relaxed' : 'Strict'}
+                    </span>
+                  </td>
+                  <td className="p-6 font-bold text-[14px]">${p.price}</td>
+                  <td className="p-6 text-slate-300">
+                    <button className="p-2 hover:text-airbnb transition-colors"><ChevronRight size={20} /></button>
+                  </td>
                 </tr>
               );
             })}
@@ -215,9 +215,9 @@ const ReservationsList = () => (
       <p className="text-[#5c3f41] font-medium opacity-60">Real-time booking and trust verification stream.</p>
     </header>
     <div className="bg-white rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-sm p-8 sm:p-10 text-center space-y-4">
-       <div className="w-16 h-16 sm:w-20 sm:h-20 bg-surface-low rounded-full flex items-center justify-center mx-auto text-slate-300"><Clock size={28} /></div>
-       <h3 className="text-lg sm:text-xl font-bold">No upcoming guest arrivals</h3>
-       <p className="text-slate-400 text-xs sm:text-sm max-w-xs mx-auto">Verified properties typically receive bookings within 48 hours of media authentication.</p>
+      <div className="w-16 h-16 sm:w-20 sm:h-20 bg-surface-low rounded-full flex items-center justify-center mx-auto text-slate-300"><Clock size={28} /></div>
+      <h3 className="text-lg sm:text-xl font-bold">No upcoming guest arrivals</h3>
+      <p className="text-slate-400 text-xs sm:text-sm max-w-xs mx-auto">Verified properties typically receive bookings within 48 hours of media authentication.</p>
     </div>
   </div>
 );
@@ -248,10 +248,10 @@ const GlobalSafetySettings = () => {
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  className="sr-only peer" 
-                  checked={allowOnlyVerified} 
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={allowOnlyVerified}
                   onChange={() => setAllowOnlyVerified(!allowOnlyVerified)}
                 />
                 <div className="w-14 h-7 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-airbnb"></div>
@@ -271,11 +271,11 @@ const GlobalSafetySettings = () => {
                 </div>
               </div>
               <div className="space-y-2">
-                <input 
-                  type="range" 
-                  min="0" 
-                  max="100" 
-                  value={trustScore} 
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={trustScore}
                   onChange={(e) => setTrustScore(e.target.value)}
                   className="w-full h-1.5 bg-surface-low rounded-lg appearance-none cursor-pointer accent-airbnb"
                 />
@@ -301,42 +301,42 @@ const GlobalSafetySettings = () => {
           {/* Tier Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm space-y-4">
-               <div className="w-10 h-10 bg-surface-low rounded-xl flex items-center justify-center text-airbnb">
-                  <Settings size={20} />
-               </div>
-               <h4 className="font-extrabold">Essential Tier</h4>
-               <p className="text-xs text-slate-400 font-medium">Identity verified via government document matching. Required for all booking requests.</p>
+              <div className="w-10 h-10 bg-surface-low rounded-xl flex items-center justify-center text-airbnb">
+                <Settings size={20} />
+              </div>
+              <h4 className="font-extrabold">Essential Tier</h4>
+              <p className="text-xs text-slate-400 font-medium">Identity verified via government document matching. Required for all booking requests.</p>
             </div>
             <div className="bg-[#1a1c1c] p-8 rounded-[32px] shadow-xl text-white space-y-4">
-               <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-airbnb">
-                  <ShieldCheck size={20} />
-               </div>
-               <h4 className="font-extrabold">Elite Tier</h4>
-               <p className="text-xs text-white/40 font-medium">Multiple 5-star host endorsements and background check cleared. Perfect for luxury listings.</p>
+              <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-airbnb">
+                <ShieldCheck size={20} />
+              </div>
+              <h4 className="font-extrabold">Elite Tier</h4>
+              <p className="text-xs text-white/40 font-medium">Multiple 5-star host endorsements and background check cleared. Perfect for luxury listings.</p>
             </div>
           </div>
         </div>
 
         {/* Info Sidebar */}
         <div className="lg:col-span-4 space-y-6">
-           <div className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
-              <div className="aspect-video bg-surface-low">
-                 <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover" />
-              </div>
-              <div className="p-6 space-y-2">
-                 <h4 className="font-black text-[15px] sm:text-base">Protecting Your Haven</h4>
-                 <p className="text-[11px] sm:text-xs text-slate-500 font-medium leading-relaxed">Verification standards build a community of responsible travelers.</p>
-              </div>
-           </div>
-           <div className="bg-green-50 p-5 sm:p-6 rounded-[20px] sm:rounded-[24px] border border-green-100 flex items-start gap-4">
-              <Lock size={20} className="text-green-600 mt-1 shrink-0" />
-              <div className="space-y-1">
-                 <p className="font-black text-green-800 text-[13px] sm:text-[14px]">Zero-Liability Guarantee</p>
-                 <p className="text-[11px] sm:text-[12px] text-green-700/70 font-medium leading-relaxed">
-                    Hosting verified guests covers you by Airbnb's $1M policy automatically.
-                 </p>
-              </div>
-           </div>
+          <div className="bg-white rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100">
+            <div className="aspect-video bg-surface-low">
+              <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover" />
+            </div>
+            <div className="p-6 space-y-2">
+              <h4 className="font-black text-[15px] sm:text-base">Protecting Your Haven</h4>
+              <p className="text-[11px] sm:text-xs text-slate-500 font-medium leading-relaxed">Verification standards build a community of responsible travelers.</p>
+            </div>
+          </div>
+          <div className="bg-green-50 p-5 sm:p-6 rounded-[20px] sm:rounded-[24px] border border-green-100 flex items-start gap-4">
+            <Lock size={20} className="text-green-600 mt-1 shrink-0" />
+            <div className="space-y-1">
+              <p className="font-black text-green-800 text-[13px] sm:text-[14px]">Zero-Liability Guarantee</p>
+              <p className="text-[11px] sm:text-[12px] text-green-700/70 font-medium leading-relaxed">
+                Hosting verified guests covers you by Airbnb's $1M policy automatically.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -347,9 +347,9 @@ const GlobalSafetySettings = () => {
 
 const HostDashboard = () => {
   const navigate = useNavigate();
-  
+
   const location = useLocation();
-  const [sidebarTab, setSidebarTab] = useState('portfolio'); 
+  const [sidebarTab, setSidebarTab] = useState('portfolio');
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -360,7 +360,7 @@ const HostDashboard = () => {
     }
   }, [location.search]);
   const [portfolioView, setPortfolioView] = useState('grid'); // grid, list
-  
+
   // Data State
   const [allProperties, setAllProperties] = useState([]);
   const [selectedPropertyId, setSelectedPropertyId] = useState(null);
@@ -381,19 +381,19 @@ const HostDashboard = () => {
 
   // Dynamic get for selected property
   const selectedProperty = allProperties.find(p => p.id === selectedPropertyId) || allProperties[0];
-  
-  const filteredProperties = allProperties.filter(p => 
+
+  const filteredProperties = allProperties.filter(p =>
     p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.location.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   // Bulk Selection State (Future expansion)
   const [selectedBulkIds, setSelectedBulkIds] = useState([]);
 
   // UI State
   const [showCamera, setShowCamera] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState('partial'); // partial, verifying, complete
-  
+
   // Form States (initialized when property is selected)
   const [propertyDetails, setPropertyDetails] = useState(null);
   const [safetySettings, setSafetySettings] = useState(null);
@@ -401,16 +401,16 @@ const HostDashboard = () => {
   // Sync details when property changes
   useEffect(() => {
     if (selectedProperty) {
-      setPropertyDetails({ 
-        title: selectedProperty.title, 
-        price: selectedProperty.price, 
-        location: selectedProperty.location, 
+      setPropertyDetails({
+        title: selectedProperty.title,
+        price: selectedProperty.price,
+        location: selectedProperty.location,
         description: selectedProperty.description,
         image: selectedProperty.image || ""
       });
-      setSafetySettings({ 
-        allowUnverifiedGuests: selectedProperty.allowUnverifiedGuests, 
-        minTrustScore: selectedProperty.minTrustScore || 75 
+      setSafetySettings({
+        allowUnverifiedGuests: selectedProperty.allowUnverifiedGuests,
+        minTrustScore: selectedProperty.minTrustScore || 75
       });
     }
   }, [selectedPropertyId, allProperties]);
@@ -433,22 +433,22 @@ const HostDashboard = () => {
   const handleUpdateProperty = async (e) => {
     if (e) e.preventDefault();
     setVerificationStatus('verifying');
-    
+
     // Simulate attestation delay for the new details
     setTimeout(async () => {
-      const updated = { 
-        ...selectedProperty, 
-        ...propertyDetails, 
+      const updated = {
+        ...selectedProperty,
+        ...propertyDetails,
         ...safetySettings
       };
       await updatePropertyInStore(updated);
       setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
       setVerificationStatus('complete');
-      
+
       // Snappy transition back to overview after success
-      setTimeout(() => { 
-        setVerificationStatus('partial'); 
-        setActiveTab('overview'); 
+      setTimeout(() => {
+        setVerificationStatus('partial');
+        setActiveTab('overview');
       }, 1000);
     }, 1200);
   };
@@ -478,14 +478,14 @@ const HostDashboard = () => {
   const handleCapture = async (file, meta) => {
     setShowCamera(false);
     setVerificationStatus('verifying');
-    
+
     // Upload to Supabase Storage for persistent cloud hosting
     const fileName = `${selectedPropertyId}/${Date.now()}.jpg`;
     const publicUrl = await uploadImage('provenance-assets', fileName, file);
-    
+
     // Fallback to Base64 if upload fails
     const finalUrl = publicUrl || await fileToBase64(file);
-    
+
     // Snappy anchoring since verification happened in camera
     setTimeout(async () => {
       const newPhoto = { id: `p${Date.now()}`, url: finalUrl, isVerified: true, meta };
@@ -540,9 +540,8 @@ const HostDashboard = () => {
             <button
               key={item.id}
               onClick={() => { setSidebarTab(item.id); setSelectedPropertyId(null); }}
-              className={`flex flex-col items-center gap-1 transition-all ${
-                sidebarTab === item.id && !selectedPropertyId ? 'text-airbnb' : 'text-slate-400'
-              }`}
+              className={`flex flex-col items-center gap-1 transition-all ${sidebarTab === item.id && !selectedPropertyId ? 'text-airbnb' : 'text-slate-400'
+                }`}
             >
               <item.icon size={20} className={sidebarTab === item.id && !selectedPropertyId ? 'scale-110' : ''} />
               <span className="text-[10px] font-black uppercase tracking-tighter">{item.label}</span>
@@ -564,9 +563,8 @@ const HostDashboard = () => {
                 <button
                   key={item.id}
                   onClick={() => { setSidebarTab(item.id); setSelectedPropertyId(null); }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-[14px] transition-all ${
-                    sidebarTab === item.id && !selectedPropertyId ? 'bg-airbnb/5 text-airbnb' : 'text-slate-500 hover:bg-gray-50'
-                  }`}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-[14px] transition-all ${sidebarTab === item.id && !selectedPropertyId ? 'bg-airbnb/5 text-airbnb' : 'text-slate-500 hover:bg-gray-50'
+                    }`}
                 >
                   <item.icon size={18} />
                   {item.label}
@@ -575,16 +573,16 @@ const HostDashboard = () => {
             </nav>
           </div>
           <div className="mt-auto space-y-4 px-2">
-             <div className="bg-airbnb/5 p-4 rounded-2xl space-y-2">
-                <p className="text-[12px] font-black text-airbnb uppercase tracking-tighter text-center">Trust Reputation</p>
-                <div className="h-1.5 w-full bg-airbnb/10 rounded-full overflow-hidden">
-                   <div className="h-full bg-airbnb w-[88%]" />
-                </div>
-                <p className="text-[10px] text-center font-bold text-airbnb/60">Elite Host Status</p>
-             </div>
-             <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-[14px] text-slate-500 hover:bg-gray-50 transition-all">
-                <Settings size={18} /> Settings
-             </button>
+            <div className="bg-airbnb/5 p-4 rounded-2xl space-y-2">
+              <p className="text-[12px] font-black text-airbnb uppercase tracking-tighter text-center">Trust Reputation</p>
+              <div className="h-1.5 w-full bg-airbnb/10 rounded-full overflow-hidden">
+                <div className="h-full bg-airbnb w-[88%]" />
+              </div>
+              <p className="text-[10px] text-center font-bold text-airbnb/60">Elite Host Status</p>
+            </div>
+            <button className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-[14px] text-slate-500 hover:bg-gray-50 transition-all">
+              <Settings size={18} /> Settings
+            </button>
           </div>
         </aside>
 
@@ -636,23 +634,23 @@ const HostDashboard = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div className="space-y-2 sm:col-span-2">
                         <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Title</label>
-                        <input type="text" value={propertyDetails.title} onChange={(e) => setPropertyDetails({...propertyDetails, title: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="Property Title" />
+                        <input type="text" value={propertyDetails.title} onChange={(e) => setPropertyDetails({ ...propertyDetails, title: e.target.value })} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="Property Title" />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Price (₹)</label>
-                        <input type="number" value={propertyDetails.price} onChange={(e) => setPropertyDetails({...propertyDetails, price: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" />
+                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Price ($)</label>
+                        <input type="number" value={propertyDetails.price} onChange={(e) => setPropertyDetails({ ...propertyDetails, price: e.target.value })} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" />
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Location</label>
-                        <input type="text" value={propertyDetails.location} onChange={(e) => setPropertyDetails({...propertyDetails, location: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="City, Country" />
+                        <input type="text" value={propertyDetails.location} onChange={(e) => setPropertyDetails({ ...propertyDetails, location: e.target.value })} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="City, Country" />
                       </div>
                       <div className="space-y-2 sm:col-span-2">
                         <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Description</label>
-                        <textarea rows={4} value={propertyDetails.description} onChange={(e) => setPropertyDetails({...propertyDetails, description: e.target.value})} className="w-full bg-surface-low rounded-[20px] sm:rounded-[24px] py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none resize-none text-sm" placeholder="Provide a detailed description of your stay." />
+                        <textarea rows={4} value={propertyDetails.description} onChange={(e) => setPropertyDetails({ ...propertyDetails, description: e.target.value })} className="w-full bg-surface-low rounded-[20px] sm:rounded-[24px] py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none resize-none text-sm" placeholder="Provide a detailed description of your stay." />
                       </div>
                       <div className="space-y-2 sm:col-span-2">
                         <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Featured Image URL</label>
-                        <input type="text" value={propertyDetails.image} onChange={(e) => setPropertyDetails({...propertyDetails, image: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="https://images.unsplash.com/your-photo" />
+                        <input type="text" value={propertyDetails.image} onChange={(e) => setPropertyDetails({ ...propertyDetails, image: e.target.value })} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="https://images.unsplash.com/your-photo" />
                         <p className="text-[9px] sm:text-[10px] text-slate-400 font-bold pl-2 mt-1 uppercase italic">Note: Verified photos can also be set as primary from the Media tab.</p>
                       </div>
                     </div>
@@ -665,87 +663,87 @@ const HostDashboard = () => {
                     {selectedProperty.photos.map((ph, idx) => (
                       <div key={ph.id || idx} className="aspect-square sm:aspect-4/3 rounded-[24px] sm:rounded-[32px] overflow-hidden relative group shadow-sm border border-gray-100">
                         <img src={ph.url} className="w-full h-full object-cover" />
-                        
+
                         {/* Status Badges */}
                         {ph.isVerified && <div className="absolute top-4 left-4 bg-green-500 text-white p-1 rounded-full"><CheckCircle size={14} /></div>}
-                        
+
                         {/* Hover Actions */}
                         <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {ph.isVerified && ph.url !== selectedProperty.image && (
-                               <button 
-                                 onClick={(e) => { e.stopPropagation(); handleSetPrimary(ph.url); }}
-                                 className="bg-white text-airbnb px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-xl hover:scale-105 transition-transform"
-                               >
-                                 Make Primary
-                               </button>
+                          {ph.isVerified && ph.url !== selectedProperty.image && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleSetPrimary(ph.url); }}
+                              className="bg-white text-airbnb px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-xl hover:scale-105 transition-transform"
+                            >
+                              Make Primary
+                            </button>
+                          )}
+                          <div className="flex gap-2">
+                            {!ph.isVerified && (
+                              <button onClick={() => setShowCamera(true)} className="bg-airbnb text-white px-4 py-2 rounded-xl text-xs font-black">Verify</button>
                             )}
-                            <div className="flex gap-2">
-                                {!ph.isVerified && (
-                                   <button onClick={() => setShowCamera(true)} className="bg-airbnb text-white px-4 py-2 rounded-xl text-xs font-black">Verify</button>
-                                )}
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); handleDeletePhoto(ph.id || idx); }}
-                                    className="bg-white/90 text-red-500 p-2.5 rounded-xl hover:bg-white transition-all shadow-xl"
-                                >
-                                    <Trash2 size={18} />
-                                </button>
-                            </div>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeletePhoto(ph.id || idx); }}
+                              className="bg-white/90 text-red-500 p-2.5 rounded-xl hover:bg-white transition-all shadow-xl"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
                     <button onClick={() => setShowCamera(true)} className="aspect-4/3 rounded-[32px] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center gap-2 text-slate-300 hover:border-airbnb hover:text-airbnb transition-all">
-                       <Camera size={24} /> <span className="text-xs font-black">Secure Capture</span>
+                      <Camera size={24} /> <span className="text-xs font-black">Secure Capture</span>
                     </button>
                   </div>
                 )}
 
                 {activeTab === 'policies' && (
                   <div className="bg-white p-6 sm:p-10 rounded-[32px] sm:rounded-[40px] border border-gray-100 shadow-sm space-y-8">
-                     <div className="flex items-center justify-between gap-4">
-                        <div className="space-y-1">
-                           <h4 className="font-black text-base sm:text-lg">Verified Guests Only</h4>
-                           <p className="text-xs sm:text-sm text-slate-400">Restricts booking to hardware-attested travelers.</p>
-                        </div>
-                        <button 
-                          onClick={() => setSafetySettings({...safetySettings, allowUnverifiedGuests: !safetySettings.allowUnverifiedGuests})}
-                          className={`w-14 h-8 shrink-0 rounded-full transition-all relative ${!safetySettings.allowUnverifiedGuests ? 'bg-airbnb' : 'bg-gray-200'}`}
-                        >
-                           <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${!safetySettings.allowUnverifiedGuests ? 'left-7' : 'left-1'}`} />
-                        </button>
-                     </div>
-                     <button onClick={handleUpdateProperty} className="w-full py-4 bg-[#1a1c1c] text-white rounded-2xl font-black text-sm">Confirm Policy</button>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <h4 className="font-black text-base sm:text-lg">Verified Guests Only</h4>
+                        <p className="text-xs sm:text-sm text-slate-400">Restricts booking to hardware-attested travelers.</p>
+                      </div>
+                      <button
+                        onClick={() => setSafetySettings({ ...safetySettings, allowUnverifiedGuests: !safetySettings.allowUnverifiedGuests })}
+                        className={`w-14 h-8 shrink-0 rounded-full transition-all relative ${!safetySettings.allowUnverifiedGuests ? 'bg-airbnb' : 'bg-gray-200'}`}
+                      >
+                        <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${!safetySettings.allowUnverifiedGuests ? 'left-7' : 'left-1'}`} />
+                      </button>
+                    </div>
+                    <button onClick={handleUpdateProperty} className="w-full py-4 bg-[#1a1c1c] text-white rounded-2xl font-black text-sm">Confirm Policy</button>
                   </div>
                 )}
               </div>
               <aside className="w-full lg:w-[320px] bg-[#1a1c1c] rounded-[32px] sm:rounded-[40px] p-6 sm:p-8 text-white h-fit">
                 <h4 className="text-base sm:text-lg font-black mb-6">Listing Insights</h4>
                 <div className="space-y-6">
-                   <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                      <span className="text-xs sm:text-sm opacity-60">Visibility Score</span>
-                      <span className="font-black text-green-400">+12%</span>
-                   </div>
-                   <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                      <span className="text-xs sm:text-sm opacity-60">Avg. Rating</span>
-                      <span className="font-black">{selectedProperty.rating} ★</span>
-                   </div>
+                  <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                    <span className="text-xs sm:text-sm opacity-60">Visibility Score</span>
+                    <span className="font-black text-green-400">+12%</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                    <span className="text-xs sm:text-sm opacity-60">Avg. Rating</span>
+                    <span className="font-black">{selectedProperty.rating} ★</span>
+                  </div>
                 </div>
               </aside>
             </div>
           ) : (
             /* Root Sidebar Tabs */
             <div className="max-w-7xl mx-auto">
-               {sidebarTab === 'overview' && <OverviewDashboard allProperties={allProperties} />}
-               {sidebarTab === 'portfolio' && (
-                 <PortfolioSection 
-                   allProperties={allProperties} 
-                   portfolioView={portfolioView} 
-                   setPortfolioView={setPortfolioView}
-                   onSelect={handleSelectProperty}
-                   onAdd={handleCreateListing}
-                 />
-               )}
-               {sidebarTab === 'reservations' && <ReservationsList />}
-               {sidebarTab === 'safety' && <GlobalSafetySettings />}
+              {sidebarTab === 'overview' && <OverviewDashboard allProperties={allProperties} />}
+              {sidebarTab === 'portfolio' && (
+                <PortfolioSection
+                  allProperties={allProperties}
+                  portfolioView={portfolioView}
+                  setPortfolioView={setPortfolioView}
+                  onSelect={handleSelectProperty}
+                  onAdd={handleCreateListing}
+                />
+              )}
+              {sidebarTab === 'reservations' && <ReservationsList />}
+              {sidebarTab === 'safety' && <GlobalSafetySettings />}
             </div>
           )}
         </main>
@@ -755,13 +753,13 @@ const HostDashboard = () => {
       <AnimatePresence>
         {verificationStatus === 'verifying' && (
           <div className="fixed inset-0 z-100 flex items-center justify-center p-6 bg-[#1a1c1c]/90 backdrop-blur-xl">
-             <div className="w-full max-w-[400px] text-center space-y-8">
-                <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="w-20 h-20 border-4 border-airbnb/20 border-t-airbnb rounded-full mx-auto" />
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Attesting Metadata</h3>
-                  <p className="text-white/40 font-mono text-[11px] uppercase tracking-widest">Digital Provenance Hash Update</p>
-                </div>
-             </div>
+            <div className="w-full max-w-[400px] text-center space-y-8">
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="w-20 h-20 border-4 border-airbnb/20 border-t-airbnb rounded-full mx-auto" />
+              <div className="space-y-2">
+                <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Attesting Metadata</h3>
+                <p className="text-white/40 font-mono text-[11px] uppercase tracking-widest">Digital Provenance Hash Update</p>
+              </div>
+            </div>
           </div>
         )}
       </AnimatePresence>
