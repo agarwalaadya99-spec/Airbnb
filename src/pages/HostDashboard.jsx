@@ -18,7 +18,7 @@ import {
   Clock,
   Edit3,
   MapPin,
-  DollarSign,
+  DollarSign as RupeeIcon,
   FileText,
   ChevronLeft,
   LayoutGrid,
@@ -55,7 +55,7 @@ const OverviewDashboard = ({ allProperties }) => {
           <div className="p-3 bg-airbnb/5 text-airbnb w-fit rounded-2xl"><DollarSign size={20} /></div>
           <div>
             <p className="text-slate-400 font-bold text-[10px] sm:text-sm uppercase tracking-widest">Est. Monthly Earnings</p>
-            <h3 className="text-2xl sm:text-3xl font-black">${totalEarnings.toLocaleString()}</h3>
+            <h3 className="text-2xl sm:text-3xl font-black">₹{totalEarnings.toLocaleString()}</h3>
           </div>
         </div>
         <div className="bg-white p-6 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-gray-100 shadow-sm space-y-4">
@@ -153,7 +153,7 @@ const PortfolioSection = ({ allProperties, portfolioView, setPortfolioView, onSe
                 </div>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-[12px] font-bold">
                   <span className={p.allowUnverifiedGuests ? 'text-blue-500' : 'text-airbnb'}>{p.allowUnverifiedGuests ? 'Open Enroll' : 'Verified Only'}</span>
-                  <span>${p.price}/night</span>
+                  <span>₹{p.price}/night</span>
                 </div>
               </div>
             </motion.div>
@@ -194,7 +194,7 @@ const PortfolioSection = ({ allProperties, portfolioView, setPortfolioView, onSe
                         {p.allowUnverifiedGuests ? 'Relaxed' : 'Strict'}
                       </span>
                    </td>
-                   <td className="p-6 font-bold text-[14px]">${p.price}</td>
+                   <td className="p-6 font-bold text-[14px]">₹{p.price}</td>
                    <td className="p-6 text-slate-300">
                       <button className="p-2 hover:text-airbnb transition-colors"><ChevronRight size={20} /></button>
                    </td>
@@ -639,7 +639,7 @@ const HostDashboard = () => {
                         <input type="text" value={propertyDetails.title} onChange={(e) => setPropertyDetails({...propertyDetails, title: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" placeholder="Property Title" />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Price ($)</label>
+                        <label className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-widest pl-2">Price (₹)</label>
                         <input type="number" value={propertyDetails.price} onChange={(e) => setPropertyDetails({...propertyDetails, price: e.target.value})} className="w-full bg-surface-low rounded-xl sm:rounded-2xl py-3.5 sm:py-4 px-5 sm:px-6 font-bold focus:ring-2 focus:ring-airbnb/20 transition-all outline-none text-sm" />
                       </div>
                       <div className="space-y-2">

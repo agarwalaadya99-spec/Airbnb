@@ -187,7 +187,7 @@ const initialProperties = [
     category: "Amazing views",
     image: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200",
     photos: [
-      { id: "p1", url: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200", isVerified: false },
+      { id: "p1", url: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200", isVerified: false, isAI: true },
       { id: "p2", url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200", isVerified: false }
     ],
     host: { name: "Marcus", superhost: false, joined: "2020", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" },

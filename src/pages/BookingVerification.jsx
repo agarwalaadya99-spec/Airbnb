@@ -136,7 +136,7 @@ const BookingVerification = () => {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-manrope font-black text-airbnb">${property.price}<span className="text-sm font-normal text-[#5c3f41]">/night</span></p>
+                    <p className="text-2xl font-manrope font-black text-airbnb">₹{property.price}<span className="text-sm font-normal text-[#5c3f41]">/night</span></p>
                   </div>
                 </div>
               </div>

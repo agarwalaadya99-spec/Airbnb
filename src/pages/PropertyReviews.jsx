@@ -394,29 +394,16 @@ const PropertyReviews = () => {
                   </p>
                 </div>
                 
-                <div className="w-full sm:w-auto">
-                  {isHostMode ? (
-                    <button 
-                      onClick={() => setShowCamera(true)}
-                      className="w-full sm:w-auto bg-airbnb text-white px-8 py-3.5 rounded-full font-extrabold text-[15px] shadow-lg hover:scale-105 transition-transform active:scale-95 flex items-center justify-center gap-2"
-                    >
-                      <Camera size={20} /> Update Ground Truth
-                    </button>
-                  ) : verificationStatus === 'complete' ? (
-                    <div className="flex items-center justify-center gap-3 bg-green-50 text-green-700 px-6 py-3 rounded-full font-extrabold shadow-sm">
-                      <CheckCircle size={20} /> Verified Successfully
+                  {isHostMode && (
+                    <div className="w-full sm:w-auto">
+                      <button 
+                        onClick={() => setShowCamera(true)}
+                        className="w-full sm:w-auto bg-airbnb text-white px-8 py-3.5 rounded-full font-extrabold text-[15px] shadow-lg hover:scale-105 transition-transform active:scale-95 flex items-center justify-center gap-2"
+                      >
+                        <Camera size={20} /> Update Ground Truth
+                      </button>
                     </div>
-                  ) : (
-                    <button 
-                      onClick={handleStartVerification}
-                      className={`w-full sm:w-auto px-8 py-3.5 rounded-full font-extrabold text-[15px] shadow-lg transition-all active:scale-95 ${
-                        isVerifying ? 'bg-gray-100 text-slate-400 cursor-default' : 'bg-airbnb text-white hover:scale-105'
-                      }`}
-                    >
-                      {isVerifying ? 'Request Sent' : 'Request Live Scene'}
-                    </button>
                   )}
-                </div>
               </div>
               
               <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 transition-colors duration-1000 ${
@@ -651,7 +638,6 @@ const PropertyReviews = () => {
                 {property.reviews?.map((review) => (
                   <div key={review.id} className="space-y-4">
                     <div className="flex items-center gap-4">
-                      <img src={review.avatar} className="w-12 h-12 rounded-full border border-gray-100 shrink-0" />
                       <div>
                         <h4 className="font-extrabold text-[15px]">{review.user}</h4>
                         <div className="flex items-center gap-2">

@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const PropertyCard = ({ property, index = 0 }) => {
-  const latestVerifiedPhoto = [...(property.photos || [])].reverse().find(p => p.isVerified);
-  const displayImage = latestVerifiedPhoto?.url || property.image;
-  const isEnclaveLive = !!latestVerifiedPhoto;
+  const primaryPhoto = property.photos?.[0] || { url: property.image };
+  const displayImage = primaryPhoto.url;
+  const isAI = property.photos?.some(p => p.isAI);
+  const isVerified = property.photos?.some(p => p.isVerified);
 
   return (
     <motion.div 
@@ -35,15 +36,15 @@ const PropertyCard = ({ property, index = 0 }) => {
 
           {/* AI / Verified Banners */}
           <div className="absolute top-4 left-4 flex flex-col gap-1.5 items-start">
-            {latestVerifiedPhoto?.isAI && (
+            {isAI && (
               <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white shadow-xl rounded-full border border-white/20">
                 <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
                 <span className="text-[10px] font-black tracking-widest uppercase">AI</span>
               </div>
             )}
             
-            {latestVerifiedPhoto?.isVerified && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500 text-white shadow-xl rounded-full border border-white/20">
+            {isVerified && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-600 text-white shadow-xl rounded-full border border-white/20">
                 <ShieldCheck size={12} />
                 <span className="text-[10px] font-black tracking-widest uppercase">Verified</span>
               </div>
