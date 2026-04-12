@@ -187,8 +187,33 @@ const initialProperties = [
     category: "Amazing views",
     image: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200",
     photos: [
-      { id: "p1", url: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200", isVerified: false, isAI: true },
-      { id: "p2", url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200", isVerified: false }
+      { 
+        id: "p1", 
+        url: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200", 
+        isVerified: false, 
+        isAI: true,
+        meta: {
+          source: "Generative AI",
+          model: "Stable Diffusion XL v1.0",
+          model_version: "2024-Feb-Refiner",
+          fingerprint: "0xAI_ARTIFACT_82A1B",
+          detection_score: 0.998,
+          timestamp: "2024-03-10T08:15:22Z"
+        }
+      },
+      { 
+        id: "p2", 
+        url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200", 
+        isVerified: false,
+        isAI: true,
+        meta: {
+          source: "Generative AI",
+          model: "Midjourney v6.0",
+          fingerprint: "0xAI_ARTIFACT_C921X",
+          detection_score: 0.985,
+          timestamp: "2024-03-11T12:04:15Z"
+        }
+      }
     ],
     host: { name: "Marcus", superhost: false, joined: "2020", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" },
     description: "A 5,500 sq ft mirror-cladding home that reflects its stunning surroundings while offering unparalleled luxury.",

@@ -37,16 +37,18 @@ const PropertyCard = ({ property, index = 0 }) => {
           {/* AI / Verified Banners */}
           <div className="absolute top-4 left-4 flex flex-col gap-1.5 items-start">
             {isAI && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white shadow-xl rounded-full border border-white/20">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white shadow-xl rounded-full border border-white/20 group/tag transition-transform hover:scale-105">
                 <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
                 <span className="text-[10px] font-black tracking-widest uppercase">AI</span>
+                <span className="w-0 overflow-hidden group-hover/tag:w-auto group-hover/tag:ml-1 text-[8px] font-bold whitespace-nowrap transition-all">CHECK SIG</span>
               </div>
             )}
             
             {isVerified && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-600 text-white shadow-xl rounded-full border border-white/20">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-600 text-white shadow-xl rounded-full border border-white/20 group/tag transition-transform hover:scale-105">
                 <ShieldCheck size={12} />
                 <span className="text-[10px] font-black tracking-widest uppercase">Verified</span>
+                <span className="w-0 overflow-hidden group-hover/tag:w-auto group-hover/tag:ml-1 text-[8px] font-bold whitespace-nowrap transition-all">CHECK SIG</span>
               </div>
             )}
           </div>

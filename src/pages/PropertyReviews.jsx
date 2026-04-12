@@ -370,46 +370,7 @@ const PropertyReviews = () => {
               </section>
             )}
 
-            {/* AI Trust Banner */}
-            <motion.section 
-              initial={{ scale: 0.98, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className={`p-6 sm:p-8 rounded-[24px] border border-gray-100/50 relative overflow-hidden transition-colors duration-500 ${
-                verificationStatus === 'complete' ? 'bg-green-50/30' : 'bg-slate-50'
-              }`}
-            >
-              <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 uppercase tracking-wider">
-                <div className="space-y-2 w-full">
-                  <div className={`flex items-center gap-2 ${verificationStatus === 'complete' ? 'text-green-600' : 'text-airbnb'}`}>
-                    <ShieldCheck size={20} className="sm:w-6 sm:h-6" fill="currentColor" fillOpacity={0.1} />
-                    <span className="font-manrope font-extrabold text-[15px] sm:text-[18px] leading-tight break-words">
-                      {verificationStatus === 'complete' ? 'Live Authenticated' : 'Digital Provenance Protected'}
-                    </span>
-                  </div>
-                  <p className="text-[#717171] text-[12px] sm:text-[14px] max-w-full sm:max-w-[480px] normal-case tracking-normal leading-relaxed">
-                    {verificationStatus === 'complete' 
-                      ? "Success! This property has been verified against live ground truth using Secure Enclave provenance."
-                      : "This listing uses **Digital Provenance Technology**. Photos were captured via hardware-attestation, ensuring listing honesty."
-                    }
-                  </p>
-                </div>
-                
-                  {isHostMode && (
-                    <div className="w-full sm:w-auto">
-                      <button 
-                        onClick={() => setShowCamera(true)}
-                        className="w-full sm:w-auto bg-airbnb text-white px-8 py-3.5 rounded-full font-extrabold text-[15px] shadow-lg hover:scale-105 transition-transform active:scale-95 flex items-center justify-center gap-2"
-                      >
-                        <Camera size={20} /> Update Ground Truth
-                      </button>
-                    </div>
-                  )}
-              </div>
-              
-              <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -mr-32 -mt-32 transition-colors duration-1000 ${
-                verificationStatus === 'complete' ? 'bg-green-400/10' : 'bg-airbnb/5'
-              }`} />
-            </motion.section>
+
 
             {/* Property Insights / Gallery */}
             <section className="space-y-6">
@@ -442,7 +403,11 @@ const PropertyReviews = () => {
                          alt="Listing" 
                        />
                        <div className="absolute top-4 left-4 flex gap-2">
-                          {photo.isVerified ? (
+                          {photo.isAI ? (
+                            <div className="bg-red-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
+                              <AlertTriangle size={12} /> AI GENERATED
+                            </div>
+                          ) : photo.isVerified ? (
                             <div className="bg-green-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
                               <Shield size={12} /> VERIFIED LIVE
                             </div>
@@ -463,15 +428,25 @@ const PropertyReviews = () => {
                           </button>
                         )}
                         
-                        {photo.isVerified && (
+                        {(photo.isVerified || photo.isAI) && (
                          <button 
                            onClick={() => {
-                             setProvenanceData(photo.meta || { sourceDevice: 'Unknown', timestamp: 'Original Listing', gps: 'Not Recorded' });
+                             const sig = photo.isAI ? {
+                               source: "Generative AI",
+                               model: "Stable Diffusion XL v1.0",
+                               fingerprint: "0xAI_ARTIFACT_" + photo.id.toUpperCase(),
+                               detection_score: 0.99
+                             } : (photo.meta || { 
+                               sourceDevice: 'Hardware Enclave', 
+                               timestamp: 'Original Listing', 
+                               gps: 'Not Recorded' 
+                             });
+                             setProvenanceData(sig);
                              setShowProvenanceModal(true);
                            }}
-                           className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest sm:opacity-0 sm:group-hover:opacity-100 transition-opacity border border-white/10"
+                           className={`absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest sm:opacity-0 sm:group-hover:opacity-100 transition-opacity border border-white/10 ${photo.isAI ? 'hover:bg-red-500' : 'hover:bg-green-500'} transition-all`}
                          >
-                           View Signature
+                           {photo.isAI ? 'View AI Signature' : 'View Signature'}
                          </button>
                        )}
                     </div>
