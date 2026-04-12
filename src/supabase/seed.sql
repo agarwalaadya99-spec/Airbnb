@@ -19,8 +19,8 @@ WITH cabin_id AS (
   VALUES ('a1111111-1111-4111-a111-111111111111', 'Eco-Luxe Geometric Cabin', 'Yucca Valley, California', 450, 'A architectural marvel nestled in the high desert, this geometric cabin offers panoramic mountain views and refined minimalist interiors.', 'https://images.unsplash.com/photo-1449156001435-d599c72470ab?q=80&w=1200', 4.98, 124, 118, true, false, 'Design')
   RETURNING id
 )
-INSERT INTO property_photos (property_id, url, is_verified, meta_data)
-SELECT id, 'https://images.unsplash.com/photo-1449156001435-d599c72470ab?q=80&w=1200', true, '{"sourceDevice": "Capture One Pro · Secure Enclave", "timestamp": "March 15, 2026", "gps": "34.1161° N, 116.4258° W"}' FROM cabin_id;
+INSERT INTO property_photos (property_id, url, is_verified, is_ai, meta_data)
+SELECT id, 'https://images.unsplash.com/photo-1449156001435-d599c72470ab?q=80&w=1200', true, false, '{"sourceDevice": "Capture One Pro · Secure Enclave", "timestamp": "March 15, 2026", "gps": "34.1161° N, 116.4258° W"}' FROM cabin_id;
 
 -- 2. Floating Glass Villa
 WITH villa_id AS (
@@ -28,8 +28,8 @@ WITH villa_id AS (
   VALUES ('b2222222-2222-4222-a222-222222222222', 'Floating Glass Villa', 'Malibu, California', 1200, 'Suspended over the Pacific, this glass villa provides an immersive oceanic experience with floor-to-ceiling windows.', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200', 5.0, 48, 48, true, false, 'Icons')
   RETURNING id
 )
-INSERT INTO property_photos (property_id, url, is_verified, meta_data)
-SELECT id, 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200', true, '{"sourceDevice": "Sony A7RV · CAI", "timestamp": "March 20, 2026", "gps": "34.0259° N"}' FROM villa_id;
+INSERT INTO property_photos (property_id, url, is_verified, is_ai, meta_data)
+SELECT id, 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200', true, false, '{"sourceDevice": "Sony A7RV · CAI", "timestamp": "March 20, 2026", "gps": "34.0259° N"}' FROM villa_id;
 
 -- 3. The Invisible House
 WITH invisible_id AS (
@@ -37,8 +37,8 @@ WITH invisible_id AS (
   VALUES ('c3333333-3333-4333-a333-333333333333', 'The Invisible House', 'Joshua Tree, California', 3500, 'A 5,500 sq ft mirror-cladding home that reflects its stunning surroundings while offering unparalleled luxury.', 'https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200', 4.95, 89, 12, false, true, 'Amazing views')
   RETURNING id
 )
-INSERT INTO property_photos (property_id, url, is_verified)
-SELECT id, 'https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200', false FROM invisible_id;
+INSERT INTO property_photos (property_id, url, is_verified, is_ai)
+SELECT id, 'https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200', false, true FROM invisible_id;
 
 -- Seed some reviews
 INSERT INTO property_reviews (property_id, user_name, rating, comment, date, is_verified, avatar_url)

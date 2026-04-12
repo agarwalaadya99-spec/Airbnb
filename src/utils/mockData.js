@@ -1,5 +1,21 @@
 import { supabase } from './supabase';
 
+const getRandomHost = (seed) => {
+  const hosts = [
+    { name: "Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
+    { name: "Elena", superhost: true, joined: "2015", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200" },
+    { name: "Marcus", superhost: false, joined: "2020", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" },
+    { name: "Sarah", superhost: false, joined: "2021", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200" },
+    { name: "Vikram", superhost: true, joined: "2019", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" }
+  ];
+  // Simple deterministic random based on string id
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hosts[Math.abs(hash) % hosts.length];
+};
+
 console.log("🚀 HavenSafe Version: v1.5.0-forensic-fix");
 
 // Helper to sync with localStorage for demo persistence
@@ -331,11 +347,12 @@ export const getProperties = async () => {
           category: p.category,
           image: p.image_url,
           description: p.description,
-          host: p.host || { name: " Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
+          host: p.host || getRandomHost(p.id),
           photos: propPhotos.map(ph => ({
             id: ph.id,
             url: ph.url,
             isVerified: ph.is_verified,
+            isAI: ph.is_ai,
             meta: ph.meta_data || ph.metadata
           })),
           reviews: [] // Reviews still deferred for detail page
@@ -379,11 +396,12 @@ export const getPropertyById = async (id) => {
         category: p.category,
         image: p.image_url,
       description: p.description,
-      host: p.host || { name: " Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
+      host: p.host || getRandomHost(p.id),
       photos: propertyPhotos.map(ph => ({
          id: ph.id,
          url: ph.url,
          isVerified: ph.is_verified,
+         isAI: ph.is_ai,
          meta: ph.meta_data || ph.metadata
       })),
       reviews: propertyReviews.map(r => ({

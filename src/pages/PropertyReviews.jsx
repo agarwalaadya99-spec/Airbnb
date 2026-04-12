@@ -275,17 +275,52 @@ const PropertyReviews = () => {
         </button>
 
         {/* Sticky Mobile Booking Bar */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-100 px-6 py-4 pb-safe flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
-           <div className="flex flex-col min-w-0">
-              <span className="text-[18px] font-black tracking-tight text-[#1a1c1c] truncate">₹{property.price} <span className="text-[14px] font-medium text-slate-400">night</span></span>
-              <span className="text-[12px] font-extrabold text-[#222222] underline">{property.rating} ★</span>
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-100 px-6 py-4 pb-safe flex flex-col gap-3 shadow-[0_-10px_30px_rgba(0,0,0,0.08)]">
+           <div className="flex items-center justify-between gap-4">
+              <div className="flex flex-col min-w-0">
+                 <span className="text-[18px] font-black tracking-tight text-[#1a1c1c] truncate">₹{property.price} <span className="text-[14px] font-medium text-slate-400">night</span></span>
+                 <span className="text-[12px] font-extrabold text-[#222222] underline">{property.rating} ★</span>
+              </div>
+              <button 
+                onClick={() => isHostMode ? navigate('/host') : (totalNights > 0 ? navigate(`/booking-verification/${property.id}`) : alert("Please select dates first"))}
+                className="bg-airbnb text-white px-8 py-3.5 rounded-xl font-black text-[14px] shadow-lg shadow-airbnb/20 active:scale-95 transition-all whitespace-nowrap"
+              >
+                {isHostMode ? "Edit Listing" : "Reserve"}
+              </button>
            </div>
-           <button 
-             onClick={() => isHostMode ? navigate('/host') : navigate(`/booking-verification/${property.id}`)}
-             className="bg-airbnb text-white px-6 sm:px-8 py-3.5 rounded-xl font-black text-[14px] sm:text-[15px] shadow-lg shadow-airbnb/20 active:scale-95 transition-all whitespace-nowrap ml-4"
-           >
-             {isHostMode ? "Edit Listing" : "Reserve"}
-           </button>
+           
+           {!isHostMode && (
+             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+               <div className="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-2 border border-gray-100">
+                 <label className="block text-[8px] font-black uppercase text-gray-400 mb-0.5">Check-in</label>
+                 <input 
+                   type="date" 
+                   value={checkIn}
+                   onChange={(e) => setCheckIn(e.target.value)}
+                   className="w-full bg-transparent border-none outline-none font-bold text-[11px] cursor-pointer" 
+                 />
+               </div>
+               <div className="flex-1 min-w-[120px] bg-gray-50 rounded-lg p-2 border border-gray-100">
+                 <label className="block text-[8px] font-black uppercase text-gray-400 mb-0.5">Checkout</label>
+                 <input 
+                   type="date" 
+                   value={checkOut}
+                   onChange={(e) => setCheckOut(e.target.value)}
+                   className="w-full bg-transparent border-none outline-none font-bold text-[11px] cursor-pointer" 
+                 />
+               </div>
+               <div className="flex-1 min-w-[80px] bg-gray-50 rounded-lg p-2 border border-gray-100">
+                 <label className="block text-[8px] font-black uppercase text-gray-400 mb-0.5">Guests</label>
+                 <select 
+                   value={guests}
+                   onChange={(e) => setGuests(parseInt(e.target.value))}
+                   className="w-full bg-transparent border-none outline-none font-bold text-[11px] cursor-pointer"
+                 >
+                   {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n}</option>)}
+                 </select>
+               </div>
+             </div>
+           )}
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12 pb-24 lg:pb-0">
@@ -455,27 +490,27 @@ const PropertyReviews = () => {
                     </div>
                   ))}
                   
-                  <div className="relative rounded-[24px] sm:rounded-[32px] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center p-6 sm:p-8 text-center space-y-4 bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                     <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl sm:rounded-[24px] shadow-sm flex items-center justify-center text-airbnb">
-                        <Camera size={24} />
-                      </div>
-                      <div className="space-y-1">
-                        <h4 className="font-extrabold text-[15px] sm:text-[16px]">
-                          {isHostMode ? "Update Ground Truth" : "Update Evidence"}
-                        </h4>
-                        <p className="text-[12px] sm:text-[13px] text-slate-500 max-w-[200px]">
-                          {isHostMode 
-                            ? "Use Secure Enclave to replace legacy media."
-                            : "Ask for a fresh live capture."}
-                        </p>
-                      </div>
-                      <button 
-                        onClick={handleStartVerification}
-                        className="text-airbnb font-extrabold text-[13px] sm:text-[14px] hover:underline"
-                      >
-                        {isHostMode ? "Capture Live Photo" : "Request Live Photo"}
-                      </button>
-                  </div>
+                  {isHostMode && (
+                    <div className="relative rounded-[24px] sm:rounded-[32px] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center p-6 sm:p-8 text-center space-y-4 bg-slate-50/50 hover:bg-slate-50 transition-colors">
+                       <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl sm:rounded-[24px] shadow-sm flex items-center justify-center text-airbnb">
+                          <Camera size={24} />
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="font-extrabold text-[15px] sm:text-[16px]">
+                            Update Ground Truth
+                          </h4>
+                          <p className="text-[12px] sm:text-[13px] text-slate-500 max-w-[200px]">
+                            Use Secure Enclave to replace legacy media.
+                          </p>
+                        </div>
+                        <button 
+                          onClick={handleStartVerification}
+                          className="text-airbnb font-extrabold text-[13px] sm:text-[14px] hover:underline"
+                        >
+                          Capture Live Photo
+                        </button>
+                    </div>
+                  )}
                </div>
             </section>
 
@@ -631,8 +666,8 @@ const PropertyReviews = () => {
                       {review.comment}
                     </p>
                     {review.verified && (
-                      <div className="flex items-center gap-1.5 text-blue-500 font-bold text-[11px] uppercase tracking-wider">
-                        <ShieldCheck size={14} /> Provenance Verified Review
+                      <div className="flex items-center gap-1.5 text-green-600 font-bold text-[11px] uppercase tracking-wider">
+                        Verified Review
                       </div>
                     )}
                   </div>

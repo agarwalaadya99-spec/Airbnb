@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS public.property_photos (
   property_id UUID REFERENCES public.properties(id) ON DELETE CASCADE,
   url TEXT NOT NULL,
   is_verified BOOLEAN DEFAULT FALSE,
+  is_ai BOOLEAN DEFAULT FALSE,
   metadata JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );

@@ -33,34 +33,19 @@ const PropertyCard = ({ property, index = 0 }) => {
             <HeartSvg />
           </div>
 
-          {/* AI Verified / Live Enclave Badge */}
-          <div className="absolute bottom-4 left-4 flex flex-col gap-1.5 items-start">
-            {isEnclaveLive && (
-              <motion.div 
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                className="flex items-center gap-2 px-3.5 py-2 bg-green-500 text-white shadow-2xl rounded-full border border-white/20"
-              >
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse shadow-[0_0_8px_white]" />
-                <span className="text-[10px] font-black tracking-widest uppercase">Live Enclave</span>
-              </motion.div>
+          {/* AI / Verified Banners */}
+          <div className="absolute top-4 left-4 flex flex-col gap-1.5 items-start">
+            {latestVerifiedPhoto?.isAI && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white shadow-xl rounded-full border border-white/20">
+                <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+                <span className="text-[10px] font-black tracking-widest uppercase">AI</span>
+              </div>
             )}
             
-            {property.forensics?.aiConfidence > 85 && (
-              <motion.div 
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                className="flex items-center gap-2 px-3.5 py-2 bg-red-600 text-white shadow-2xl rounded-full border border-white/20"
-              >
-                <div className="w-2 h-2 bg-white rounded-full animate-ping" />
-                <span className="text-[10px] font-black tracking-widest uppercase">Forensic Alert: AI Detected</span>
-              </motion.div>
-            )}
-
-            {isEnclaveLive && !property.forensics?.aiConfidence && (
-              <div className="flex items-center gap-2 px-3.5 py-2 bg-white/95 backdrop-blur-xl shadow-2xl rounded-full border border-white/20 transform group-hover:scale-105 transition-transform">
-                <ShieldCheck size={14} className="text-airbnb" fill="currentColor" fillOpacity={0.15} />
-                <span className="text-[11px] font-extrabold text-[#222222] tracking-wider uppercase">AI Verified</span>
+            {latestVerifiedPhoto?.isVerified && (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500 text-white shadow-xl rounded-full border border-white/20">
+                <ShieldCheck size={12} />
+                <span className="text-[10px] font-black tracking-widest uppercase">Verified</span>
               </div>
             )}
           </div>
