@@ -88,5 +88,3 @@ const HeartSvg = () => (
 );
 
 export default PropertyCard;
-
-export default PropertyCard;
