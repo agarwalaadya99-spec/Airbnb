@@ -1,5 +1,7 @@
 import { supabase } from './supabase';
 
+const FORCE_MOCK_DATA = true; // FORCE NEW DEHRADUN DATA FOR DEMO
+
 const getRandomHost = (seed) => {
   const hosts = [
     { name: "Julian", superhost: true, joined: "2018", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
@@ -15,7 +17,7 @@ const getRandomHost = (seed) => {
   return hosts[Math.abs(hash) % hosts.length];
 };
 
-console.log("🚀 HavenSafe Version: v1.6.0-dehradun-focus");
+console.log("🚀 HavenSafe Version: v1.6.1-dehradun-force-mock");
 
 const getStoredProperties = () => {
   try {
@@ -214,6 +216,11 @@ const initialProperties = [
 ];
 
 export const getProperties = async () => {
+  if (FORCE_MOCK_DATA) {
+     const stored = getStoredProperties();
+     return Array.isArray(stored) ? stored : initialProperties;
+  }
+
   try {
     const { data: properties, error } = await supabase.from('properties').select('*');
     if (error) throw error;
@@ -254,6 +261,11 @@ export const getProperties = async () => {
 };
 
 export const getPropertyById = async (id) => {
+  if (FORCE_MOCK_DATA) {
+    const props = await getProperties();
+    return props.find(p => p.id === id) || initialProperties[0];
+  }
+
   try {
     const [propRes, photosRes, reviewsRes] = await Promise.all([
       supabase.from('properties').select('*').eq('id', id).single(),
@@ -319,10 +331,10 @@ export const categories = [
 
 export const getVerifiedUsers = async () => {
   try {
-    const { data, error } = await supabase.from('profiles').select('*');
+    const { data: profiles, error } = await supabase.from('profiles').select('*');
     if (error) throw error;
-    if (data && data.length > 0) {
-      return data.map(u => ({
+    if (profiles && profiles.length > 0) {
+      return profiles.map(u => ({
         id: u.id,
         name: u.name,
         avatar: u.avatar_url,
@@ -332,7 +344,7 @@ export const getVerifiedUsers = async () => {
       }));
     }
   } catch (err) {
-    console.warn("Supabase profiles fetch failed:", err);
+    console.warn("Supabase profiles fetch failed, falling back to mock:", err);
   }
   return mockVerifiedUsers;
 };
