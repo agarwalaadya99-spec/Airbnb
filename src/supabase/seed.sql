@@ -40,13 +40,6 @@ VALUES ('d4444444-4444-4444-a444-444444444444', 'Infinity Valley Retreat', 'Saha
 INSERT INTO property_photos (property_id, url, is_verified)
 VALUES ('d4444444-4444-4444-a444-444444444444', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200', true);
 
--- 5. Castles (Cantt)
-INSERT INTO properties (id, title, location, price, description, image_url, rating, verified, category)
-VALUES ('e5555555-5555-5555-a555-555555555555', 'Legacy Hill Fort', 'Cantt, Dehradun', 25000, 'Heritage stay in a restored colonial fort.', 'https://images.unsplash.com/photo-1512918766671-ad6507962077?q=80&w=1200', 5.0, true, 'Castles');
-
-INSERT INTO property_photos (property_id, url, is_verified)
-VALUES ('e5555555-5555-5555-a555-555555555555', 'https://images.unsplash.com/photo-1512918766671-ad6507962077?q=80&w=1200', true);
-
 -- 6. Tiny homes (Jogiwala)
 INSERT INTO properties (id, title, location, price, description, image_url, rating, verified, category)
 VALUES ('f6666666-6666-6666-a666-666666666666', 'Minimalist Dehradun Cube', 'Jogiwala, Dehradun', 3200, 'Smart living in a tiny footprint.', 'https://images.unsplash.com/photo-1502117859338-fd9daa518a9a?q=80&w=1200', 4.7, true, 'Tiny homes');

@@ -162,22 +162,6 @@ const initialProperties = [
     description: "An infinity pool overlooking the river valley.",
     reviews: []
   },
-  {
-    id: "5",
-    title: "Legacy Hill Fort",
-    location: "Cantt, Dehradun",
-    distance: "4 miles away",
-    price: 25000,
-    rating: 5.0,
-    verified: true,
-    category: "Castles",
-    image: "https://images.unsplash.com/photo-1512918766671-ad6507962077?q=80&w=1200",
-    photos: [
-      { id: "p1", url: "https://images.unsplash.com/photo-1512918766671-ad6507962077?q=80&w=1200", isVerified: true }
-    ],
-    host: { name: "Vikram", superhost: true, joined: "2019", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" },
-    description: "Heritage stay in a restored colonial fort.",
-    reviews: []
   },
   {
     id: "6",
