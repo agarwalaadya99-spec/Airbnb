@@ -109,7 +109,7 @@ const PropertyReviews = () => {
 
     setCapturedMedia(photoUrl);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       setProvenanceData(meta);
       setVerificationStatus('complete');
       setShowProvenanceModal(true);
@@ -123,16 +123,16 @@ const PropertyReviews = () => {
           meta
         };
         const updated = { ...property, photos: [...property.photos, newPhoto] };
-        updatePropertyInStore(updated);
-        setProperty(updated);
+        const result = await updatePropertyInStore(updated);
+        if (result) setProperty(result);
       }
     }, 800);
   };
 
-  const handleDeletePhoto = (photoId) => {
+  const handleDeletePhoto = async (photoId) => {
     const updated = { ...property, photos: property.photos.filter(p => p.id !== photoId) };
-    updatePropertyInStore(updated);
-    setProperty(updated);
+    const result = await updatePropertyInStore(updated);
+    if (result) setProperty(result);
   };
 
   const handleReviewSubmit = async () => {
@@ -160,8 +160,8 @@ const PropertyReviews = () => {
     };
 
     try {
-      await updatePropertyInStore(updated);
-      setProperty(updated);
+      const result = await updatePropertyInStore(updated);
+      if (result) setProperty(result);
       setReviewSubmitted(true);
       setNewReview('');
       setShowWriteReview(false);

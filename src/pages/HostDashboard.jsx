@@ -367,6 +367,8 @@ const HostDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview'); // overview, details, media, policies
   const [searchQuery, setSearchQuery] = useState('');
 
+
+
   const fetchProperties = async () => {
     const data = await getProperties();
     setAllProperties(data);
@@ -441,8 +443,14 @@ const HostDashboard = () => {
         ...propertyDetails,
         ...safetySettings
       };
-      await updatePropertyInStore(updated);
-      setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
+      const result = await updatePropertyInStore(updated);
+      if (result) {
+        setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? result : p));
+        // If the ID changed (e.g. from mock string to UUID), update the selected ID
+        if (result.id !== selectedPropertyId) {
+          setSelectedPropertyId(result.id);
+        }
+      }
       setVerificationStatus('complete');
 
       // Snappy transition back to overview after success
@@ -469,10 +477,12 @@ const HostDashboard = () => {
       rating: 5.0,
       verified: false
     };
-    await updatePropertyInStore(newProp);
-    setAllProperties([...allProperties, newProp]);
-    handleSelectProperty(newId);
-    setTimeout(() => setActiveTab('details'), 100); // Auto-focus on Details for immediate editing
+    const result = await updatePropertyInStore(newProp);
+    if (result) {
+      setAllProperties([...allProperties, result]);
+      handleSelectProperty(result.id);
+      setTimeout(() => setActiveTab('details'), 100); // Auto-focus on Details for immediate editing
+    }
   };
 
   const handleCapture = async (file, meta) => {
@@ -480,8 +490,8 @@ const HostDashboard = () => {
     setVerificationStatus('verifying');
 
     // Upload to Supabase Storage for persistent cloud hosting
-    const fileName = `${selectedPropertyId}/${Date.now()}.jpg`;
-    const publicUrl = await uploadImage('provenance-assets', fileName, file);
+    const fileName = `forensic/${selectedPropertyId}/${Date.now()}.jpg`;
+    const publicUrl = await uploadImage('property-photos', fileName, file);
 
     // Fallback to Base64 if upload fails
     const finalUrl = publicUrl || await fileToBase64(file);
@@ -490,8 +500,11 @@ const HostDashboard = () => {
     setTimeout(async () => {
       const newPhoto = { id: `p${Date.now()}`, url: finalUrl, isVerified: true, meta };
       const updated = { ...selectedProperty, photos: [...selectedProperty.photos, newPhoto] };
-      await updatePropertyInStore(updated);
-      setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
+      const result = await updatePropertyInStore(updated);
+      if (result) {
+        setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? result : p));
+        if (result.id !== selectedPropertyId) setSelectedPropertyId(result.id);
+      }
       setVerificationStatus('complete');
       setTimeout(() => setVerificationStatus('partial'), 1500);
     }, 1200);
@@ -499,14 +512,20 @@ const HostDashboard = () => {
 
   const handleDeletePhoto = async (photoId) => {
     const updated = { ...selectedProperty, photos: selectedProperty.photos.filter(p => p.id !== photoId) };
-    await updatePropertyInStore(updated);
-    setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
+    const result = await updatePropertyInStore(updated);
+    if (result) {
+      setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? result : p));
+      if (result.id !== selectedPropertyId) setSelectedPropertyId(result.id);
+    }
   };
 
   const handleSetPrimary = async (photoUrl) => {
     const updated = { ...selectedProperty, image: photoUrl };
-    await updatePropertyInStore(updated);
-    setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
+    const result = await updatePropertyInStore(updated);
+    if (result) {
+      setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? result : p));
+      if (result.id !== selectedPropertyId) setSelectedPropertyId(result.id);
+    }
   };
 
   const handleBulkUpload = () => {
@@ -517,8 +536,12 @@ const HostDashboard = () => {
         { id: `u2`, url: "https://images.unsplash.com/photo-1594901851159-99e54665ca1d?q=80&w=2070&auto=format&fit=crop", isVerified: false }
       ];
       const updated = { ...selectedProperty, photos: [...selectedProperty.photos, ...newMedia] };
-      updatePropertyInStore(updated);
-      setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? updated : p));
+      updatePropertyInStore(updated).then(result => {
+        if (result) {
+          setAllProperties(allProperties.map(p => p.id === selectedPropertyId ? result : p));
+          if (result.id !== selectedPropertyId) setSelectedPropertyId(result.id);
+        }
+      });
       setVerificationStatus('complete');
       setTimeout(() => setVerificationStatus('partial'), 1500);
     }, 3000);
