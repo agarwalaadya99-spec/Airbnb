@@ -162,6 +162,7 @@ const initialProperties = [
     description: "An infinity pool overlooking the river valley.",
     reviews: []
   },
+  },
   {
     id: "6",
     title: "Minimalist Dehradun Cube",
