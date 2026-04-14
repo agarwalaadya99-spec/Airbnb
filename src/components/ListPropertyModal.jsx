@@ -24,6 +24,25 @@ const ListPropertyModal = ({ isOpen, onClose, onRefresh }) => {
     forensicReport: null
   });
 
+  // Reset state when the modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setStep(1);
+      setLoading(false);
+      setScanning(false);
+      setShowCamera(false);
+      setFormData({
+        title: '',
+        location: '',
+        price: '',
+        description: '',
+        type: 'Entire Home',
+        images: [],
+        forensicReport: null
+      });
+    }
+  }, [isOpen]);
+
   const fileInputRef = useRef(null);
 
   const handleInputChange = (e) => {
