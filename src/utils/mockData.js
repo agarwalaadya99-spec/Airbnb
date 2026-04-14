@@ -74,31 +74,40 @@ const getStoredProperties = () => {
   return null;
 };
 
+const isUUID = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(str);
+
 export const updatePropertyInStore = async (updatedProperty) => {
   // Try Supabase first
   try {
-    const isNew = !updatedProperty.id || updatedProperty.id.length < 10;
+    const isNew = !updatedProperty.id || !isUUID(updatedProperty.id);
     
+    console.log(`📡 Preparing Supabase sync (${isNew ? 'New' : 'Update'}):`, updatedProperty.id);
+
+    const upsertPayload = {
+      title: updatedProperty.title,
+      location: updatedProperty.location,
+      price: parseFloat(updatedProperty.price),
+      rating: updatedProperty.rating || 4.85,
+      reviews_count: updatedProperty.reviewsCount || 0,
+      verified_reviews_count: updatedProperty.verifiedReviewsCount || 0,
+      verified: updatedProperty.verified,
+      allow_unverified_guests: updatedProperty.allowUnverifiedGuests ?? true,
+      category: updatedProperty.category || 'Design',
+      image_url: updatedProperty.image,
+      description: updatedProperty.description
+    };
+
+    if (!isNew) {
+      upsertPayload.id = updatedProperty.id;
+    }
+
     const { data, error } = await supabase
       .from('properties')
-      .upsert({
-        id: isNew ? undefined : updatedProperty.id,
-        title: updatedProperty.title,
-        location: updatedProperty.location,
-        price: parseFloat(updatedProperty.price),
-        rating: updatedProperty.rating || 5.0,
-        reviews_count: updatedProperty.reviewsCount || 0,
-        verified_reviews_count: updatedProperty.verifiedReviewsCount || 0,
-        verified: updatedProperty.verified,
-        allow_unverified_guests: updatedProperty.allowUnverifiedGuests ?? true,
-        category: updatedProperty.category || 'Design',
-        image_url: updatedProperty.image,
-        description: updatedProperty.description
-      })
+      .upsert(upsertPayload)
       .select();
 
     if (error) {
-      console.error("Supabase upsert error detail:", error);
+      console.error("❌ Supabase upsert failed:", error.message, error.details);
       throw error;
     }
 
@@ -231,6 +240,10 @@ export const getProperties = async () => {
 // NEW FUNCTION: Fetch full details only when a single property is clicked
 export const getPropertyById = async (id) => {
   try {
+    if (!isUUID(id)) {
+      throw new Error(`Invalid UUID: ${id}`);
+    }
+
     const [propRes, photosRes, reviewsRes] = await Promise.all([
       supabase.from('properties').select('*').eq('id', id).single(),
       supabase.from('property_photos').select('*').eq('property_id', id),
