@@ -37,7 +37,7 @@ const BookingConfirmation = () => {
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-gray-100">
                      <img
                         alt="User profile avatar"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150"
+                        src="/image0212.jpeg"
                      />
                   </div>
                </div>
@@ -67,12 +67,12 @@ const BookingConfirmation = () => {
                   <section className="bg-white rounded-xl shadow-sm border border-[#e5bdbe]/5 overflow-hidden">
                      <div className="p-8 space-y-8">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-surface-low">
-                           <div className="flex items-center gap-4">
-                              <img
-                                 src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150"
-                                 className="w-14 h-14 rounded-full object-cover shadow-sm"
-                                 alt="Guest"
-                              />
+                            <div className="flex items-center gap-4">
+                               <img
+                                  src="/image0212.jpeg"
+                                  className="w-14 h-14 rounded-full object-cover shadow-sm"
+                                  alt="Guest"
+                               />
                               <div>
                                  <span className="block text-[10px] font-extrabold text-[#5c3f41] uppercase tracking-widest mb-1">Guest Details</span>
                                  <span className="text-[18px] font-extrabold text-[#1a1c1c]">Aadya Agarwal</span>

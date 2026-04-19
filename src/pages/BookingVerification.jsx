@@ -57,7 +57,7 @@ const BookingVerification = () => {
     {
       id: "guest_1",
       name: "Aadya Agarwal",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150",
+      avatar: "/image0212.jpeg",
       verified: true
     }
   ]);

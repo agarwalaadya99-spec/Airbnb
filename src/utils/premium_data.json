@@ -1,0 +1,130 @@
+{
+  "properties": [
+    {
+      "id": "1",
+      "title": "Eco-Luxe Geometric Cabin",
+      "location": "Jogiwala, Dehradun",
+      "distance": "2 miles away",
+      "price": 4500,
+      "rating": 4.98,
+      "reviewsCount": 124,
+      "verifiedReviewsCount": 118,
+      "verified": true,
+      "allowUnverifiedGuests": false,
+      "category": "Design",
+      "image": "https://images.unsplash.com/photo-1449156001435-d599c72470ab?q=80&w=1200",
+      "photos": [
+        { "url": "https://images.unsplash.com/photo-1449156001435-d599c72470ab?q=80&w=1200", "isVerified": true, "meta": { "sourceDevice": "Capture One Pro · Secure Enclave", "timestamp": "March 15, 2026", "gps": "30.2984° N, 78.0772° E" } },
+        { "url": "https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=1200", "isVerified": true, "meta": { "sourceDevice": "Capture One Pro", "timestamp": "March 15, 2026" } }
+      ],
+      "host": { "name": "Julian", "superhost": true, "joined": "2018", "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200" },
+      "description": "An architectural marvel in the heart of Jogiwala, Dehradun."
+    },
+    {
+      "id": "2",
+      "title": "Himalayan Glass House",
+      "location": "Mussoorie Road, Dehradun",
+      "distance": "8 miles away",
+      "price": 12000,
+      "rating": 5.0,
+      "verified": true,
+      "category": "Amazing views",
+      "image": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200",
+      "photos": [
+        { "url": "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200", "isVerified": true, "meta": { "sourceDevice": "Sony A7RV", "timestamp": "March 20, 2026" } }
+      ],
+      "host": { "name": "Elena", "superhost": true, "joined": "2015", "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200" },
+      "description": "Panoramic views of the Doon valley."
+    },
+    {
+      "id": "3",
+      "title": "The Concrete Monolith",
+      "location": "Rajpur Road, Dehradun",
+      "distance": "5 miles away",
+      "price": 8500,
+      "rating": 4.85,
+      "verified": true,
+      "category": "Icons",
+      "image": "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200",
+      "photos": [
+        { "url": "https://images.unsplash.com/photo-1542718610-a1d656d1884c?q=80&w=1200", "isVerified": true }
+      ],
+      "host": { "name": "Marcus", "superhost": false, "joined": "2020", "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" },
+      "description": "Brutalist architecture in a lush green setting."
+    },
+    {
+      "id": "4",
+      "title": "Infinity Valley Retreat",
+      "location": "Sahastradhara, Dehradun",
+      "distance": "10 miles away",
+      "price": 6500,
+      "rating": 4.9,
+      "verified": true,
+      "category": "Amazing pools",
+      "image": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200",
+      "photos": [
+        { "url": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?q=80&w=1200", "isVerified": true }
+      ],
+      "host": { "name": "Sarah", "superhost": false, "joined": "2021", "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200" },
+      "description": "An infinity pool overlooking the river valley."
+    },
+    {
+      "id": "6",
+      "title": "Minimalist Dehradun Cube",
+      "location": "Jogiwala, Dehradun",
+      "distance": "1 mile away",
+      "price": 3200,
+      "rating": 4.7,
+      "verified": true,
+      "category": "Tiny homes",
+      "image": "https://images.unsplash.com/photo-1502117859338-fd9daa518a9a?q=80&w=1200",
+      "photos": [
+        { "url": "https://images.unsplash.com/photo-1502117859338-fd9daa518a9a?q=80&w=1200", "isVerified": true }
+      ],
+      "host": { "name": "Yuki", "superhost": true, "joined": "2015", "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200" },
+      "description": "Smart living in a tiny footprint."
+    },
+    {
+      "id": "7",
+      "title": "Pine Ridge A-Frame",
+      "location": "Near Dehradun",
+      "distance": "15 miles away",
+      "price": 4800,
+      "rating": 4.95,
+      "verified": true,
+      "category": "A-frames",
+      "image": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200",
+      "photos": [
+        { "url": "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200", "isVerified": true }
+      ],
+      "host": { "name": "Mark", "superhost": true, "joined": "2018", "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200" },
+      "description": "Cozy A-frame cabin in a pine forest."
+    }
+  ],
+  "users": [
+    {
+      "id": "hs_9210",
+      "name": "Vikram Sharma",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+      "verified": true,
+      "trustScore": 98,
+      "level": "Trust Elite Level 4"
+    },
+    {
+      "id": "hs_4432",
+      "name": "Sarah Chen",
+      "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
+      "verified": true,
+      "trustScore": 95,
+      "level": "Trust Pro Level 3"
+    },
+    {
+      "id": "hs_8876",
+      "name": "Elena Rodriguez",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
+      "verified": true,
+      "trustScore": 99,
+      "level": "Trust Guardian"
+    }
+  ]
+}
