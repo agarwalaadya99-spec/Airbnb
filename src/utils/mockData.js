@@ -83,18 +83,23 @@ export const updatePropertyInStore = async (updatedProperty) => {
     
     console.log(`📡 Preparing Supabase sync (${isNew ? 'New' : 'Update'}):`, updatedProperty.id);
 
+    const safeFloat = (val, fallback = 0) => {
+      const parsed = parseFloat(val);
+      return isNaN(parsed) ? fallback : parsed;
+    };
+
     const upsertPayload = {
-      title: updatedProperty.title,
-      location: updatedProperty.location,
-      price: parseFloat(updatedProperty.price),
-      rating: updatedProperty.rating || 4.85,
-      reviews_count: updatedProperty.reviewsCount || 0,
-      verified_reviews_count: updatedProperty.verifiedReviewsCount || 0,
-      verified: updatedProperty.verified,
+      title: updatedProperty.title || "Unnamed Listing",
+      location: updatedProperty.location || "Location Not Set",
+      price: safeFloat(updatedProperty.price, 0),
+      rating: safeFloat(updatedProperty.rating, 4.85),
+      reviews_count: parseInt(updatedProperty.reviewsCount || 0),
+      verified_reviews_count: parseInt(updatedProperty.verifiedReviewsCount || 0),
+      verified: updatedProperty.verified || false,
       allow_unverified_guests: updatedProperty.allowUnverifiedGuests ?? true,
       category: updatedProperty.category || 'Design',
       image_url: updatedProperty.image,
-      description: updatedProperty.description
+      description: updatedProperty.description || ""
     };
 
     if (!isNew) {
@@ -114,34 +119,40 @@ export const updatePropertyInStore = async (updatedProperty) => {
     const savedPropertyId = data?.[0]?.id;
 
     // Attempt to seed photo metadata if it exists
-    if (updatedProperty.photos && savedPropertyId) {
+    if (updatedProperty.photos && updatedProperty.photos.length > 0 && savedPropertyId) {
       // First, delete old photos to prevent duplicates if we're re-syncing
       await supabase.from('property_photos').delete().eq('property_id', savedPropertyId);
 
       const photoInserts = updatedProperty.photos.map(ph => ({
         property_id: savedPropertyId,
         url: ph.url,
-        is_verified: ph.isVerified,
-        meta_data: ph.meta
+        is_verified: ph.isVerified || false,
+        meta_data: ph.meta || {}
       }));
-      await supabase.from('property_photos').insert(photoInserts);
+      
+      if (photoInserts.length > 0) {
+        await supabase.from('property_photos').insert(photoInserts);
+      }
     }
 
     // Attempt to persist reviews if they exist
-    if (updatedProperty.reviews && savedPropertyId) {
+    if (updatedProperty.reviews && updatedProperty.reviews.length > 0 && savedPropertyId) {
       // Delete existing to allow a clean sync (Standard and simplified for demo)
       await supabase.from('property_reviews').delete().eq('property_id', savedPropertyId);
 
       const reviewInserts = updatedProperty.reviews.map(rev => ({
         property_id: savedPropertyId,
-        user_name: rev.user,
-        rating: rev.rating,
-        comment: rev.comment,
-        date: rev.date,
-        is_verified: rev.verified,
+        user_name: rev.user || "Anonymous",
+        rating: parseInt(rev.rating || 5),
+        comment: rev.comment || "",
+        date: rev.date || new Date().toLocaleDateString(),
+        is_verified: rev.verified || false,
         avatar_url: rev.avatar
       }));
-      await supabase.from('property_reviews').insert(reviewInserts);
+
+      if (reviewInserts.length > 0) {
+        await supabase.from('property_reviews').insert(reviewInserts);
+      }
     }
 
     const result = { ...updatedProperty, id: savedPropertyId };

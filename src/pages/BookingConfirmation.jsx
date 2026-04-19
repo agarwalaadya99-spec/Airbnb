@@ -98,7 +98,7 @@ const BookingConfirmation = () => {
                            </div>
                            <div className="space-y-1">
                               <span className="text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">Total</span>
-                              <div className="text-[20px] font-black text-airbnb">$1,245.00</div>
+                              <div className="text-[20px] font-black text-airbnb">₹1,245.00</div>
                            </div>
                         </div>
                      </div>

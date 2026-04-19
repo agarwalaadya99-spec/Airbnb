@@ -217,15 +217,19 @@ const PropertyReviews = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-[14px] font-bold text-[#222222]">Trust Certification</span>
-                    <span className="text-[12px] font-black text-green-600 bg-green-50 px-3 py-1 rounded-full uppercase">100% Valid</span>
+                    {provenanceData.isVerified ? (
+                      <span className="text-[12px] font-black text-green-600 bg-green-50 px-3 py-1 rounded-full uppercase">100% Valid</span>
+                    ) : (
+                      <span className="text-[12px] font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full uppercase">Legacy/Unverified</span>
+                    )}
                   </div>
                   <div className="grid grid-cols-1 gap-3">
                     {[
-                      { label: 'Content ID (CID)', value: provenanceData.cid || 'N/A', icon: Lock },
-                      { label: 'Source Device', value: provenanceData.sourceDevice, icon: Camera },
-                      { label: 'Capture Time', value: provenanceData.timestamp, icon: Clock },
-                      { label: 'Verified Location', value: provenanceData.gps, icon: MapPin },
-                      { label: 'Blockchain Sig', value: provenanceData.sig || 'N/A', icon: Shield }
+                      { label: 'Content ID (CID)', value: provenanceData.cid || 'Original-Import', icon: Lock },
+                      { label: 'Source Device', value: provenanceData.sourceDevice || 'Legacy Upload', icon: Camera },
+                      { label: 'Capture Time', value: provenanceData.timestamp || 'Pre-Provenance', icon: Clock },
+                      { label: 'Verified Location', value: provenanceData.gps || 'Not Recorded', icon: MapPin },
+                      { label: 'Blockchain Sig', value: provenanceData.sig || (provenanceData.isVerified ? 'PENDING' : 'N/A'), icon: Shield }
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-start gap-4 p-4 bg-gray-50 rounded-2xl border border-gray-100/50">
                         <item.icon size={18} className="text-gray-400 mt-0.5" />
@@ -238,15 +242,18 @@ const PropertyReviews = () => {
                   </div>
                 </div>
 
-                <div className="bg-[#1a1c1c] rounded-[32px] p-6 text-white space-y-4 relative overflow-hidden">
+                <div className={`${provenanceData.isVerified ? 'bg-[#1a1c1c]' : 'bg-slate-100'} rounded-[32px] p-6 ${provenanceData.isVerified ? 'text-white' : 'text-slate-800'} space-y-4 relative overflow-hidden`}>
                   <div className="relative z-10 flex items-center gap-3">
-                    <div className="p-2 bg-white/10 rounded-lg text-airbnb"><Sparkles size={16} /></div>
+                    <div className={`p-2 ${provenanceData.isVerified ? 'bg-white/10 text-airbnb' : 'bg-slate-200 text-slate-500'} rounded-lg`}><Sparkles size={16} /></div>
                     <span className="text-[15px] font-manrope font-extrabold">Digital Forensics Verdict</span>
                   </div>
-                  <p className="relative z-10 text-white/70 text-[13px] leading-relaxed">
-                    This media was captured using a manufacturer-signed Secure Enclave. No pixel manipulation detected. Content hashes match the original capture state preserved on the provenance ledger.
+                  <p className={`relative z-10 ${provenanceData.isVerified ? 'text-white/70' : 'text-slate-600'} text-[13px] leading-relaxed`}>
+                    {provenanceData.isVerified 
+                      ? "This media was captured using a manufacturer-signed Secure Enclave. No pixel manipulation detected. Content hashes match the original capture state preserved on the provenance ledger."
+                      : "This media was imported from a legacy storage system. While no obvious manipulation is detected, hardware-level attestation was not active at the time of capture."
+                    }
                   </p>
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-airbnb/20 rounded-full blur-3xl -mr-12 -mt-12" />
+                  {provenanceData.isVerified && <div className="absolute top-0 right-0 w-24 h-24 bg-airbnb/20 rounded-full blur-3xl -mr-12 -mt-12" />}
                 </div>
               </div>
 
@@ -423,17 +430,16 @@ const PropertyReviews = () => {
                       </button>
                     )}
 
-                    {photo.isVerified && (
-                      <button
-                        onClick={() => {
-                          setProvenanceData(photo.meta || { sourceDevice: 'Unknown', timestamp: 'Original Listing', gps: 'Not Recorded' });
-                          setShowProvenanceModal(true);
-                        }}
-                        className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest sm:opacity-0 sm:group-hover:opacity-100 transition-opacity border border-white/10"
-                      >
-                        View Signature
-                      </button>
-                    )}
+                    <button
+                      onClick={() => {
+                        const meta = photo.meta || { sourceDevice: 'Legacy Storage', timestamp: 'Original Upload', gps: 'Not Available' };
+                        setProvenanceData({ ...meta, isVerified: photo.isVerified });
+                        setShowProvenanceModal(true);
+                      }}
+                      className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest sm:opacity-0 sm:group-hover:opacity-100 transition-opacity border border-white/10"
+                    >
+                      {photo.isVerified ? 'View Signature' : 'View Provenance'}
+                    </button>
                   </div>
                 ))}
 
