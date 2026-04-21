@@ -436,9 +436,9 @@ const PropertyReviews = () => {
                   <h3 className="text-[20px] sm:text-[22px] font-manrope font-extrabold text-[#222222]">Property Insights</h3>
                   <p className="text-[13px] text-[#717171]">Photos verified via secure hardware device IDs.</p>
                 </div>
-                {(!property.photos || property.photos.length === 0 || property.photos.some(p => p.meta?.aiConfidence > 60 || (!p.isVerified && p.meta?.aiConfidence > 40))) ? (
-                  <div className="flex items-center gap-2 px-3 py-1 bg-red-50 rounded-full text-[11px] font-extrabold text-red-700 uppercase tracking-widest border border-red-100 animate-pulse">
-                    <AlertTriangle size={12} fill="currentColor" fillOpacity={0.1} /> Forensic Alert: Low Trust
+                {(!property.photos || property.photos.length === 0 || property.photos.some(p => p.isAI || (!p.isVerified && p.meta?.aiConfidence > 40))) ? (
+                  <div className="flex items-center gap-2 px-3 py-1 bg-amber-50 rounded-full text-[11px] font-extrabold text-amber-700 uppercase tracking-widest border border-amber-100 animate-pulse">
+                    <AlertTriangle size={12} fill="currentColor" fillOpacity={0.1} /> Audit In Progress
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full text-[11px] font-extrabold text-green-700 uppercase tracking-widest border border-green-100">
@@ -460,7 +460,11 @@ const PropertyReviews = () => {
                       alt="Listing"
                     />
                     <div className="absolute top-4 left-4 flex gap-2">
-                      {photo.isVerified ? (
+                      {photo.isAI ? (
+                        <div className="bg-amber-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
+                          <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> PROCESSING AUDIT
+                        </div>
+                      ) : photo.isVerified ? (
                         <div className="bg-green-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
                           <Shield size={12} /> VERIFIED LIVE
                         </div>
@@ -484,12 +488,12 @@ const PropertyReviews = () => {
                     <button
                       onClick={() => {
                         const meta = photo.meta || { sourceDevice: 'Legacy Storage', timestamp: 'Original Upload', gps: 'Not Available' };
-                        setProvenanceData({ ...meta, isVerified: photo.isVerified });
+                        setProvenanceData({ ...meta, isVerified: photo.isVerified && !photo.isAI });
                         setShowProvenanceModal(true);
                       }}
                       className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest sm:opacity-0 sm:group-hover:opacity-100 transition-opacity border border-white/10"
                     >
-                      {photo.isVerified ? 'View Signature' : 'View Provenance'}
+                      {photo.isAI ? 'View Audit Report' : photo.isVerified ? 'View Signature' : 'View Provenance'}
                     </button>
                   </div>
                 ))}
@@ -536,12 +540,12 @@ const PropertyReviews = () => {
                     whileInView={{ opacity: 1, x: 0 }}
                     className="relative"
                   >
-                    <div className={`absolute -left-[37px] sm:-left-[41px] top-1 w-6 h-6 rounded-full border-4 border-white shadow-md flex items-center justify-center ${ph.isVerified ? 'bg-green-500' : 'bg-gray-300'}`}>
-                      {ph.isVerified ? <CheckCircle size={10} className="text-white" /> : <div className="w-1 h-1 bg-white rounded-full" />}
+                    <div className={`absolute -left-[37px] sm:-left-[41px] top-1 w-6 h-6 rounded-full border-4 border-white shadow-md flex items-center justify-center ${ph.isAI ? 'bg-amber-400' : ph.isVerified ? 'bg-green-500' : 'bg-gray-300'}`}>
+                      {ph.isAI ? <AlertTriangle size={10} className="text-white" /> : ph.isVerified ? <CheckCircle size={10} className="text-white" /> : <div className="w-1 h-1 bg-white rounded-full" />}
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-4">
-                        <h4 className="font-bold text-[14px] sm:text-[15px]">{ph.isVerified ? 'Secure Enclave Capture' : 'Legacy Media Import'}</h4>
+                        <h4 className="font-bold text-[14px] sm:text-[15px]">{ph.isAI ? 'AI Content — Audit Pending' : ph.isVerified ? 'Secure Enclave Capture' : 'Legacy Media Import'}</h4>
                         <span className="text-[10px] sm:text-[11px] font-bold text-gray-400 font-mono whitespace-nowrap">{ph.meta?.timestamp || 'Original'}</span>
                       </div>
                       <p className="text-[13px] text-gray-500 max-w-md">

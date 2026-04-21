@@ -127,6 +127,7 @@ export const updatePropertyInStore = async (updatedProperty) => {
         property_id: savedPropertyId,
         url: ph.url,
         is_verified: ph.isVerified || false,
+        is_ai: ph.isAI || false,
         meta_data: ph.meta || {}
       }));
       

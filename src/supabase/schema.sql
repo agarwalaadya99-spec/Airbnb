@@ -35,6 +35,7 @@ CREATE TABLE property_photos (
   property_id UUID REFERENCES properties(id) ON DELETE CASCADE,
   url TEXT NOT NULL,
   is_verified BOOLEAN DEFAULT FALSE,
+  is_ai BOOLEAN DEFAULT FALSE,
   meta_data JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

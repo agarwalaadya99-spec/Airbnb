@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const PropertyCard = ({ property, index = 0 }) => {
-  const latestVerifiedPhoto = [...(property.photos || [])].reverse().find(p => p.isVerified);
-  const displayImage = latestVerifiedPhoto?.url || property.image;
+  const latestPhoto = [...(property.photos || [])].reverse().find(p => p.isVerified || p.isAI);
+  const latestVerifiedPhoto = [...(property.photos || [])].reverse().find(p => p.isVerified && !p.isAI);
+  const displayImage = latestPhoto?.url || latestVerifiedPhoto?.url || property.image;
   const isEnclaveLive = !!latestVerifiedPhoto;
+  const hasAIPhoto = !!(property.photos || []).some(p => p.isAI);
 
   return (
     <motion.div
@@ -35,14 +37,12 @@ const PropertyCard = ({ property, index = 0 }) => {
 
           {/* AI / Verified Banners */}
           <div className="absolute top-4 left-4 flex flex-col gap-1.5 items-start">
-            {latestVerifiedPhoto?.isAI && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white shadow-xl rounded-full border border-white/20">
+            {hasAIPhoto ? (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500 text-white shadow-xl rounded-full border border-white/20">
                 <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                <span className="text-[10px] font-black tracking-widest uppercase">AI</span>
+                <span className="text-[10px] font-black tracking-widest uppercase">Processing Audit</span>
               </div>
-            )}
-
-            {latestVerifiedPhoto?.isVerified && (
+            ) : isEnclaveLive && (
               <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500 text-white shadow-xl rounded-full border border-white/20">
                 <ShieldCheck size={12} />
                 <span className="text-[10px] font-black tracking-widest uppercase">Verified</span>
