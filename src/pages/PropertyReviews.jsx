@@ -430,97 +430,117 @@ const PropertyReviews = () => {
 
 
             {/* Property Insights / Gallery */}
-            <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <h3 className="text-[20px] sm:text-[22px] font-manrope font-extrabold text-[#222222]">Property Insights</h3>
-                  <p className="text-[13px] text-[#717171]">Photos verified via secure hardware device IDs.</p>
-                </div>
-                {(!property.photos || property.photos.length === 0 || property.photos.some(p => p.isAI || (!p.isVerified && p.meta?.aiConfidence > 40))) ? (
-                  <div className="flex items-center gap-2 px-3 py-1 bg-amber-50 rounded-full text-[11px] font-extrabold text-amber-700 uppercase tracking-widest border border-amber-100 animate-pulse">
-                    <AlertTriangle size={12} fill="currentColor" fillOpacity={0.1} /> Audit In Progress
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full text-[11px] font-extrabold text-green-700 uppercase tracking-widest border border-green-100">
-                    <Shield size={12} fill="currentColor" fillOpacity={0.1} /> High Trust Level
-                  </div>
-                )}
-              </div>
+            {/* Compute display photos: fall back to main image if no dedicated photos exist */}
+            {(() => {
+              const displayPhotos = (property.photos && property.photos.length > 0)
+                ? property.photos
+                : property.image
+                  ? [{ id: 'main-image', url: property.image, isVerified: false, isAI: false, meta: null }]
+                  : [];
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                {property.photos.map((photo) => (
-                  <div
-                    key={photo.id}
-                    className="relative group rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100 bg-gray-100"
-                    style={{ aspectRatio: '1/1', position: 'relative' }}
-                  >
-                    <img
-                      src={photo.url}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      alt="Listing"
-                    />
-                    <div className="absolute top-4 left-4 flex gap-2">
-                      {photo.isAI ? (
-                        <div className="bg-amber-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
-                          <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> PROCESSING AUDIT
+              return (
+                <section className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <h3 className="text-[20px] sm:text-[22px] font-manrope font-extrabold text-[#222222]">Property Insights</h3>
+                      <p className="text-[13px] text-[#717171]">Photos verified via secure hardware device IDs.</p>
+                    </div>
+                    {(displayPhotos.length === 0 || displayPhotos.some(p => p.isAI || (!p.isVerified && p.meta?.aiConfidence > 40))) ? (
+                      <div className="flex items-center gap-2 px-3 py-1 bg-amber-50 rounded-full text-[11px] font-extrabold text-amber-700 uppercase tracking-widest border border-amber-100 animate-pulse">
+                        <AlertTriangle size={12} fill="currentColor" fillOpacity={0.1} /> Audit In Progress
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full text-[11px] font-extrabold text-green-700 uppercase tracking-widest border border-green-100">
+                        <Shield size={12} fill="currentColor" fillOpacity={0.1} /> High Trust Level
+                      </div>
+                    )}
+                  </div>
+
+                  {displayPhotos.length === 0 ? (
+                    <div className="text-center py-16 text-slate-400">
+                      <Camera size={40} className="mx-auto mb-3 opacity-30" />
+                      <p className="text-[13px] font-semibold">No photos have been added yet.</p>
+                      {isHostMode && <p className="text-[12px] mt-1">Use the Secure Camera to capture a verified photo.</p>}
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      {displayPhotos.map((photo, idx) => (
+                        <div
+                          key={photo.id || idx}
+                          className="relative group rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-sm border border-gray-100 bg-gray-100"
+                          style={{ aspectRatio: '4/3', position: 'relative' }}
+                        >
+                          <img
+                            src={photo.url}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            alt="Listing photo"
+                            onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1502117859338-fd9daa518a9a?q=80&w=1200'; }}
+                          />
+                          <div className="absolute top-4 left-4 flex gap-2">
+                            {photo.isAI ? (
+                              <div className="bg-amber-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
+                                <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> PROCESSING AUDIT
+                              </div>
+                            ) : photo.isVerified ? (
+                              <div className="bg-green-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
+                                <Shield size={12} /> VERIFIED LIVE
+                              </div>
+                            ) : (
+                              <div className="bg-yellow-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
+                                <AlertTriangle size={12} /> LEGACY MEDIA
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Host specific delete button */}
+                          {isHostMode && photo.id !== 'main-image' && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeletePhoto(photo.id); }}
+                              className="absolute top-4 right-4 bg-white/90 text-red-500 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => {
+                              const meta = photo.meta || { sourceDevice: 'Legacy Storage', timestamp: 'Original Upload', gps: 'Not Available' };
+                              setProvenanceData({ ...meta, isVerified: photo.isVerified && !photo.isAI });
+                              setShowProvenanceModal(true);
+                            }}
+                            className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest opacity-100 transition-opacity border border-white/10"
+                          >
+                            {photo.isAI ? 'View Audit Report' : photo.isVerified ? 'View Signature' : 'View Provenance'}
+                          </button>
                         </div>
-                      ) : photo.isVerified ? (
-                        <div className="bg-green-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
-                          <Shield size={12} /> VERIFIED LIVE
-                        </div>
-                      ) : (
-                        <div className="bg-yellow-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
-                          <AlertTriangle size={12} /> LEGACY MEDIA
+                      ))}
+
+                      {isHostMode && (
+                        <div className="relative rounded-[24px] sm:rounded-[32px] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center p-6 sm:p-8 text-center space-y-4 bg-slate-50/50 hover:bg-slate-50 transition-colors" style={{ aspectRatio: '4/3' }}>
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl sm:rounded-[24px] shadow-sm flex items-center justify-center text-airbnb">
+                            <Camera size={24} />
+                          </div>
+                          <div className="space-y-1">
+                            <h4 className="font-extrabold text-[15px] sm:text-[16px]">
+                              Update Ground Truth
+                            </h4>
+                            <p className="text-[12px] sm:text-[13px] text-slate-500 max-w-[200px]">
+                              Use Secure Enclave to replace legacy media.
+                            </p>
+                          </div>
+                          <button
+                            onClick={handleStartVerification}
+                            className="text-airbnb font-extrabold text-[13px] sm:text-[14px] hover:underline"
+                          >
+                            Capture Live Photo
+                          </button>
                         </div>
                       )}
                     </div>
-
-                    {/* Host specific delete button */}
-                    {isHostMode && (
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleDeletePhoto(photo.id); }}
-                        className="absolute top-4 right-4 bg-white/90 text-red-500 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() => {
-                        const meta = photo.meta || { sourceDevice: 'Legacy Storage', timestamp: 'Original Upload', gps: 'Not Available' };
-                        setProvenanceData({ ...meta, isVerified: photo.isVerified && !photo.isAI });
-                        setShowProvenanceModal(true);
-                      }}
-                      className="absolute bottom-4 right-4 bg-black/40 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest sm:opacity-0 sm:group-hover:opacity-100 transition-opacity border border-white/10"
-                    >
-                      {photo.isAI ? 'View Audit Report' : photo.isVerified ? 'View Signature' : 'View Provenance'}
-                    </button>
-                  </div>
-                ))}
-
-                {isHostMode && (
-                  <div className="relative rounded-[24px] sm:rounded-[32px] border-2 border-dashed border-gray-100 flex flex-col items-center justify-center p-6 sm:p-8 text-center space-y-4 bg-slate-50/50 hover:bg-slate-50 transition-colors">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white rounded-2xl sm:rounded-[24px] shadow-sm flex items-center justify-center text-airbnb">
-                      <Camera size={24} />
-                    </div>
-                    <div className="space-y-1">
-                      <h4 className="font-extrabold text-[15px] sm:text-[16px]">
-                        Update Ground Truth
-                      </h4>
-                      <p className="text-[12px] sm:text-[13px] text-slate-500 max-w-[200px]">
-                        Use Secure Enclave to replace legacy media.
-                      </p>
-                    </div>
-                    <button
-                      onClick={handleStartVerification}
-                      className="text-airbnb font-extrabold text-[13px] sm:text-[14px] hover:underline"
-                    >
-                      Capture Live Photo
-                    </button>
-                  </div>
-                )}
-              </div>
-            </section>
+                  )}
+                </section>
+              );
+            })()}
 
             {/* Live Verification Timeline */}
             <section className="bg-white rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 shadow-sm border border-gray-100 space-y-8">
