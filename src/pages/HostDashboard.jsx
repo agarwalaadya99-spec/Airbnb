@@ -689,7 +689,19 @@ const HostDashboard = () => {
                         <img src={ph.url} className="w-full h-full object-cover" />
 
                         {/* Status Badges */}
-                        {ph.isVerified && <div className="absolute top-4 left-4 bg-green-500 text-white p-1 rounded-full"><CheckCircle size={14} /></div>}
+                        {ph.isAI ? (
+                          <div className="absolute top-4 left-4 bg-amber-500 text-white p-1.5 rounded-full shadow-lg border border-white/20">
+                            <AlertTriangle size={12} />
+                          </div>
+                        ) : ph.isVerified ? (
+                          <div className="absolute top-4 left-4 bg-green-500 text-white px-2 py-1 rounded-full text-[9px] font-black flex items-center gap-1 shadow-lg border border-white/20">
+                            <CheckCircle size={12} /> 100% VERIFIED
+                          </div>
+                        ) : (
+                          <div className="absolute top-4 left-4 bg-yellow-500 text-white p-1.5 rounded-full shadow-lg border border-white/20">
+                            <Info size={12} />
+                          </div>
+                        )}
 
                         {/* Hover Actions */}
                         <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">

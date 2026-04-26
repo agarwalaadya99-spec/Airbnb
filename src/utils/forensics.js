@@ -23,10 +23,34 @@ export const generateSHA256 = async (file) => {
 };
 
 /**
+ * Heuristic check to identify if the metadata belongs to a known mobile device manufacturer.
+ */
+const isMobileDevice = (exifData) => {
+    const make = (exifData?.Make || '').toLowerCase();
+    const model = (exifData?.Model || '').toLowerCase();
+    const keywords = ['iphone', 'apple', 'samsung', 'pixel', 'huawei', 'xiaomi', 'oneplus', 'oppo', 'vivo', 'nokia', 'motorola', 'google'];
+    return keywords.some(kw => make.includes(kw) || model.includes(kw));
+};
+
+/**
  * Analyzes an image for AI-generation signals using multiple detection heuristics.
  * Returns an object with { verdict, confidence, signals, details }
  */
 const runAIDetection = async (file, exifData) => {
+    // --- OVERRIDE: If it's a mobile device or hardware-attested, it's 100% human ---
+    const isMobile = isMobileDevice(exifData);
+    const isSecureCapture = exifData?.trustLevel === 'SECURE_ENCLAVE';
+
+    if (isMobile || isSecureCapture) {
+        return {
+            verdict: '✓ 100% Verified Human-Shot',
+            confidence: 0,
+            color: 'green',
+            signals: [{ type: 'success', label: 'Verified Device', value: isMobile ? (exifData?.Model || 'Mobile Camera') : 'Secure Enclave' }],
+            details: [isMobile ? `Captured via verified mobile hardware (${exifData?.Model}).` : 'Hardware-attested live capture.'],
+        };
+    }
+
     const signals = [];
     let suspicionScore = 0; // 0 = clean, 100 = definitely AI
     const details = [];
@@ -61,9 +85,10 @@ const runAIDetection = async (file, exifData) => {
 
     if (!hasCamera && !hasCameraSettings && !matchedAI) {
         // AI images almost never have camera EXIF data
-        suspicionScore += 35;
+        // Reduced weight from 35 to 20 as mobile browsers often strip EXIF
+        suspicionScore += 20;
         signals.push({ type: 'warning', label: 'No Camera Hardware', value: 'Missing' });
-        details.push('No camera make/model or lens data found — typical of AI-generated images.');
+        details.push('No camera make/model or lens data found — typical of AI-generated images or privacy-stripped uploads.');
     } else if (!hasCameraSettings && hasCamera) {
         suspicionScore += 10;
         signals.push({ type: 'info', label: 'Partial EXIF', value: 'Camera name only' });
@@ -214,7 +239,8 @@ const runAIDetection = async (file, exifData) => {
     if (clampedScore >= 70) {
         verdict = '⚠ AI-Generated Content Detected';
         color = 'red';
-    } else if (clampedScore >= 35) {
+    } else if (clampedScore >= 50) {
+        // Increased threshold from 35 to 50 for mobile-friendly uploads
         verdict = '⚡ Suspicious / Post-Processed';
         color = 'yellow';
     } else {

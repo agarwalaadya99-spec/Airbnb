@@ -126,13 +126,14 @@ const ListPropertyModal = ({ isOpen, onClose, onRefresh }) => {
       price: formData.price,
       rating: 5.0,
       image: formData.images[0],
-      verified: formData.forensicReport?.aiConfidence < 30, // Strict threshold for main badge
+      verified: formData.forensicReport?.aiColor === 'green',
       forensics: formData.forensicReport,
       photos: [
         {
           id: `p-${Date.now()}`,
           url: formData.images[0],
-          isVerified: formData.forensicReport?.aiConfidence < 50,
+          isVerified: formData.forensicReport?.aiColor !== 'red',
+          isAI: formData.forensicReport?.aiColor === 'red',
           meta: formData.forensicReport
         }
       ]

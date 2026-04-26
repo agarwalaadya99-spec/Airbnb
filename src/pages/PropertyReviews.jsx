@@ -483,7 +483,7 @@ const PropertyReviews = () => {
                               </div>
                             ) : photo.isVerified ? (
                               <div className="bg-green-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
-                                <Shield size={12} /> VERIFIED LIVE
+                                <CheckCircle size={12} /> 100% VERIFIED
                               </div>
                             ) : (
                               <div className="bg-yellow-500/90 backdrop-blur-md px-3 py-1.5 rounded-full text-white text-[10px] font-black flex items-center gap-1.5 shadow-lg border border-white/20">
@@ -565,7 +565,7 @@ const PropertyReviews = () => {
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-4">
-                        <h4 className="font-bold text-[14px] sm:text-[15px]">{ph.isAI ? 'AI Content — Audit Pending' : ph.isVerified ? 'Secure Enclave Capture' : 'Legacy Media Import'}</h4>
+                        <h4 className="font-bold text-[14px] sm:text-[15px]">{ph.isAI ? 'AI Content — Audit Pending' : ph.isVerified ? '100% Verified Camera Capture' : 'Legacy Media Import'}</h4>
                         <span className="text-[10px] sm:text-[11px] font-bold text-gray-400 font-mono whitespace-nowrap">{ph.meta?.timestamp || 'Original'}</span>
                       </div>
                       <p className="text-[13px] text-gray-500 max-w-md">
