@@ -127,8 +127,7 @@ export const updatePropertyInStore = async (updatedProperty) => {
         property_id: savedPropertyId,
         url: ph.url,
         is_verified: ph.isVerified || false,
-        is_ai: ph.isAI || false,
-        meta_data: ph.meta || {}
+        meta_data: { ...(ph.meta || {}), isAI: ph.isAI || false }
       }));
       
       if (photoInserts.length > 0) {
@@ -233,7 +232,7 @@ export const getProperties = async () => {
             id: ph.id,
             url: ph.url,
             isVerified: ph.is_verified,
-            isAI: ph.is_ai,
+            isAI: ph.is_ai ?? ph.meta_data?.isAI ?? ph.metadata?.isAI ?? false,
             meta: ph.meta_data || ph.metadata
           })),
           reviews: [] // Reviews still deferred for detail page
@@ -286,7 +285,7 @@ export const getPropertyById = async (id) => {
         id: ph.id,
         url: ph.url,
         isVerified: ph.is_verified,
-        isAI: ph.is_ai,
+        isAI: ph.is_ai ?? ph.meta_data?.isAI ?? ph.metadata?.isAI ?? false,
         meta: ph.meta_data || ph.metadata
       })),
       reviews: propertyReviews.map(r => ({
